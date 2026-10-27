@@ -99,7 +99,7 @@ def main():
         new = fix_plain(name.rstrip("/"))
         if new != name.rstrip("/"):
             renames.append((path, os.path.join(d, new)))
-        if name.endswith("/") or name in SKIP_FILES:
+        if name.endswith("/") or name in SKIP_FILES or re.fullmatch(r"meshes\d*\.js", name):
             continue
         if os.path.splitext(name)[1].lower() not in TEXT_EXT:
             continue
