@@ -63,7 +63,8 @@ code, .mono { font-family: var(--f-mono); font-size: 0.86em; }
 .train { line-height: 1.7; color: var(--fg); padding-top: 12px; }
 .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; align-items: start; }
 .cols > div { min-width: 0; }
-ul.plain, ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 66ch; }
+ul.plain { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 66ch; }
+ol.steps { margin: 0; padding-left: 2em; display: grid; gap: 8px; max-width: 66ch; }
 ol.steps li::marker { font-family: var(--f-mono); font-weight: 600; color: var(--muted); }
 .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 0; }
 .dot.in { background: var(--blue); } .dot.out { background: var(--orange); }
@@ -168,6 +169,7 @@ a.card:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
   
 </section>
 
+
 <section>
   <h2>Why it is built this way</h2>
   <ul class="plain"><li><strong>A barrel, as in a clock.</strong> The spring sits between two parts that turn: you wind the inside, and the outside drives the train. Winding never moves the line, and running never moves the knob.</li><li><strong>One turn of wind.</strong> A 266 mm band packs onto the arbor at about 1.2 turns. One turn bends it 1.2 % at the surface, well inside what PETG takes back.</li><li><strong>Wound from the lid, not from W.</strong> A W port on layer 1 would sit where the barrel's teeth are. A knob on the arbor needs no extra gears, and the box is a drive like CRANK and MOTOR.</li><li><strong>The pawl's arm is long (22 mm),</strong> so its post stands clear of the barrel's teeth.</li></ul>
@@ -180,6 +182,7 @@ a.card:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
 
 <section>
   <h2>How to assemble it</h2>
+  
   <ol class="steps"><li>Wipe a PTFE dry film on every pin. The pin is the bigger loss in a stage, and the lube roughly halves it.</li><li>Build it in this order: port E, then the barrel on the center pin, cup up; the mainspring in the barrel with its outer hook in the wall's groove; push the pawl's arm back and lower the arbor through the spring, turning it until the inner hook drops into its slot; keeper on E and the lid on, knob pressed onto the arbor's D-key; drop the plunger through its hole and turn the barrel by its gear until it falls into a notch. Print the mainspring in PETG, flat. Nothing is bought.</li><li>Put a keeper on each side that has ports: its legs go in the notches and its flange in the recess on the wall top.</li><li>Put the lid on. Its corner holes take the pins on the corner blocks.</li></ol>
   <p class="readout">To join it to a neighbor, lower it onto the neighbor's tongues from above.</p>
 </section>

@@ -270,13 +270,17 @@ def import_sandbox(src, pages):
     sim, dst = os.path.join(src, "sim"), os.path.join(OUT, "sandbox")
     if os.path.isdir(dst):
         shutil.rmtree(dst)
-    for rel in ("index.html", "app.js", "kin.js", "data/boxes.js", "data/meshes.js"):
+    data = sorted("data/" + f for f in os.listdir(os.path.join(sim, "data")) if f.endswith(".js"))
+    for rel in ["index.html", "app.js", "kin.js"] + data:
         os.makedirs(os.path.dirname(os.path.join(dst, rel)), exist_ok=True)
         shutil.copyfile(os.path.join(sim, rel), os.path.join(dst, rel))
     # mesh data is base64; runs like "AKID..." look like a cloud key to GitHub's
     # push protection, so spell the I as a JS escape (same string once parsed)
-    meshes = os.path.join(dst, "data", "meshes.js")
-    write(meshes, read(meshes).replace("AKID", "AK\\u0049D"))
+    for rel in data:
+        path = os.path.join(dst, rel)
+        if os.path.getsize(path) > 90 * 2**20:
+            die(f"sandbox {rel} is over 90 MB; GitHub refuses files over 100 MB")
+        write(path, read(path).replace("AKID", "AK\\u0049D"))
     app = read(os.path.join(dst, "app.js"))
     doc_map = json.dumps({n: p for n, p in sorted(pages.items())})
     patches = [

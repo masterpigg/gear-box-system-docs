@@ -63,7 +63,8 @@ code, .mono { font-family: var(--f-mono); font-size: 0.86em; }
 .train { line-height: 1.7; color: var(--fg); padding-top: 12px; }
 .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; align-items: start; }
 .cols > div { min-width: 0; }
-ul.plain, ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 66ch; }
+ul.plain { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 66ch; }
+ol.steps { margin: 0; padding-left: 2em; display: grid; gap: 8px; max-width: 66ch; }
 ol.steps li::marker { font-family: var(--f-mono); font-weight: 600; color: var(--muted); }
 .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 0; }
 .dot.in { background: var(--blue); } .dot.out { background: var(--orange); }
@@ -181,6 +182,7 @@ a.card:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
   
 </section>
 
+
 <section>
   <h2>Why it is built this way</h2>
   <ul class="plain"><li><strong>An average, not a sum.</strong> A full sum would need X's lower gear bigger than its upper one, and then X couldn't go in past the ring. A ×2 box after the adder gives the sum, and makes a good lesson about scaling.</li><li><strong>One cell wide, two tall.</strong> The ring is 50 mm across, so it needs the middle of a two-cell box. The output train uses the upper cell.</li><li><strong>The ring floats.</strong> It turns on three posts underneath, the carrier above holds it down, and the three planets keep it centered.</li><li><strong>The inside teeth are turned 5°</strong> against the outside ones so the planets mesh at the start. The fit check found this value.</li></ul>
@@ -193,6 +195,7 @@ a.card:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
 
 <section>
   <h2>How to assemble it</h2>
+  
   <ol class="steps"><li>Wipe a PTFE dry film on every pin. The pin is the bigger loss in a stage, and the lube roughly halves it.</li><li>Build it in this order: ports W, S and E; then J, I and the sun stack P on the center pin; then the ring on its three posts round the sun; then the planets on the carrier's pins, carrier turned over and lowered onto the center pin (turn it a little until the planets mesh); then X, Y and its sleeve; then the keepers, the lid, and the dial pressed onto the carrier's D-key. Print the planet three times.</li><li>Put a keeper on each side that has ports: its legs go in the notches and its flange in the recess on the wall top.</li><li>Put the lid on. Its corner holes take the pins on the corner blocks.</li></ol>
   <p class="readout">To join it to a neighbor, lower it onto the neighbor's tongues from above.</p>
 </section>

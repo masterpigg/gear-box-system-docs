@@ -63,7 +63,8 @@ code, .mono { font-family: var(--f-mono); font-size: 0.86em; }
 .train { line-height: 1.7; color: var(--fg); padding-top: 12px; }
 .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; align-items: start; }
 .cols > div { min-width: 0; }
-ul.plain, ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 66ch; }
+ul.plain { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 66ch; }
+ol.steps { margin: 0; padding-left: 2em; display: grid; gap: 8px; max-width: 66ch; }
 ol.steps li::marker { font-family: var(--f-mono); font-weight: 600; color: var(--muted); }
 .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 0; }
 .dot.in { background: var(--blue); } .dot.out { background: var(--orange); }
@@ -168,6 +169,7 @@ a.card:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
   
 </section>
 
+
 <section>
   <h2>Why it is built this way</h2>
   <ul class="plain"><li><strong>Flat digit wheels under windows.</strong> The digits are inlaid on the wheels' top faces and come upright as they reach the window, so the counter reads from above like every other display.</li><li><strong>The wheels hold P down.</strong> P is a tall stack that reaches up to just under the wheels, so it needs no keeper of its own.</li></ul>
@@ -180,6 +182,7 @@ a.card:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
 
 <section>
   <h2>How to assemble it</h2>
+  
   <ol class="steps"><li>Wipe a PTFE dry film on every pin. The pin is the bigger loss in a stage, and the lube roughly halves it.</li><li>Build it in this order: port W, then J, U, P (its long teeth either side of U's ring), then T, then the digit wheels (before the lid), then the keeper and lid.</li><li>Put a keeper on each side that has ports: its legs go in the notches and its flange in the recess on the wall top.</li><li>Put the lid on. Its corner holes take the pins on the corner blocks.</li></ol>
   <p class="readout">To join it to a neighbor, lower it onto the neighbor's tongues from above.</p>
 </section>
