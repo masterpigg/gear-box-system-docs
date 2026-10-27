@@ -113,7 +113,7 @@
   let dir = 1, playing = false, rpm = 15;
   let selected = null, placing = null, jam = null;
   let zeroSpins = new Map(), spinsNow = new Map(), holdState = {};
-  let showLids = false, showNames = true, glass = false;
+  let showLids = false, showNames = true, glass = false, frameDt = 0;
 
   // ---- three.js -------------------------------------------------------------
   const view = document.getElementById("view");
@@ -775,9 +775,96 @@
     }
   }
 
+  // ---- sound: BEAT, BOOM and ROLL -----------------------------------------------
+  // A key rides its lobe up and drops off the cliff; the drop is the hit. Each
+  // key's lift table (tp_mus) gives its cliffs; a hit sounds when the wheel
+  // turns forward past one, as loud as the drop. The voices are synthesized
+  // (WebAudio): BEAT's tok block, ROLL's drum, block and tine (lib/roll.scad's
+  // ro_voices, keys A, B, C), BOOM's big drum.
+  const VOICE = { beat: { "": "block" }, boom: { "": "boom" }, roll: { _A: "drum", _B: "block", _C: "tine" } };
+  const sound = (() => {
+    let on = true, ctx = null, out = null, noise = null, hits = 0;
+    const byVoice = {};
+    const prev = new Map(), cliffs = {};
+    try { on = localStorage.getItem("gbs_sound") !== "off"; } catch (e) { /* no storage */ }
+    function start() {
+      if (ctx || !on) return;
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      ctx = new AC();
+      const comp = ctx.createDynamicsCompressor(); comp.connect(ctx.destination);
+      out = ctx.createGain(); out.gain.value = 0.6; out.connect(comp);
+      noise = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+      const d = noise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    }
+    // a key's cliffs: [degrees, drop in degrees of key lift]
+    function cliffsOf(name, k) {
+      const key = name + k;
+      if (key in cliffs) return cliffs[key];
+      const r = ((C.tp_mus || []).find(q => q[0] === name) || [, []])[1].find(q => q[0] === k), c = [];
+      if (r) { const t = r[3], n = t.length; for (let i = 0; i < n; i++) if (t[i] - t[(i + 1) % n] > 1) c.push([(i + 0.5) * 360 / n, t[i]]); }
+      return (cliffs[key] = c);
+    }
+    function env(g, t, peak, decay) {
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + 0.002);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + decay);
+    }
+    function tone(t, type, f0, f1, sweep, peak, decay) {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = type; o.frequency.setValueAtTime(f0, t); if (f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, t + sweep);
+      env(g, t, peak, decay); o.connect(g); g.connect(out); o.start(t); o.stop(t + decay + 0.05);
+    }
+    function hiss(t, kind, f, q, peak, decay) {
+      const s = ctx.createBufferSource(), fl = ctx.createBiquadFilter(), g = ctx.createGain();
+      s.buffer = noise; fl.type = kind; fl.frequency.value = f; fl.Q.value = q;
+      env(g, t, peak, decay); s.connect(fl); fl.connect(g); g.connect(out); s.start(t); s.stop(t + decay + 0.05);
+    }
+    function play(voice, t, v, tune) {
+      if (voice === "block") { tone(t, "triangle", 900 * tune, 760 * tune, 0.03, 0.5 * v, 0.09); hiss(t, "bandpass", 2400 * tune, 4, 0.35 * v, 0.03); }
+      else if (voice === "tine") { tone(t, "sine", 1320 * tune, 1320 * tune, 0, 0.25 * v, 1.6); tone(t, "sine", 3643 * tune, 3643 * tune, 0, 0.08 * v, 0.35); }
+      else if (voice === "drum") { tone(t, "sine", 190 * tune, 85 * tune, 0.12, 0.8 * v, 0.35); hiss(t, "lowpass", 1400, 1, 0.3 * v, 0.07); }
+      else if (voice === "boom") { tone(t, "sine", 110, 42, 0.35, 1.0 * v, 0.9); tone(t, "triangle", 70, 38, 0.3, 0.3 * v, 0.5); hiss(t, "lowpass", 500, 1, 0.45 * v, 0.2); }
+    }
+    // each frame: the wheels that turned forward past a cliff
+    function tick(spins, dt) {
+      const live = new Set();
+      for (const it of items) {
+        const w = MUS_WHEEL[it.name]; if (!w) continue;
+        const s = (spins.get(it.uid) || {})[w] || 0, key = it.uid;
+        live.add(key);
+        const p = prev.get(key); prev.set(key, s);
+        if (p === undefined || s <= p || s - p > 720) continue;
+        // a box of its own pitch, a little apart from the next one like it
+        const tune = 1 + 0.04 * ((+String(it.uid).replace(/\D/g, "") || 0) % 5 - 2);
+        for (const [k, voice] of Object.entries(VOICE[it.name])) {
+          for (const [c, h] of cliffsOf(it.name, k)) {
+            const n = Math.floor((s - c) / 360) - Math.floor((p - c) / 360);
+            for (let j = 0; j < Math.min(n, 3); j++) {
+              hits++; byVoice[voice] = (byVoice[voice] || 0) + 1;
+              if (!on || !ctx) continue;
+              // when, in this frame: where the cliff fell between the two spins
+              const f = (((c - p) % 360) + 360) % 360 / (s - p) + j * 360 / (s - p);
+              play(voice, ctx.currentTime + 0.02 + Math.min(1, f) * (dt || 0), Math.min(1, 0.35 + h / 12), tune);
+            }
+          }
+        }
+      }
+      for (const k of prev.keys()) if (!live.has(k)) prev.delete(k);
+    }
+    function set(v) {
+      on = v; try { localStorage.setItem("gbs_sound", on ? "on" : "off"); } catch (e) { /* no storage */ }
+      if (on) { start(); if (ctx && ctx.state === "suspended") ctx.resume(); } else if (ctx) ctx.suspend();
+    }
+    // browsers start sound only after a click
+    window.addEventListener("pointerdown", () => { start(); if (on && ctx && ctx.state === "suspended") ctx.resume(); });
+    window.addEventListener("keydown", () => { start(); if (on && ctx && ctx.state === "suspended") ctx.resume(); });
+    return { tick, set, on: () => on, hits: () => hits, byVoice: () => Object.assign({}, byVoice), test: (voice) => { start(); if (ctx) play(voice, ctx.currentTime + 0.02, 1, 1); } };
+  })();
+
   // ---- moving every part -------------------------------------------------------
   function update(force) {
     spinsNow = K.evaluate(items, BOXES, A, angle, C, { hold: holdState });
+    sound.tick(spinsNow, frameDt);
     for (const it of items) {
       const bx = BOXES[it.name], v = VIEWS.get(it.uid), sp = spinsNow.get(it.uid) || {}, tsp = topSpins(it, bx, sp);
       for (const [id, pv] of Object.entries(v.pivots)) {
@@ -1227,13 +1314,57 @@
         const bx = BOXES[n], b = document.createElement("button");
         b.className = bx.kind === "draft" ? "draft" : "";
         b.dataset.name = n;
-        b.innerHTML = `<span>${bx.label}</span><small>${bx.drive ? "budget " + K.BUDGET[n] : bx.kind === "draft" ? "draft" : "cost " + costText(n)}${bx.cells[0] * bx.cells[1] > 1 ? " · " + bx.cells[0] + "×" + bx.cells[1] : ""}</small>`;
+        b.innerHTML = `<i class="lidpic"></i><span><b>${bx.label}</b><small>${bx.drive ? "budget " + K.BUDGET[n] : bx.kind === "draft" ? "draft" : "cost " + costText(n)}${bx.cells[0] * bx.cells[1] > 1 ? " · " + bx.cells[0] + "×" + bx.cells[1] : ""}</small></span>`;
         b.title = bx.kind === "draft" ? "Draft: drawn, not simulated yet" : "Click, then click the grid";
         b.onclick = () => startPlacing(n);
         d.appendChild(b);
       }
       el.appendChild(d);
     }
+    lidPictures();
+  }
+  // each box's lid from above, its name and flow lines in ink, drawn here from
+  // the box's own meshes, a few at a time so the page opens first
+  const LIDPIC = {};
+  function lidPictures() {
+    const todo = [...document.querySelectorAll(".pal button")].filter(b => BOXES[b.dataset.name]);
+    let r = null, sc = null, cam = null;
+    const step = () => {
+      try {
+        if (!r) {
+          r = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+          sc = new THREE.Scene();
+          sc.add(new THREE.HemisphereLight(0xffffff, 0x8a8072, 0.9));
+          const l = new THREE.DirectionalLight(0xffffff, 0.5); l.position.set(-300, -500, 900); sc.add(l);
+          cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 1, 1000); cam.position.set(0, 0, 400);
+        }
+        for (let k = 0; k < 4 && todo.length; k++) {
+          const b = todo.shift(), n = b.dataset.name;
+          if (!LIDPIC[n]) LIDPIC[n] = lidPicture(n, r, sc, cam);
+          const i = b.querySelector(".lidpic");
+          i.style.backgroundImage = `url(${LIDPIC[n]})`; i.style.backgroundColor = "transparent";
+        }
+      } catch (e) { todo.length = 0; }
+      if (todo.length) setTimeout(step, 0);
+      else if (r) { r.dispose(); r.forceContextLoss(); }
+    };
+    setTimeout(step, 50);
+  }
+  function lidPicture(n, r, sc, cam) {
+    const bx = BOXES[n], it = { uid: "pic_" + n, name: n, x: 0, y: 0, set: K.defaults(n) };
+    buildBox(it);
+    const v = VIEWS.get(it.uid), g = v.group;
+    scene.remove(g); g.position.set(0, 0, 0);
+    v.label.visible = false; v.outline.visible = false; v.markers.forEach(m => m.visible = false); v.lids.forEach(m => m.visible = true);
+    (v.walls || []).forEach(m => m.material = m.userData.mat);
+    sc.add(g);
+    const [hw, hh] = [bx.cells[0] * CELL / 2, bx.cells[1] * CELL / 2], px = 96;
+    cam.left = -hw; cam.right = hw; cam.top = hh; cam.bottom = -hh; cam.updateProjectionMatrix();
+    r.setPixelRatio(1); r.setSize(bx.cells[0] * px, bx.cells[1] * px, false);
+    r.render(sc, cam);
+    const url = r.domElement.toDataURL("image/png");
+    sc.remove(g); dropBox(it.uid);
+    return url;
   }
 
   // ---- placing and dragging --------------------------------------------------------
@@ -1392,6 +1523,9 @@
       () => toast("Link copied: it opens this layout."), () => toast("Copy this page's address: it holds the layout."));
   };
   $("fit").onclick = () => fit();
+  const soundBtn = () => { $("sound").textContent = sound.on() ? "🔊 Sound" : "🔇 Muted"; $("sound").classList.toggle("on", sound.on()); };
+  $("sound").onclick = () => { sound.set(!sound.on()); soundBtn(); };
+  soundBtn();
   let toastT = 0;
   function toast(t) { const el = $("toast"); el.textContent = t; el.style.opacity = 1; clearTimeout(toastT); toastT = setTimeout(() => el.style.opacity = 0, 2600); }
 
@@ -1443,11 +1577,12 @@
   let last = performance.now();
   function frame(t) {
     const dt = Math.min(0.1, (t - last) / 1000); last = t;
+    frameDt = playing ? dt : 0;
     if (playing && advance(dt)) update();
     controls.update();
     renderer.render(scene, camera);
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
-  window.GBS_APP = { items: () => items, load, angle, mode, advance, issues: allIssues, select };
+  window.GBS_APP = { sound, items: () => items, load, angle, mode, advance, issues: allIssues, select };
 })();

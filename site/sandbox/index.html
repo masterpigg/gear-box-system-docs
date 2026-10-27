@@ -41,8 +41,11 @@ aside { border-right: 1px solid var(--line); padding: 8px 10px 20px; }
 #side { border-left: 1px solid var(--line); padding: 10px 12px 24px; }
 aside h3, #side h3 { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 14px 0 6px; }
 .pal { display: flex; flex-direction: column; gap: 4px; }
-.pal button { display: flex; justify-content: space-between; align-items: center; text-align: left; padding: 5px 8px; }
+.pal button { display: flex; gap: 8px; align-items: center; text-align: left; padding: 4px 8px 4px 4px; }
+.pal button > span { display: flex; flex-direction: column; min-width: 0; }
+.pal button b { font-weight: 600; }
 .pal button small { color: var(--muted); font-size: 11px; }
+.pal .lidpic { flex: none; display: block; width: 44px; height: 44px; background: var(--line) center / contain no-repeat; border-radius: 4px; }
 .pal button.draft { opacity: .75; border-style: dashed; }
 .pal button.placing { outline: 2px solid var(--accent); }
 #view { position: relative; min-height: 0; background: var(--canvas); }
@@ -92,56 +95,69 @@ a { color: var(--accent); }
     <button id="lids">Lids off</button>
     <button id="walls" title="See through the walls">Glass</button>
     <button id="names" class="on">Names</button>
+    <button id="sound" title="BEAT, BOOM and ROLL play as their keys drop">🔊 Sound</button>
     <select id="example" title="Load a layout">
       <option value="">Layouts…</option>
-      <option value="demo1">Demo 1: six boxes</option>
-      <option value="demo2">Demo 2: three dials off one crank</option>
-      <option value="demo3">Demo 3: the motor</option>
-      <option value="mistakes">Mistakes to catch</option>
-      <option value="swap">SWAP: a clock steers the line</option>
-      <option value="adder">Adder: W + S</option>
-      <option value="spring">SPRING: wind, let go</option>
-      <option value="clock">Clock: SPRING + TOLL + TICK</option>
-      <option value="face">FACE: SPRING + TEE + TICK, hands</option>
-      <option value="chance">Chance: SPIN, then FORK</option>
-      <option value="keys">Keys: PUSH, FLIP, CLICK</option>
-      <option value="shift">SHIFT: CLUTCH + stick</option>
-      <option value="swapbox">SWAP box: E, N, E, N</option>
-      <option value="tally">TALLY: 00.0 to 99.9</option>
-      <option value="plot">PLOT: one crank, a steady trace</option>
-      <option value="sketch">SKETCH: a clock on paper</option>
-      <option value="sketch3">SKETCH ×3: one MOTOR, square, triangle, sine</option>
-      <option value="threeplots">Three plots: one MOTOR, square, triangle, sine</option>
-      <optgroup label="Kits">
-        <option value="kit_s1">First Turns 1: Count your turns</option>
-        <option value="kit_s2">First Turns 2: Faster and slower</option>
-        <option value="kit_s3">First Turns 3: Backwards</option>
-        <option value="kit_s4">First Turns 4: Up a row</option>
-        <option value="kit_s5">First Turns 5: The whole kit</option>
-        <option value="kit_c1">Tick Tock 1: One way only</option>
-        <option value="kit_c2">Tick Tock 2: Keep it spinning</option>
-        <option value="kit_c3">Tick Tock 3: Wind it up</option>
-        <option value="kit_c4">Tick Tock 4: A clock</option>
-        <option value="kit_c5">Tick Tock 5: A clock with a face</option>
-        <option value="kit_l1">Gear Logic 1: Choose a way</option>
-        <option value="kit_l2">Gear Logic 2: Choose a source</option>
-        <option value="kit_l3">Gear Logic 3: A clock decides</option>
-        <option value="kit_l4">Gear Logic 4: Every other turn</option>
-        <option value="kit_l5">Gear Logic 5: Remember it happened</option>
-        <option value="kit_m1">Gear Calculator 1: Add two motions</option>
-        <option value="kit_m2">Gear Calculator 2: Subtract</option>
-        <option value="kit_m3">Gear Calculator 3: Undo a ratio</option>
-        <option value="kit_m4">Gear Calculator 4: Count big</option>
-        <option value="kit_x1">Motion and Power 1: Change gear</option>
-        <option value="kit_x2">Motion and Power 2: Steps and lifts</option>
-        <option value="kit_x3">Motion and Power 3: Round to straight</option>
-        <option value="kit_x4">Motion and Power 4: Draw with your hand</option>
-        <option value="kit_x5">Motion and Power 5: Lift and hold</option>
-        <option value="kit_p1">Party 1: Spin the wheel</option>
-        <option value="kit_p2">Party 2: Let the line decide</option>
-        <option value="kit_p3">Party 3: Deal a number</option>
-        <option value="kit_p4">Party 4: A drummer</option>
-        <option value="kit_p5">Party 5: The band</option>
+      <optgroup label="Demos">
+        <option value="demo1">Demo 1: six boxes</option>
+        <option value="demo2">Demo 2: three dials off one crank</option>
+        <option value="demo3">Demo 3: the motor</option>
+        <option value="mistakes">Mistakes to catch</option>
+        <option value="swap">SWAP: a clock steers the line</option>
+        <option value="adder">Adder: W + S</option>
+        <option value="spring">SPRING: wind, let go</option>
+        <option value="clock">Clock: SPRING + TOLL + TICK</option>
+        <option value="face">FACE: SPRING + TEE + TICK, hands</option>
+        <option value="chance">Chance: SPIN, then FORK</option>
+        <option value="keys">Keys: PUSH, FLIP, CLICK</option>
+        <option value="shift">SHIFT: CLUTCH + stick</option>
+        <option value="swapbox">SWAP box: E, N, E, N</option>
+        <option value="tally">TALLY: 00.0 to 99.9</option>
+        <option value="plot">PLOT: one crank, a steady trace</option>
+        <option value="sketch">SKETCH: a clock on paper</option>
+        <option value="sketch3">SKETCH ×3: one MOTOR, square, triangle, sine</option>
+        <option value="threeplots">Three plots: one MOTOR, square, triangle, sine</option>
+      </optgroup>
+      <optgroup label="Kit: First Turns">
+        <option value="kit_s1">1. Count your turns</option>
+        <option value="kit_s2">2. Faster and slower</option>
+        <option value="kit_s3">3. Backwards</option>
+        <option value="kit_s4">4. Up a row</option>
+        <option value="kit_s5">5. The whole kit</option>
+      </optgroup>
+      <optgroup label="Kit: Tick Tock">
+        <option value="kit_c1">1. One way only</option>
+        <option value="kit_c2">2. Keep it spinning</option>
+        <option value="kit_c3">3. Wind it up</option>
+        <option value="kit_c4">4. A clock</option>
+        <option value="kit_c5">5. A clock with a face</option>
+      </optgroup>
+      <optgroup label="Kit: Gear Logic">
+        <option value="kit_l1">1. Choose a way</option>
+        <option value="kit_l2">2. Choose a source</option>
+        <option value="kit_l3">3. A clock decides</option>
+        <option value="kit_l4">4. Every other turn</option>
+        <option value="kit_l5">5. Remember it happened</option>
+      </optgroup>
+      <optgroup label="Kit: Gear Calculator">
+        <option value="kit_m1">1. Add two motions</option>
+        <option value="kit_m2">2. Subtract</option>
+        <option value="kit_m3">3. Undo a ratio</option>
+        <option value="kit_m4">4. Count big</option>
+      </optgroup>
+      <optgroup label="Kit: Motion and Power">
+        <option value="kit_x1">1. Change gear</option>
+        <option value="kit_x2">2. Steps and lifts</option>
+        <option value="kit_x3">3. Round to straight</option>
+        <option value="kit_x4">4. Draw with your hand</option>
+        <option value="kit_x5">5. Lift and hold</option>
+      </optgroup>
+      <optgroup label="Kit: Party">
+        <option value="kit_p1">1. Spin the wheel</option>
+        <option value="kit_p2">2. Let the line decide</option>
+        <option value="kit_p3">3. Deal a number</option>
+        <option value="kit_p4">4. A drummer</option>
+        <option value="kit_p5">5. The band</option>
       </optgroup>
       <option value="clear">Clear the grid</option>
     </select>
