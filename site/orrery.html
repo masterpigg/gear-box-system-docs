@@ -1,0 +1,411 @@
+<!doctype html><html><head>
+<meta name="viewport" content="width=device-width, initial-scale=1"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+
+<title>Orrery Box</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column; the live orrery is the hero, diagrams follow the order you'd build it in */
+:root {
+  --bg: #F3F1EC;
+  --panel: #FFFFFF;
+  --fg: #1E2230;
+  --muted: #5D6375;
+  --line: #D6D3CB;
+  --space: #18203A;
+  --space-line: #3A4466;
+  --space-ink: #C9D2EE;
+  --bone: #EDE3D0;
+  --white-gear: #E4DFD2;
+  --gear-stroke: #8C8676;
+  --in: #1F6FD6;
+  --out: #F28C28;
+  --show: #2FA84F;
+  --sun: #F2C230;
+  --warn: #C8372D;
+  --accent: #1F6FD6;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #11141D; --panel: #191D29; --fg: #E7E9F0; --muted: #9AA1B5; --line: #2E3445;
+  --space: #0B0F1E; --space-line: #2E3858; --space-ink: #AEB9DD;
+  --white-gear: #3A3E4A; --gear-stroke: #8E93A3; --accent: #5C9BF0; --warn: #F0675C; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #11141D; --panel: #191D29; --fg: #E7E9F0; --muted: #9AA1B5; --line: #2E3445;
+  --space: #0B0F1E; --space-line: #2E3858; --space-ink: #AEB9DD;
+  --white-gear: #3A3E4A; --gear-stroke: #8E93A3; --accent: #5C9BF0; --warn: #F0675C; color-scheme: dark }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 17px/1.55 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 32px 64px; }
+main { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.1; }
+h1 { font-size: clamp(40px, 7vw, 68px); font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: 30px; font-weight: 800; }
+h3 { font-size: 19px; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+.eyebrow { font: 600 12px/1 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+section { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.lede { font-size: 20px; color: var(--muted); }
+.facts { display: flex; flex-wrap: wrap; gap: 10px 28px; font: 14px/1.4 var(--f-mono); color: var(--muted); }
+.facts b { color: var(--fg); font-weight: 600; }
+.chip { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: 0; margin-right: 6px; }
+
+/* the live orrery */
+.stage { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 24px; align-items: start; }
+@media (max-width: 760px) { .stage { grid-template-columns: 1fr; } }
+.sky { background: var(--space); border-radius: 6px; aspect-ratio: 1; width: 100%; max-width: 100%; position: relative; overflow: hidden; }
+.sky svg { width: 100%; height: 100%; display: block; }
+.controls { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.readout { font: 600 15px/1.5 var(--f-mono); font-variant-numeric: tabular-nums; display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; }
+.readout span:nth-child(odd) { color: var(--muted); font-weight: 400; }
+label { font-size: 14px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+.btns { display: flex; gap: 8px; flex-wrap: wrap; }
+button { font: 600 14px var(--f-body); padding: 9px 14px; border-radius: 4px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+button.wrong[aria-pressed="true"] { background: var(--warn); border-color: var(--warn); color: #fff; }
+.warnbox { border-left: 4px solid var(--warn); padding: 8px 12px; font-size: 14px; background: var(--panel); }
+.note { font-size: 14px; color: var(--muted); }
+
+/* figures */
+figure { margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+figcaption { font-size: 14px; color: var(--muted); max-width: 70ch; }
+.scroll { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px; }
+.scroll svg { display: block; min-width: 640px; width: 100%; height: auto; }
+.renders { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 760px) { .renders { grid-template-columns: 1fr; } }
+.renders img { width: 100%; border-radius: 6px; border: 1px solid var(--line); background: #F7F7F7; }
+
+table { border-collapse: collapse; font-size: 15px; width: 100%; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { font: 600 12px var(--f-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+td.num, th.num { text-align: right; }
+.tablewrap { overflow-x: auto; }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
+@media (max-width: 760px) { .two { grid-template-columns: 1fr; } }
+ul { margin: 0; padding-left: 20px; max-width: 68ch; }
+li + li { margin-top: 6px; }
+code { font: 14px var(--f-mono); }
+svg text { font-family: var(--f-mono); }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+
+<main>
+<nav style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-weight:700"><a href="index.html" style="color:inherit">← All boxes</a><span style="opacity:.6;font-weight:400">Gear Box System</span></nav>
+  <header style="display:flex;flex-direction:column;gap:14px">
+    <div class="eyebrow">Gear Box System · display box · fit-checked</div>
+    <h1>Orrery</h1><div class="mw-slot" data-makerworld="box:orrery"></div>
+    <p class="lede">Eight planets round the sun, each at its own speed, from one standard input port. Mercury whips round and Neptune creeps. It's not to scale in size, distance or time. It only shows how much faster the inner planets go.</p>
+    <div class="facts">
+      <span><b>3 × 3</b> cells, 10 layers deep</span>
+      <span><b>8</b> planets on nested tubes</span>
+      <span><b>1 crank turn</b> = 1 Earth year</span>
+      <span><b>√ speeds</b>: 684:1 shown as 26.6:1</span>
+      <span>cost <b>4</b> stages</span>
+    </div>
+  </header>
+
+  <section aria-labelledby="live">
+    <div class="eyebrow">Try it</div>
+    <h2 id="live">Turn the crank</h2>
+    <div class="stage">
+      <div class="sky"><svg id="sky" viewBox="-100 -100 200 200" role="img" aria-label="Top view of the orrery with planets at their current positions"></svg></div>
+      <div class="controls">
+        <div class="readout" aria-live="polite">
+          <span>crank turns</span><span id="rTurns">0.0</span>
+          <span>Earth years</span><span id="rYears">0.0</span>
+          <span>Mercury laps</span><span id="rMerc">0.0</span>
+          <span>Neptune laps</span><span id="rNep">0.00</span>
+        </div>
+        <label for="turns">Crank position (turns)
+          <input id="turns" type="range" min="0" max="40" step="0.01" value="0">
+        </label>
+        <label for="rate">Cranking speed: <span id="rateTxt">1 turn a second</span>
+          <input id="rate" type="range" min="0.25" max="6" step="0.25" value="1">
+        </label>
+        <div class="btns">
+          <button id="play" aria-pressed="false">Play</button>
+          <button id="back" class="wrong" aria-pressed="false">Crank backwards</button>
+          <button id="reset">Line them up</button>
+        </div>
+        <div id="warn" class="warnbox" hidden><b>Wrong way.</b> Seen from above the north pole, every real planet goes counter-clockwise. Driven backwards, or through one REVERSE box too many, the box runs the other way. Follow the arrows on the deck.</div>
+        <p class="note">The planets start lined up on the east side. The positions come from the real gear ratios in the model. Change the cranking speed and only the pace changes. The pattern stays the same.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="looks">
+    <div class="eyebrow">OpenSCAD renders</div>
+    <h2 id="looks">Assembled, exploded and inside</h2>
+    <div class="renders">
+      <figure><img alt="The assembled orrery box with the sun and eight planets on green arms" src="boxes/orrery/img/orrery_iso.png"><figcaption>Assembled, 300° of input. Arms green, planets in their own colors, deck bone with black orbit lines.</figcaption></figure>
+      <figure><img alt="Exploded view: shell, deck, tube tower, arms, planets and sun" src="boxes/orrery/img/orrery_exploded.png"><figcaption>Exploded. The eight tubes nest round the rod. Arms press onto the tube tops, Neptune's lowest.</figcaption></figure>
+      <figure><img alt="The shell with the lid off, showing the layshaft cone and the tube gears" src="boxes/orrery/img/orrery_inside.png"><figcaption>Lid off. The blue W port drives idler X, and X drives the layshaft. The layshaft's nine gears get smaller going up.</figcaption></figure>
+    </div>
+  </section>
+
+  <section aria-labelledby="train">
+    <div class="eyebrow">Gear train · section through the sun and the layshaft</div>
+    <h2 id="train">One layshaft, eight tubes, every pair adds up to 80</h2>
+    <p>Each layer has one pair: a gear on the layshaft and a gear on a tube. All eight pairs add up to 80 teeth, so all eight sit on the same 40 mm center distance. That's what lets one shaft drive eight speeds. A small gear on a tube means a fast planet. The inner tubes are the thinnest and have room for the smallest gears, so Mercury ends up in the middle.</p>
+    <figure>
+      <div class="scroll"><svg id="elev" viewBox="-104 -112 214 128" role="img" aria-label="Side section of the gear train"></svg></div>
+      <figcaption>To scale, looking north. Layers 1 to 10 are each 4.4 mm. Ports stay on layers 1 and 2. The deck is at 52.4 mm and the planets all fly at 90 mm. Numbers are tooth counts.</figcaption>
+    </figure>
+    <div class="tablewrap"><table id="ratioTable"></table></div>
+  </section>
+
+  <section aria-labelledby="layout">
+    <div class="eyebrow">Plan · 3 × 3 cells, 192 mm</div>
+    <h2 id="layout">Why three by three</h2>
+    <div class="two">
+      <figure>
+        <div class="scroll" style="padding:8px"><svg id="plan" viewBox="-104 -104 208 208" style="min-width:300px" role="img" aria-label="Plan of the box with cells, orbits and gear positions"></svg></div>
+        <figcaption>Dashed: cell lines. Gray circles: the layshaft's 67 and X. The input is W lane B of the middle row.</figcaption>
+      </figure>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <p><b>2 × 2 is too small.</b> The layshaft's 67-tooth gear reaches 75 mm west of the sun, and a 128 mm box only has 61 mm inside.</p>
+        <p><b>4 × 4 can't be printed.</b> It's 256 mm, the full P1S bed with nothing spare for the plinth.</p>
+        <p><b>3 × 3 is the biggest box that prints whole.</b> Neptune's orbit is 89 mm, inside the 94.7 mm half-deck. The corners stay free for the deck notes.</p>
+        <p><b>All eight planets fit.</b> Each planet costs one 4.4 mm layer of box depth and 1.45 mm of tube radius. Eight planets make the box 50 mm deep inside, against 26 for a standard box. Six planets would save 9 mm of depth, which isn't worth losing Uranus and Neptune.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="squash">
+    <div class="eyebrow">Compression</div>
+    <h2 id="squash">Squashing 684 to 1 with a square root</h2>
+    <p>Mercury really goes round 684 times for each Neptune orbit. One gear pair on a fixed center can only reach 67/13 against 13/67, about 26.6 to 1. √684 is 26.2, so the box shows the square root of every real speed. The order stays the same, and each planet keeps its place on a log scale, just squeezed to half.</p>
+    <figure>
+      <div class="scroll"><svg id="chart" viewBox="0 0 720 300" role="img" aria-label="Log-scale comparison of real and box speeds"></svg></div>
+      <figcaption>Speed with Earth = 1, on a log scale. Open circles show the real speeds, filled ones the box. On the box the outer planets come out 3 to 13 times too fast, and the inner ones about half as fast.</figcaption>
+    </figure>
+  </section>
+
+  <section aria-labelledby="dir">
+    <div class="eyebrow">Direction</div>
+    <h2 id="dir">The one wrong way</h2>
+    <div class="two">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <p>Forward input turns the W port clockwise (STANDARD.md). From W to X to the layshaft is two meshes, and from the layshaft to the tubes is a third. Three meshes means the planets turn <b>counter-clockwise</b>, the true way seen from above north.</p>
+        <p>Any drive turned the way its arrow says works, through any chain of forward-keeping boxes. One REVERSE box on the way flips it. Adding a second REVERSE fixes it, which makes a nice lesson in counting meshes.</p>
+      </div>
+      <ul>
+        <li><b>On the deck:</b> three large counter-clockwise arrows, plus notes in the corners: "planets go the arrows' way", "seen from above north", "1 crank turn = 1 Earth year".</li>
+        <li><b>Optional freewheel (later):</b> split idler X and couple its two gears with SPIN's flexure pawls. Backwards just clicks and the planets stand still. I'd pick that over a locking ratchet, because a ratchet would make the crank fight a child's hand and strain every tooth on the way.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="budget">
+    <div class="eyebrow">Torque, colors, parts</div>
+    <h2 id="budget">What it costs and what to print</h2>
+    <div class="two">
+      <ul>
+        <li><b>Cost 4 stages</b>: W to X, X to the layshaft, the layshaft to the tubes, plus one stage for eight light meshes and the tubes rubbing on each other.</li>
+        <li>The layshaft turns at a fifth of the port's speed, so the port feels a fifth of the tower's drag.</li>
+        <li>It's an end box. A crank (budget 20) can be 16 stages of boxes away.</li>
+        <li><b>Colors:</b> standard roles, with one exception that's now decided: the sun and each planet print in their own colors. The arms stay display green. You could also print the deck in clear PETG and watch the gears.</li>
+      </ul>
+      <ul>
+        <li><b>Shell</b> 192 × 192 × 50 mm, <b>deck</b>, keeper, W port, X with cap, layshaft (9 gears in one print)</li>
+        <li><b>8 tubes</b>: gear on the bed. Mercury's is 66 mm tall and 6.9 mm across.</li>
+        <li><b>8 arms</b>: flat, with the peg up (10 to 34 mm tall)</li>
+        <li><b>Planets and sun</b>: Saturn prints in two halves, split at the ring.</li>
+        <li><b>Bought:</b> one 4 mm steel rod, 88 mm long. The rod's length sets the sun's height.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="check">
+    <div class="eyebrow">Status</div>
+    <h2 id="check">Checked so far, and what still needs checking</h2>
+    <div class="two">
+      <ul>
+        <li>Renders in OpenSCAD with no errors.</li>
+        <li>Clash test clean (face contacts only) for the W port, X and the layshaft (checked at two angles), five of the tubes, three of the arms, Jupiter and Saturn with all the planets lined up, and all the fixed parts.</li>
+        <li>X first rubbed the west wall with a 26-tooth gear. It's now 19/16.</li>
+      </ul>
+      <ul>
+                <li>The keeper leg is 44 mm tall: try it, or switch to a short notch.</li>
+        <li>Wobble and drag of the nested tubes at 0.25 mm clearance. Check Mercury's tall tube prints straight.</li>
+        <li>Check that Neptune's 89 mm arm doesn't sag, and that the arm and rod press fits hold.</li>
+      </ul>
+    </div>
+    <p class="note">Fit-checked with the ten-layer override.</p>
+  </section>
+<footer style="border-top:1px solid currentColor;opacity:.85;padding-top:16px;margin-top:24px;font-weight:700"><a href="index.html" style="color:inherit">← Back to all boxes</a> </footer>
+</main>
+
+<script>
+(function () {
+  // the box's numbers, as in lib/orrery.scad
+  const LAY = 16 / 19 * 16 / 67;               // layshaft turns per port turn
+  const P = [
+    { n: "Mercury", T: 0.2408, b: 13, R: 18, d: 4,  c: "#9A9A9A" },
+    { n: "Venus",   T: 0.6152, b: 19, R: 26, d: 6,  c: "#E6C47A" },
+    { n: "Earth",   T: 1.0,    b: 23, R: 34, d: 6,  c: "#3A7BD5" },
+    { n: "Mars",    T: 1.8808, b: 28, R: 42, d: 5,  c: "#C8553D" },
+    { n: "Jupiter", T: 11.862, b: 46, R: 54, d: 12, c: "#D9A066" },
+    { n: "Saturn",  T: 29.457, b: 55, R: 68, d: 9,  c: "#E3CF8E", ring: true },
+    { n: "Uranus",  T: 84.011, b: 63, R: 80, d: 8,  c: "#8FD3E0" },
+    { n: "Neptune", T: 164.79, b: 67, R: 89, d: 8,  c: "#3F5FBF" }];
+  P.forEach(p => { p.a = 80 - p.b; p.perCrank = 2 * LAY * p.a / p.b; });
+  const earth = P[2].perCrank;
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (tag, attrs, parent, text) => { const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; if (parent) parent.appendChild(e); return e; };
+  const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+  // ---- live top view ----
+  const sky = document.getElementById("sky");
+  const ring = el("g", {}, sky);
+  P.forEach(p => el("circle", { cx: 0, cy: 0, r: p.R, fill: "none", stroke: "var(--space-line)", "stroke-width": 0.5 }, ring));
+  // three CCW arrows at r 48 (screen y is down, so CCW on screen = negative angle)
+  for (const a0 of [30, 150, 270]) {
+    const r = 48, a1 = a0 + 40, rad = d => -d * Math.PI / 180;
+    const x0 = r * Math.cos(rad(a0)), y0 = r * Math.sin(rad(a0)), x1 = r * Math.cos(rad(a1)), y1 = r * Math.sin(rad(a1));
+    el("path", { d: `M${x0},${y0} A${r},${r} 0 0 0 ${x1},${y1}`, fill: "none", stroke: "var(--space-ink)", "stroke-width": 1.4, opacity: 0.55 }, ring);
+    const t = rad(a1);
+    el("polygon", { points: `${x1 + 2.2 * Math.cos(t)},${y1 + 2.2 * Math.sin(t)} ${x1 - 2.2 * Math.cos(t)},${y1 - 2.2 * Math.sin(t)} ${x1 + 4 * Math.sin(t)},${y1 - 4 * Math.cos(t)}`, fill: "var(--space-ink)", opacity: 0.55 }, ring);
+  }
+  el("circle", { cx: 0, cy: 0, r: 11, fill: "var(--sun)" }, sky);
+  el("circle", { cx: 0, cy: 0, r: 15, fill: "var(--sun)", opacity: 0.12 }, sky);
+  const arms = P.map((p, i) => {
+    const g = el("g", {}, sky);
+    el("line", { x1: 0, y1: 0, x2: p.R, y2: 0, stroke: "var(--show)", "stroke-width": 1.6, opacity: 0.55 }, g);
+    if (p.ring) el("ellipse", { cx: p.R, cy: 0, rx: p.d / 2 + 3, ry: p.d / 2 + 3, fill: "none", stroke: p.c, "stroke-width": 1.2, opacity: 0.8 }, g);
+    el("circle", { cx: p.R, cy: 0, r: p.d / 2 + 0.4, fill: p.c }, g);
+    const lab = el("text", { x: p.R, y: -p.d / 2 - 2.5, "text-anchor": "middle", "font-size": 4, fill: "var(--space-ink)" }, g, p.n);
+    return { g, lab };
+  });
+  const W = el("text", { x: -97, y: 1.5, "font-size": 4, fill: "var(--space-ink)", opacity: 0.6 }, sky, "W ▸");
+
+  let turns = 0, playing = false, backwards = false, last = 0;
+  const $ = id => document.getElementById(id);
+  const slider = $("turns"), rate = $("rate");
+  function draw() {
+    P.forEach((p, i) => {
+      const ang = 360 * p.perCrank * turns;             // CCW from east
+      arms[i].g.setAttribute("transform", `rotate(${-ang})`);
+      arms[i].lab.setAttribute("transform", `rotate(${ang} ${p.R} ${-p.d / 2 - 2.5 + 1.4})`);
+    });
+    $("rTurns").textContent = turns.toFixed(1);
+    $("rYears").textContent = (turns * earth).toFixed(1);
+    $("rMerc").textContent = (turns * P[0].perCrank).toFixed(1);
+    $("rNep").textContent = (turns * P[7].perCrank).toFixed(2);
+    slider.value = Math.max(0, Math.min(40, turns));
+  }
+  function tick(t) {
+    if (!playing) return;
+    const dt = last ? (t - last) / 1000 : 0; last = t;
+    turns += (backwards ? -1 : 1) * parseFloat(rate.value) * dt;
+    if (turns > 40) turns -= 40; if (turns < 0) turns += 40;
+    draw(); requestAnimationFrame(tick);
+  }
+  $("play").addEventListener("click", e => {
+    playing = !playing; e.currentTarget.setAttribute("aria-pressed", playing); e.currentTarget.textContent = playing ? "Pause" : "Play";
+    last = 0; if (playing) requestAnimationFrame(tick);
+  });
+  $("back").addEventListener("click", e => {
+    backwards = !backwards; e.currentTarget.setAttribute("aria-pressed", backwards); $("warn").hidden = !backwards;
+  });
+  $("reset").addEventListener("click", () => { turns = 0; draw(); });
+  slider.addEventListener("input", () => { turns = parseFloat(slider.value); draw(); });
+  rate.addEventListener("input", () => { const v = parseFloat(rate.value); $("rateTxt").textContent = v === 1 ? "1 turn a second" : `${v} turns a second`; });
+  draw();
+
+  // ---- elevation: x right = east, z up (svg y = -z) ----
+  const ev = document.getElementById("elev");
+  const lz = l => 6 + (l - 1) * 4.4, Z = z => -z;
+  const deck = 52.4, plane = 90;
+  // shell outline
+  el("path", { d: `M-96,${Z(0)} L96,${Z(0)} L96,${Z(5)} L94.7,${Z(5)} L94.7,${Z(50)} L-94.7,${Z(50)} L-94.7,${Z(5)} L-96,${Z(5)} Z`, fill: "none", stroke: "var(--gear-stroke)", "stroke-width": 0.5 }, ev);
+  el("rect", { x: -94.7, y: Z(deck), width: 189.4, height: 2.4, fill: "var(--bone)", stroke: "var(--gear-stroke)", "stroke-width": 0.3 }, ev);
+  el("rect", { x: -94.7, y: Z(2), width: 189.4, height: 2, fill: "var(--bone)", opacity: 0.6 }, ev);
+  for (let l = 1; l <= 10; l++) el("text", { x: 99, y: Z(lz(l) + 1.2), "font-size": 3, fill: "var(--muted)" }, ev, "L" + l);
+  const gearBar = (cx, t, l, fill, label, layers = 1) => {
+    const z = lz(l), h = 4 + (layers - 1) * 4.4;
+    el("rect", { x: cx - t / 2, y: Z(z + h), width: t, height: h, fill, stroke: "var(--gear-stroke)", "stroke-width": 0.25 }, ev);
+    if (label) el("text", { x: cx, y: Z(z + h / 2) + 1.1, "text-anchor": "middle", "font-size": 3, fill: "var(--fg)" }, ev, label);
+  };
+  // W port and X (X is 14.9 mm north of the section; drawn at its x)
+  gearBar(-88, 16, 1, "var(--in)", "W 16");
+  gearBar(-78.75, 19, 1, "var(--white-gear)", "19");
+  gearBar(-78.75, 16, 2, "var(--white-gear)", "16");
+  el("text", { x: -78.75, y: Z(lz(3) + 1), "text-anchor": "middle", "font-size": 3, fill: "var(--muted)" }, ev, "X");
+  // layshaft at x -40
+  el("rect", { x: -42, y: Z(50), width: 4, height: 48, fill: "none", stroke: "var(--gear-stroke)", "stroke-width": 0.3, "stroke-dasharray": "1 1" }, ev);
+  gearBar(-40, 67, 2, "var(--white-gear)", "67", 2);
+  P.slice(1).forEach((p, i) => gearBar(-40, p.a, i + 4, "var(--white-gear)", String(p.a)));
+  el("text", { x: -40, y: Z(lz(10) + 7), "text-anchor": "middle", "font-size": 3.2, fill: "var(--muted)" }, ev, "layshaft S");
+  // rod, boss, tubes and their gears
+  el("rect", { x: -4.5, y: Z(14.4), width: 9, height: 12.4, fill: "var(--bone)", stroke: "var(--gear-stroke)", "stroke-width": 0.25 }, ev);
+  el("rect", { x: -2, y: Z(88.6), width: 4, height: 88, fill: "#9AA0A6" }, ev);
+  const tid = k => 2.25 + (k - 1) * 1.45, tod = k => tid(k) + 1.2;
+  const az = k => deck + 1.2 + (8 - k) * 3.4;
+  P.forEach((p, i) => {
+    const k = i + 1, top = az(k) + 3, bot = lz(k + 2) - 0.4;
+    for (const s of [-1, 1]) el("rect", { x: s > 0 ? tid(k) : -tod(k), y: Z(top), width: 1.2, height: top - bot, fill: "var(--white-gear)", stroke: "var(--gear-stroke)", "stroke-width": 0.15 }, ev);
+    gearBar(0, p.b, k + 2, "var(--white-gear)", null);
+    el("text", { x: p.b / 2 + 2, y: Z(lz(k + 2) + 2) + 1, "font-size": 3, fill: "var(--fg)" }, ev, `${p.b} ${p.n}`);
+    // arm east, peg, planet
+    el("rect", { x: tod(k), y: Z(az(k) + 3), width: 2.4, height: 3, fill: "var(--show)" }, ev);
+    el("rect", { x: tod(k) + 2.4, y: Z(az(k) + 2.4), width: p.R - tod(k) - 2.4, height: 2.4, fill: "var(--show)", opacity: 0.85 }, ev);
+    el("rect", { x: p.R - 1.75, y: Z(plane), width: 3.5, height: plane - az(k) - 2.4, fill: "var(--show)" }, ev);
+    el("circle", { cx: p.R, cy: Z(plane), r: p.d / 2, fill: p.c }, ev);
+  });
+  el("circle", { cx: 0, cy: Z(90), r: 11, fill: "var(--sun)" }, ev);
+  el("text", { x: -94, y: Z(deck + 3), "font-size": 3.2, fill: "var(--muted)" }, ev, "deck 52.4");
+  el("text", { x: -94, y: Z(plane + 0.8), "font-size": 3.2, fill: "var(--muted)" }, ev, "planets 90");
+  el("line", { x1: -94, y1: Z(plane), x2: 100, y2: Z(plane), stroke: "var(--line)", "stroke-width": 0.3, "stroke-dasharray": "2 2" }, ev);
+
+  // ---- ratio table ----
+  const tb = document.getElementById("ratioTable");
+  tb.innerHTML = `<thead><tr><th>Planet</th><th class="num">Layer</th><th class="num">Layshaft</th><th class="num">Tube</th><th class="num">Orbit mm</th><th class="num">Turns per crank turn</th><th class="num">Crank turns per orbit</th><th class="num">Real years</th></tr></thead><tbody>` +
+    P.map((p, i) => `<tr><td><span class="chip" style="background:${p.c}"></span>${p.n}</td><td class="num">${i + 3}</td><td class="num">${p.a}</td><td class="num">${p.b}</td><td class="num">${p.R}</td><td class="num">${p.perCrank.toFixed(3)}</td><td class="num">${(1 / p.perCrank).toFixed(2)}</td><td class="num">${p.T}</td></tr>`).join("") + "</tbody>";
+
+  // ---- plan ----
+  const pl = document.getElementById("plan");
+  el("rect", { x: -96, y: -96, width: 192, height: 192, fill: "var(--bone)", stroke: "var(--gear-stroke)", "stroke-width": 0.6 }, pl);
+  for (const c of [-32, 32]) {
+    el("line", { x1: c, y1: -96, x2: c, y2: 96, stroke: "var(--gear-stroke)", "stroke-width": 0.4, "stroke-dasharray": "2 2" }, pl);
+    el("line", { x1: -96, y1: c, x2: 96, y2: c, stroke: "var(--gear-stroke)", "stroke-width": 0.4, "stroke-dasharray": "2 2" }, pl);
+  }
+  P.forEach(p => el("circle", { cx: 0, cy: 0, r: p.R, fill: "none", stroke: "#1B1B1B", "stroke-width": 0.5 }, pl));
+  el("circle", { cx: -40, cy: 0, r: 34.5, fill: "#8C8676", opacity: 0.18, stroke: "#8C8676", "stroke-width": 0.4 }, pl);
+  el("circle", { cx: -40, cy: 0, r: 4, fill: "#8C8676" }, pl);
+  el("circle", { cx: -78.75, cy: -14.86, r: 10.5, fill: "#8C8676", opacity: 0.3, stroke: "#8C8676", "stroke-width": 0.4 }, pl);
+  el("circle", { cx: -88, cy: 0, r: 9, fill: "#1F6FD6" }, pl);
+  el("circle", { cx: 0, cy: 0, r: 11, fill: "#F2C230" }, pl);
+  const t = (x, y, s, sz = 5, fill = "#1B1B1B", anchor = "middle") => el("text", { x, y, "font-size": sz, fill, "text-anchor": anchor }, pl, s);
+  t(-40, -38, "layshaft 67", 4.4); t(-78.75, -28, "X", 4.4); t(-88, 13, "W", 4.4, "#1F6FD6");
+  t(0, 101, "Neptune 89 mm", 4); t(60, 88, "ORRERY", 6);
+
+  // ---- log chart ----
+  const ch = document.getElementById("chart");
+  const x0 = 120, x1 = 690, lo = Math.log10(0.004), hi = Math.log10(6);
+  const X = v => x0 + (Math.log10(v) - lo) / (hi - lo) * (x1 - x0);
+  [0.01, 0.1, 1].forEach(v => {
+    el("line", { x1: X(v), y1: 20, x2: X(v), y2: 270, stroke: "var(--line)", "stroke-width": 1 }, ch);
+    el("text", { x: X(v), y: 290, "text-anchor": "middle", "font-size": 12, fill: "var(--muted)" }, ch, String(v));
+  });
+  [0.005, 0.05, 0.5, 5].forEach(v => el("line", { x1: X(v), y1: 20, x2: X(v), y2: 270, stroke: "var(--line)", "stroke-width": 0.5, "stroke-dasharray": "3 3" }, ch));
+  P.forEach((p, i) => {
+    const y = 34 + i * 30, real = 1 / p.T, box = p.perCrank / earth;
+    el("text", { x: x0 - 12, y: y + 4, "text-anchor": "end", "font-size": 13, fill: "var(--fg)" }, ch, p.n);
+    el("line", { x1: X(Math.min(real, box)), y1: y, x2: X(Math.max(real, box)), y2: y, stroke: "var(--muted)", "stroke-width": 1.5 }, ch);
+    el("circle", { cx: X(real), cy: y, r: 6, fill: "var(--bg)", stroke: p.c, "stroke-width": 2.2 }, ch);
+    el("circle", { cx: X(box), cy: y, r: 6, fill: p.c }, ch);
+  });
+  el("text", { x: x1, y: 14, "text-anchor": "end", "font-size": 12, fill: "var(--muted)" }, ch, "○ real   ● box (√)");
+})();
+</script>
+
+
+<script src="makerworld.js"></script>
+<script src="mw.js"></script>
+</body></html>

@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Counter Box</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>/* Layout: one reading column with wide figure bands, as on the SPIN page; the six role colors carry the meaning, as on the boxes */
+:root {
+  --bg: #F6F1E6; --panel: #EDE3D0; --fg: #23211D; --muted: #6B655A; --line: #CFC3AC;
+  --red: #D63A2F; --blue: #1F6FD6; --orange: #E07A16; --green: #2A9A48; --white: #FFFDF8; --bone: #E4D8BF;
+  --card: #FBF8F1; --shot: #F8F8F6;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #DCD6C8; --bone: #8E846F;
+  --card: #212428; --shot: #E9E9E6; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #DCD6C8; --bone: #8E846F;
+  --card: #212428; --shot: #E9E9E6; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 17px/1.6 var(--f-body); }
+a { color: var(--blue); }
+a:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; border-radius: 4px; }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 64px; display: grid; gap: 44px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.6rem; font-weight: 700; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; max-width: 66ch; }
+section { display: grid; gap: 14px; min-width: 0; }
+.eyebrow { font: 600 0.75rem/1.4 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.lede { font-size: 1.15rem; max-width: 60ch; }
+.readout { font: 600 0.85rem/1.5 var(--f-mono); color: var(--muted); }
+nav.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+nav.top a, .foot a { font: 700 1rem var(--f-display); text-decoration: none; }
+.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+.hero > div { display: grid; gap: 14px; min-width: 0; }
+.hero img, figure img { border-radius: 10px; background: var(--shot); width: 100%; min-width: 0; display: block; }
+@media (max-width: 760px) { .hero { grid-template-columns: 1fr; } }
+.sym { display: inline-grid; place-items: center; min-width: 1.3em; height: 1.3em; padding: 0 0.25em; border-radius: 999px; background: var(--fg); color: var(--bg); font-family: var(--f-display); font-size: 0.6em; vertical-align: 0.25em; }
+.sym.small { font-size: 0.75em; vertical-align: 0.1em; }
+.chip { font: 600 0.7rem/1 var(--f-mono); letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 8px; border-radius: 999px; white-space: nowrap; }
+.chip.checked { background: color-mix(in srgb, var(--green) 20%, transparent); color: var(--fg); border: 1px solid var(--green); }
+.chip.draft { background: transparent; color: var(--fg); border: 1px dashed var(--orange); }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+figure { margin: 0; display: grid; gap: 8px; min-width: 0; align-content: start; }
+figcaption { font-size: 0.9rem; color: var(--muted); }
+.panel { background: var(--panel); border-radius: 10px; padding: 16px; }
+.diagram { display: grid; gap: 10px; justify-items: center; }
+.diagram svg { max-width: 340px; }
+svg { display: block; width: 100%; height: auto; }
+svg text { font-family: var(--f-mono); fill: var(--fg); }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+td.num { font-variant-numeric: tabular-nums; font-family: var(--f-mono); }
+.scroll { overflow-x: auto; min-width: 0; }
+code, .mono { font-family: var(--f-mono); font-size: 0.86em; }
+.train { line-height: 1.7; color: var(--fg); padding-top: 12px; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; align-items: start; }
+.cols > div { min-width: 0; }
+ul.plain, ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 66ch; }
+ol.steps li::marker { font-family: var(--f-mono); font-weight: 600; color: var(--muted); }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 0; }
+.dot.in { background: var(--blue); } .dot.out { background: var(--orange); }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 8px; border: 1px solid var(--line); vertical-align: -1px; }
+.fn { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font: 600 1rem var(--f-mono); }
+.fn .fin { color: var(--blue); } .fn .fout { color: var(--orange); }
+.fn .fbox { padding: 8px 14px; border: 2px solid var(--fg); border-radius: 8px; font-family: var(--f-display); font-size: 1.1rem; }
+.fn .arrow { color: var(--muted); }
+.meter { display: flex; gap: 4px; flex-wrap: wrap; max-width: 520px; }
+.meter i { flex: 1 0 14px; max-width: 22px; height: 18px; border-radius: 3px; background: var(--panel); border: 1px solid var(--line); }
+.meter i.on { background: var(--fg); border-color: var(--fg); }
+.meter i.b { background: var(--red); border-color: var(--red); }
+.foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-top: 1px solid var(--line); padding-top: 18px; }
+/* master page */
+.mhero { display: grid; gap: 16px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font: 600 0.85rem var(--f-mono); color: var(--muted); }
+.links { color: var(--muted); }
+.ghead { display: grid; gap: 4px; }
+.ghead p { color: var(--muted); }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+.card { display: grid; grid-template-rows: auto 1fr; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; color: var(--fg); text-decoration: none; transition: transform 0.15s, border-color 0.15s; min-width: 0; }
+a.card:hover { transform: translateY(-2px); border-color: var(--fg); }
+a.card:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: var(--shot); display: block; }
+.card .noimg { aspect-ratio: 4 / 3; display: grid; place-items: center; font-size: 3rem; color: var(--muted); background: var(--panel); }
+.card.soon { opacity: 0.75; }
+.cbody { padding: 14px 16px 16px; display: grid; gap: 8px; align-content: start; }
+.ctop { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.cbody p { font-size: 0.95rem; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.figs figure.wide { grid-column: 1 / -1; max-width: 760px; justify-self: center; width: 100%; }
+.fchip { display: inline-block; width: 0.8em; height: 0.8em; border-radius: 3px; margin-right: 0.4em; vertical-align: 0.02em; box-shadow: 0 0 0 1px var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="top"><a href="index.html">← All boxes</a><span class="readout">Gear Box System</span></nav>
+<header class="hero">
+  <div>
+    <span class="eyebrow">Readouts · <span class="chip checked">fit-checked</span></span>
+    <h1>TURNS <span class="sym">#</span></h1><div class="mw-slot" data-makerworld="box:counter"></div>
+    <p class="lede">An odometer for the line. A tenths wheel turns with the input, and once per turn an odometer carry kicks the turns wheel on by one. Two windows in the lid show the count, 0.0 to 9.9.</p>
+    <p class="readout">1 cell · in: W · out: none (end box) · cost 4</p>
+  </div>
+  <figure><img src="boxes/counter/img/counter_iso.png" alt="The TURNS box, assembled"><figcaption>Assembled: the lid and band in the family color, ports and gears in the role colors.</figcaption></figure>
+</header>
+
+<section>
+  <h2>Exploded view</h2>
+  <div class="figs">
+    <figure class="wide"><img src="boxes/counter/img/counter_exploded.png" alt="Exploded"><figcaption>Exploded: lid and top parts lifted off to show the gear train.</figcaption></figure>
+    <figure><img src="boxes/counter/img/counter_top.png" alt="The lid from above, reading the two windows"><figcaption>The lid from above, reading the two windows</figcaption></figure>
+  </div>
+</section>
+
+<section>
+  <h2>What it does</h2>
+  <div class="fn"><span class="fin">W</span><span class="arrow">→</span><span class="fbox">0.0 to 9.9 turns</span><span class="arrow">→</span><span class="fout">none (end box)</span></div>
+  <p>Counts turns of the line to a tenth, 0.0 to 9.9, on two digit wheels under windows.</p>
+</section>
+
+<section>
+  <h2>Ports and lanes</h2>
+  <div class="cols">
+    <div class="panel diagram"><svg viewBox="0 0 108 108" role="img" aria-label="Ports of the TURNS box seen from above">
+<rect x="22" y="22" width="64" height="64" rx="2" fill="var(--panel)" stroke="var(--fg)" stroke-width="0.8"/>
+<line x1="18.0" y1="70.0" x2="22.0" y2="70.0" stroke="var(--muted)" stroke-width="0.6"/>
+<line x1="86.0" y1="70.0" x2="90.0" y2="70.0" stroke="var(--muted)" stroke-width="0.6"/>
+<line x1="18.0" y1="54.0" x2="22.0" y2="54.0" stroke="var(--muted)" stroke-width="0.6"/>
+<line x1="86.0" y1="54.0" x2="90.0" y2="54.0" stroke="var(--muted)" stroke-width="0.6"/>
+<line x1="18.0" y1="38.0" x2="22.0" y2="38.0" stroke="var(--muted)" stroke-width="0.6"/>
+<line x1="86.0" y1="38.0" x2="90.0" y2="38.0" stroke="var(--muted)" stroke-width="0.6"/>
+<line x1="38.0" y1="90.0" x2="38.0" y2="86.0" stroke="var(--muted)" stroke-width="0.6"/>
+<line x1="38.0" y1="22.0" x2="38.0" y2="18.0" stroke="var(--muted)" stroke-width="0.6"/>
+<line x1="54.0" y1="90.0" x2="54.0" y2="86.0" stroke="var(--muted)" stroke-width="0.6"/>
+<line x1="54.0" y1="22.0" x2="54.0" y2="18.0" stroke="var(--muted)" stroke-width="0.6"/>
+<line x1="70.0" y1="90.0" x2="70.0" y2="86.0" stroke="var(--muted)" stroke-width="0.6"/>
+<line x1="70.0" y1="22.0" x2="70.0" y2="18.0" stroke="var(--muted)" stroke-width="0.6"/>
+<text x="9.0" y="57.0" text-anchor="middle" font-size="9" font-weight="600">W</text>
+<text x="99.0" y="57.0" text-anchor="middle" font-size="9" font-weight="600">E</text>
+<text x="54.0" y="102.0" text-anchor="middle" font-size="9" font-weight="600">S</text>
+<text x="54.0" y="12.0" text-anchor="middle" font-size="9" font-weight="600">N</text>
+<circle cx="30.0" cy="54.0" r="8.0" fill="color-mix(in srgb, var(--blue) 22%, transparent)" stroke="var(--blue)" stroke-width="1.6" stroke-dasharray="none"/>
+<text x="30.0" y="55.0" text-anchor="middle" font-size="6" font-weight="600">W</text>
+<text x="30.0" y="61.0" text-anchor="middle" font-size="4" fill="var(--muted)">16T · L1</text>
+</svg>
+      <p class="readout">Seen from above, North up. Blue in, orange out. Solid ring: layer 1 (E/W). Dashed: layer 2 (N/S). Ticks mark lanes A, B, C.</p></div>
+    <div><div class="scroll"><table><thead><tr><th>Port</th><th>Side</th><th>Lane</th><th>Teeth</th><th>Layer</th><th>Role</th></tr></thead><tbody><tr><td><span class="dot in"></span>W</td><td>West</td><td>B</td><td class="num">16</td><td class="num">1</td><td>input</td></tr></tbody></table></div>
+    <p class="mono train">W (16) → J (32) → U (16, tenths wheel; locking ring and carry tooth on layer 2) → carry pinion P (10, short and long teeth) → T (20 on layer 3, turns wheel). The lid reads TURNS.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Torque cost</h2>
+  <div class="meter" aria-label="Cost 4 of the crank's 20 stages"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></div><p class="readout">4 of the crank's 20 stages · 4 of the motor's 15</p>
+  <p><strong>4 stages.</strong> The carry needs a push each time the tenths wheel passes 9 to 0, so keep the counter within reach of a drive.</p>
+</section>
+
+<section>
+  <h2>How it works</h2>
+  <p>One turn of the line (16 teeth of travel) is one turn of the tenths wheel U, which shows 0 to 9 under its window.</p><p>U carries a locking ring with one notch and one carry tooth. Between carries the ring holds the pinion P still.</p><p>As U goes from 9 to 0, its carry tooth kicks P round 72°. P's full teeth on the next layer move the turns wheel T one digit.</p><p>The carry is the avionics pocket tools' tread-counter carry, laid flat (<code>gbs_odo2d()</code>); <code>tools/sim_carry.py</code> computes its path.</p>
+  
+</section>
+
+<section>
+  <h2>Why it is built this way</h2>
+  <ul class="plain"><li><strong>Flat digit wheels under windows.</strong> The digits are inlaid on the wheels' top faces and come upright as they reach the window, so the counter reads from above like every other display.</li><li><strong>The wheels hold P down.</strong> P is a tall stack that reaches up to just under the wheels, so it needs no keeper of its own.</li></ul>
+</section>
+
+<section>
+  <h2>Parts and colors</h2>
+  <div class="scroll"><table><thead><tr><th>Part</th><th>Role</th><th>Color</th></tr></thead><tbody><tr><td>shell, lid with two windows, keeper_W</td><td><span class="sw" style="background:var(--bone)"></span>structure</td><td>bone</td></tr><tr><td>port gear W</td><td><span class="sw" style="background:var(--blue)"></span>input</td><td>blue</td></tr><tr><td>stacks J, U, P, T</td><td><span class="sw" style="background:var(--white)"></span>transmission</td><td>white</td></tr><tr><td>two digit wheels and the window lips</td><td><span class="sw" style="background:var(--green)"></span>display</td><td>green</td></tr></tbody></table></div>
+</section>
+
+<section>
+  <h2>How to assemble it</h2>
+  <ol class="steps"><li>Wipe a PTFE dry film on every pin. The pin is the bigger loss in a stage, and the lube roughly halves it.</li><li>Build it in this order: port W, then J, U, P (its long teeth either side of U's ring), then T, then the digit wheels (before the lid), then the keeper and lid.</li><li>Put a keeper on each side that has ports: its legs go in the notches and its flange in the recess on the wall top.</li><li>Put the lid on. Its corner holes take the pins on the corner blocks.</li></ol>
+  <p class="readout">To join it to a neighbor, lower it onto the neighbor's tongues from above.</p>
+</section>
+
+<section>
+  <h2>What it teaches</h2>
+  <ul class="plain"><li>Place value and carrying, done by a mechanism.</li><li>Intermittent motion again, this time as a carry.</li><li>Where it's used: car odometers, tally counters, gas meters.</li></ul>
+</section>
+
+<footer class="foot"><a href="index.html">← Back to all boxes</a></footer>
+</div>
+<script src="makerworld.js"></script>
+<script src="mw.js"></script>
+</body>
+</html>

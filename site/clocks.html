@@ -1,0 +1,337 @@
+<!doctype html><html><head>
+<meta name="viewport" content="width=device-width, initial-scale=1"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Gear Clock Boxes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:wght@600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: one reading column; the simulator is the hero band, a scope trace over the cam that makes it */
+:root {
+  --bg: #F6F1E6; --panel: #EDE3D0; --fg: #23211D; --muted: #6B655A; --line: #CFC3AC;
+  --red: #D63A2F; --blue: #1F6FD6; --orange: #E07A16; --green: #2A9A48; --white: #FFFDF8; --bone: #E8DCC2;
+  --ink: #1B1B1B; --shot: #FFFDE7;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #2C3035; --bone: #4A4438; --ink: #ECE6DA; --shot: #F3EFE0; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #2C3035; --bone: #4A4438; --ink: #ECE6DA; --shot: #F3EFE0; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 17px/1.6 var(--f-body); }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 64px; display: grid; gap: 48px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.4rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.7rem; font-weight: 700; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; max-width: 66ch; }
+a { color: var(--blue); }
+section { display: grid; gap: 16px; min-width: 0; }
+.eyebrow { font: 600 0.75rem/1 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 1.2rem; max-width: 60ch; }
+.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+.hero > div { display: grid; gap: 16px; min-width: 0; }
+@media (max-width: 760px) { .hero { grid-template-columns: 1fr; } }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+figure { margin: 0; display: grid; gap: 8px; min-width: 0; align-content: start; }
+figure img { width: 100%; border-radius: 10px; background: var(--shot); }
+figcaption { font-size: 0.9rem; color: var(--muted); }
+.panel { background: var(--panel); border-radius: 10px; padding: 16px; min-width: 0; }
+svg { display: block; width: 100%; height: auto; }
+svg text { font-family: var(--f-mono); fill: var(--fg); }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.scroll { overflow-x: auto; }
+code, .mono { font-family: var(--f-mono); font-size: 0.88em; }
+.sim { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 760px) { .sim { grid-template-columns: 1fr; } }
+.controls { display: grid; gap: 14px; min-width: 0; }
+label { font-weight: 700; display: flex; justify-content: space-between; gap: 8px; }
+input[type=range] { width: 100%; accent-color: var(--blue); }
+select { font: 600 1rem var(--f-body); padding: 6px 8px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); width: 100%; }
+button { font: 700 1rem var(--f-display); padding: 10px 18px; border-radius: 999px; border: 2px solid var(--red); background: var(--red); color: #fff; cursor: pointer; }
+button.ghost { background: transparent; color: var(--red); }
+button[aria-pressed="true"] { background: var(--blue); border-color: var(--blue); color: #fff; }
+button.seg { border-color: var(--blue); background: transparent; color: var(--blue); padding: 8px 14px; }
+button.seg[aria-pressed="true"] { background: var(--blue); color: #fff; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.readout { font: 600 0.95rem var(--f-mono); color: var(--muted); }
+.result { font: 700 2.6rem/1 var(--f-display); color: var(--orange); }
+ul.plain { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 66ch; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+.cols > div { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.chip { display: inline-block; font: 700 0.75rem/1 var(--f-mono); letter-spacing: 0.06em; padding: 5px 8px; border-radius: 999px; background: var(--bone); color: var(--fg); }
+.chip.ok { background: color-mix(in srgb, var(--green) 25%, transparent); }
+.chip.spec { background: color-mix(in srgb, var(--orange) 25%, transparent); }
+pre { margin: 0; font: 0.85rem/1.5 var(--f-mono); overflow-x: auto; background: var(--panel); padding: 14px; border-radius: 10px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+[hidden] { display: none !important; }
+
+.scope { display: grid; gap: 16px; min-width: 0; }
+.twin { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 560px) { .twin { grid-template-columns: 1fr; } }
+.big { font: 700 2.4rem/1 var(--f-display); color: var(--green); font-variant-numeric: tabular-nums; }
+.stat { display: grid; gap: 4px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 16px; }
+.check { font-weight: 400; justify-content: flex-start; align-items: center; gap: 8px; }
+</style>
+<div class="wrap">
+<p class="readout"><a href="index.html">← All gear boxes</a> · family: clocks · what they drive: <a href="switches.html">ROUTE, PICK, STEER, SWAP</a></p>
+
+<header class="hero">
+  <div>
+    <span class="eyebrow">Gear Box System · clock family · fit-checked</span>
+    <h1>SQUARE · RAMP</h1><div class="mw-slot" data-makerworld="box:ramp,box:square"></div>
+    <p class="lede">Clocks made of gears. The line turns steadily and the N port steps between low and high, once a cycle. Clip two cam plates together at a new angle and you change the duty; swap in a heart cam and you get a triangle or a sawtooth.</p>
+    <p class="readout">1 cell · W in (16) · N out, a level 5.86 mm high · 1 cycle per crank turn · cost about 4</p>
+  </div>
+  <figure><img src="boxes/square/img/square_exploded.png" alt="SQUARE exploded: cam stack, two plates, slider with rack, P and N"><figcaption>SQUARE exploded: the cam stack and its two plates, the slider with its rack and finger, P and the N port.</figcaption></figure>
+</header>
+
+<section>
+  <span class="eyebrow">Try it</span>
+  <h2>Set the duty, set the ramp</h2>
+  <p>Pick a box and its plates. The trace shows the level on N over two cycles: the bottom plate dashed, the top plate dotted, and the bold line is what the finger follows, whichever plate stands out further.</p>
+  <div class="sim panel">
+    <div class="controls">
+      <div class="row" role="group" aria-label="Box">
+        <button class="seg" id="bSq" type="button" aria-pressed="true">SQUARE</button>
+        <button class="seg" id="bRp" type="button" aria-pressed="false">RAMP</button>
+      </div>
+      <div id="sqBox" class="controls">
+        <label for="pair">Plate pair</label>
+        <select id="pair"><option value="140">Short pair (H 140°)</option><option value="230">Long pair (H 230°)</option></select>
+        <label for="phase">Top plate turned <span class="readout" id="phOut">60° (2 clicks)</span></label>
+        <input id="phase" type="range" min="0" max="3" step="1" value="2">
+        <label class="check" for="inv"><input id="inv" type="checkbox"> Invert (read low as high)</label>
+      </div>
+      <div id="rpBox" class="controls" hidden>
+        <label for="frac">Plate</label>
+        <select id="frac"><option value="0.5">R50: triangle (f 0.5)</option><option value="0.75">R75: slow up, quick down</option><option value="0.9">R90: nearly a sawtooth</option><option value="1">R100: sawtooth</option></select>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="eyebrow" id="k1">Duty</span><span class="big" id="v1">50 %</span></div>
+        <div class="stat"><span class="eyebrow" id="k2">High for</span><span class="big" id="v2">1.0</span><span class="readout" id="u2">port turns</span></div>
+      </div>
+      <div class="row"><button id="play" type="button">Crank</button><button id="step" class="ghost" type="button">+ 30°</button></div>
+    </div>
+    <div class="scope">
+      <svg id="plot" viewBox="0 0 560 230" role="img" aria-label="The level on N over two cycles"></svg>
+      <div class="twin">
+        <svg id="cam" viewBox="0 0 220 220" role="img" aria-label="Top view of the cam plates and the finger"></svg>
+        <svg id="steer" viewBox="0 0 220 220" role="img" aria-label="Which STEER output is live"></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">How it works</span>
+  <h2>A finger on two cams</h2>
+  <ul class="plain">
+    <li>W turns the cam stack C at half speed (32 teeth), so one cycle is two port turns, one crank turn.</li>
+    <li>Two cam plates sit on C's 12-tooth spline, one above the other. A round finger hanging from a slider rides their west edge and follows whichever stands out further: the box reads the <b>union</b> of the two plates.</li>
+    <li>The slider runs east–west on two posts. Its rack turns P (12), and P turns the N port. A green tab shows the level through the lid, between the 0 and 1 marks. A rubber band pulls the slider back onto the cams.</li>
+    <li>The stroke, 5.86 mm of pitch line, is exactly what STEER's select line needs. Put SQUARE south of a STEER and it steers it: high to E, low to N.</li>
+  </ul>
+  <div class="figs">
+    <figure><img src="boxes/square/img/square_iso.png" alt="SQUARE assembled"><figcaption>SQUARE assembled: the green level tab between 0 and 1.</figcaption></figure>
+    <figure><img src="boxes/ramp/img/ramp_iso.png" alt="RAMP assembled"><figcaption>RAMP: the same frame with heart-cam plates.</figcaption></figure>
+    <figure><img src="boxes/ramp/img/ramp_exploded.png" alt="RAMP exploded"><figcaption>RAMP exploded, R75 plates.</figcaption></figure>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Duty</span>
+  <h2>Two plates, one dwell</h2>
+  <p>A SQUARE plate is a 40° ramp, a high dwell of H degrees, and a cliff. Turn the top plate k clicks of the spline (30° each) and its cliff comes 30·k degrees later, so the union stays high longer. The bottom plate gives the rising edge, the top plate the falling one.</p>
+  <p class="mono">duty = (phase + H − 20°) / 360°</p>
+  <div class="scroll"><table>
+    <thead><tr><th>Pair</th><th class="num">0°</th><th class="num">30°</th><th class="num">60°</th><th class="num">90°</th><th class="num">120°</th></tr></thead>
+    <tbody>
+      <tr><td>Short, H 140°</td><td class="num">33 %</td><td class="num">42 %</td><td class="num"><b>50 %</b></td><td class="num">58 %</td><td class="num">–</td></tr>
+      <tr><td>Long, H 230°</td><td class="num">58 %</td><td class="num">67 %</td><td class="num">75 %</td><td class="num">83 %</td><td class="num">92 %</td></tr>
+      <tr><td>Either, inverted</td><td colspan="5">100 % minus the above: 8 % to 67 %</td></tr>
+    </tbody>
+  </table></div>
+  <p>Why two pairs? The union can be no shorter than one plate's dwell and no longer than a cycle minus one ramp, so a single split cam can't cover 0 to 100 %. Two pairs plus inverting cover 8 to 92 % in twelfths.</p>
+</section>
+
+<section>
+  <span class="eyebrow">Edges</span>
+  <h2>Making an edge out of plastic</h2>
+  <p>A clock is "edge-triggered" when what matters is the moment it changes. Gears turn smoothly, so a gear clock has to <b>make</b> its edges.</p>
+  <div class="cols">
+    <div><h3>Rising edge: the ramp</h3><p>The cam pushes the finger up 5.86 mm over 40° of cam, 80° of port turn. It is slewed, not instant, at a pressure angle of about 35 to 46°, as steep as a printed cam should go.</p></div>
+    <div><h3>Falling edge: the cliff</h3><p>The finger drops off the end of the dwell, pulled by the band and pushed by STEER's drag. That one is a snap, a few degrees.</p></div>
+    <div><h3>Other edge makers</h3><p>A <b>trip</b> lets go at a set angle. A <b>snap-over toggle</b> won't rest halfway. A <b>detent</b> jumps notch to notch. A <b>Geneva</b> moves in 90° of each turn and is locked the rest.</p></div>
+    <div><h3>What listens to an edge</h3><p>A RATCHET pawl counts them, one tooth each. A GENEVA steps once. SWAP flips its output: that is a T flip-flop.</p></div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Ramp rate</span>
+  <h2>Triangle to sawtooth</h2>
+  <p>RAMP's plates are heart cams, straight in angle, so the level is straight in time. A plate shares the cycle between rise and fall, and the gears in front set how long a cycle is.</p>
+  <p class="mono">rate up = 5.86 mm / (f · T) &nbsp;·&nbsp; rate down = 5.86 mm / ((1 − f) · T)</p>
+  <p><strong>RS, the sine plate</strong> (drafted for <a href="sketch.html">SKETCH</a>): its radius rises and falls as a cosine, so the level traces a sine wave instead of straight ramps. Fit it with <code>set = "sine"</code>. Fed into SKETCH, it draws the sine of the three-plot demo.</p>
+  <p>Feed RAMP into STEER and the arm moves slowly through its 28°: the idler leaves E, lingers in neutral and meets N. The slower the ramp, the longer the dead band. That is a mechanical picture of why digital circuits want fast edges. Use SQUARE for a switch and RAMP for a sweep.</p>
+</section>
+
+<section>
+  <span class="eyebrow">A clock steering a line</span>
+  <h2>CRANK, TAP, SQUARE, STEER</h2>
+  <figure><img src="boxes/steer/img/steer_demo.png" alt="CRANK, TAP, SQUARE and STEER on a 2 by 2 grid"><figcaption>One crank drives SQUARE and, through TAP, the data line into STEER. At 50 % the line leaves E for one port turn and N for the next: SWAP, from four boxes. One crank means one clock domain, so every switch lands at the same phase of the data line.</figcaption></figure>
+  <p>Holding: STEER's tooth drag always pushes the select line the way that presses the finger into the cam, so both dwells hold by the cam alone. Frequency is set upstream: a ×2 in front of SQUARE doubles it, a ÷4 quarters it.</p>
+</section>
+
+<section>
+  <span class="eyebrow">Status</span>
+  <h2>Fit-checked and committed, not yet printed</h2>
+  <p>SQUARE and RAMP pass the build fit checks.</p>
+  <p>Verify on the first print: the finger climbing the 40° ramp under STEER's load, the cliff and the band, the spline's 30° clicks, the rack's tooth phase on P, and slider drag on the posts.</p>
+</section>
+</div>
+
+<script>
+(function () {
+  const NS = "http://www.w3.org/2000/svg", D = Math.PI / 180;
+  const el = (tag, at, parent) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); if (parent) parent.appendChild(e); return e; };
+  const RL = 8, RISE = 5.863, RAMP = 40;
+  const sm = (x) => x * x * (3 - 2 * x);
+  const fr = (t) => t - Math.floor(t);
+  const sq = (t, H) => { const u = 360 * fr(t); return u < RAMP ? RL + RISE * sm(u / RAMP) : u < H ? RL + RISE : RL; };
+  const rp = (t, f) => { const u = fr(t); return u < f ? RL + RISE * u / f : RL + RISE * (1 - u) / (1 - f); };
+  const S = { box: "square", H: 140, k: 2, inv: false, f: 0.5, t: 0.3, playing: false };
+  const plate = (n, t) => S.box === "ramp" ? rp(t, S.f) : sq(t - (n === 1 ? S.k * 30 / 360 : 0), S.H);
+  const uni = (t) => Math.max(plate(0, t), plate(1, t));
+  const level = (t) => { let l = (uni(t) - RL) / RISE; return S.box === "square" && S.inv ? 1 - l : l; };
+
+  // ---- the plot
+  const P = document.getElementById("plot"), px0 = 46, px1 = 548, py0 = 190, py1 = 30;
+  const tx = (t) => px0 + (px1 - px0) * t / 2, ly = (l) => py0 + (py1 - py0) * l;
+  function axes() {
+    for (let i = 0; i <= 4; i++) { el("line", { x1: tx(i / 2), x2: tx(i / 2), y1: py1 - 6, y2: py0, stroke: "var(--line)", "stroke-width": 1 }, P); const tt = el("text", { x: tx(i / 2), y: py0 + 18, "text-anchor": "middle", "font-size": 11 }, P); tt.textContent = i; }
+    const xl = el("text", { x: (px0 + px1) / 2, y: py0 + 36, "text-anchor": "middle", "font-size": 11 }, P); xl.textContent = "port turns of W (one cycle = 2)"; xl.style.fill = "var(--muted)";
+    [[0, "low"], [1, "high"]].forEach(([l, s]) => { el("line", { x1: px0, x2: px1, y1: ly(l), y2: ly(l), stroke: "var(--line)", "stroke-dasharray": "2 3" }, P); const e = el("text", { x: px0 - 6, y: ly(l) + 4, "text-anchor": "end", "font-size": 11 }, P); e.textContent = s; });
+  }
+  axes();
+  const gTrace = el("g", {}, P);
+  const cursor = el("line", { y1: py1 - 8, y2: py0, stroke: "var(--red)", "stroke-width": 2 }, P);
+  const dot = el("circle", { r: 5, fill: "var(--red)" }, P);
+  function pathOf(fn) { let d = ""; for (let i = 0; i <= 720; i++) { const t = i / 360; d += (i ? "L" : "M") + tx(t).toFixed(1) + " " + ly(fn(t)).toFixed(1); } return d; }
+  function drawTrace() {
+    gTrace.innerHTML = "";
+    const lv = (n) => (t) => { let l = (plate(n, t) - RL) / RISE; return S.box === "square" && S.inv ? 1 - l : l; };
+    if (S.box === "square") {
+      el("path", { d: pathOf(lv(0)), fill: "none", stroke: "var(--muted)", "stroke-width": 1.5, "stroke-dasharray": "6 4" }, gTrace);
+      el("path", { d: pathOf(lv(1)), fill: "none", stroke: "var(--muted)", "stroke-width": 1.5, "stroke-dasharray": "2 3" }, gTrace);
+    }
+    el("path", { d: pathOf(level), fill: "none", stroke: "var(--green)", "stroke-width": 3.5, "stroke-linejoin": "round" }, gTrace);
+    if (S.box === "square") {
+      const rise = 20 / 360, fall = (S.k * 30 + S.H) / 360;
+      const up = S.inv ? fall : rise, dn = S.inv ? rise : fall;
+      [[up, "rising: ramp", "var(--blue)"], [dn, "falling: cliff", "var(--orange)"]].forEach(([t, s, c]) => {
+        const x = tx(t), e = el("text", { x: Math.min(Math.max(x, px0 + 40), px1 - 40), y: py1 - 12, "text-anchor": "middle", "font-size": 11, "font-weight": 600 }, gTrace); e.textContent = s; e.style.fill = c;
+        el("line", { x1: x, x2: x, y1: py1 - 8, y2: py0, stroke: c, "stroke-width": 1.5, "stroke-dasharray": "3 3" }, gTrace);
+      });
+    }
+  }
+
+  // ---- the cam, top view (scale 6 px/mm, finger on the west)
+  const C = document.getElementById("cam"), ck = 6, cx = 120, cy = 110;
+  const camG = el("g", {}, C);
+  function camPath(n, rot) { let d = ""; for (let i = 0; i <= 360; i += 2) { const a = i, r = plate(n, (180 - a) / 360), b = (a + rot) * D; d += (i ? "L" : "M") + (cx + ck * r * Math.cos(b)).toFixed(1) + " " + (cy - ck * r * Math.sin(b)).toFixed(1); } return d + "Z"; }
+  const slider = el("rect", { height: 10, rx: 3, fill: "var(--bone)", stroke: "var(--fg)", "stroke-width": 1 }, C);
+  const finger = el("circle", { r: 2 * ck, fill: "var(--green)", stroke: "var(--fg)", "stroke-width": 1.2 }, C);
+  const capt = el("text", { x: 110, y: 214, "text-anchor": "middle", "font-size": 11 }, C); capt.textContent = "cam, top view"; capt.style.fill = "var(--muted)";
+  function drawCam() {
+    camG.innerHTML = "";
+    const rot = 360 * S.t;
+    el("path", { d: camPath(0, rot), fill: "var(--white)", stroke: "var(--fg)", "stroke-width": 1.5 }, camG);
+    if (S.box === "square") el("path", { d: camPath(1, rot), fill: "color-mix(in srgb, var(--green) 18%, transparent)", stroke: "var(--fg)", "stroke-width": 1.2, "stroke-dasharray": "3 3" }, camG);
+    el("circle", { cx: cx, cy: cy, r: 5.2 * ck, fill: "none", stroke: "var(--muted)", "stroke-width": 1 }, camG);
+    el("circle", { cx: cx, cy: cy, r: 3, fill: "var(--fg)" }, camG);
+    const fx = cx - ck * (uni(S.t) + 2);
+    finger.setAttribute("cx", fx); finger.setAttribute("cy", cy);
+    slider.setAttribute("x", 2); slider.setAttribute("width", Math.max(fx - 2, 4)); slider.setAttribute("y", cy - 5);
+  }
+
+  // ---- STEER: which side is live
+  const T = document.getElementById("steer");
+  el("rect", { x: 20, y: 20, width: 180, height: 170, rx: 8, fill: "var(--bone)", stroke: "var(--line)", "stroke-width": 3 }, T);
+  const tl = el("text", { x: 110, y: 214, "text-anchor": "middle", "font-size": 11 }, T); tl.textContent = "STEER, driven by this clock"; tl.style.fill = "var(--muted)";
+  const outE = el("circle", { cx: 182, cy: 120, r: 22, "stroke-width": 2 }, T), outN = el("circle", { cx: 110, cy: 38, r: 22, "stroke-width": 2 }, T);
+  const tE = el("text", { x: 182, y: 125, "text-anchor": "middle", "font-size": 15, "font-weight": 700 }, T); tE.textContent = "E";
+  const tN = el("text", { x: 110, y: 43, "text-anchor": "middle", "font-size": 15, "font-weight": 700 }, T); tN.textContent = "N";
+  el("circle", { cx: 110, cy: 120, r: 18, fill: "var(--white)", stroke: "var(--fg)", "stroke-width": 1.5 }, T);
+  const armL = el("line", { x1: 110, y1: 120, stroke: "var(--blue)", "stroke-width": 8, "stroke-linecap": "round" }, T);
+  const idl = el("circle", { r: 11, fill: "var(--white)", stroke: "var(--blue)", "stroke-width": 2.5 }, T);
+  const stt = el("text", { x: 40, y: 175, "font-size": 12, "font-weight": 600 }, T);
+  function drawSteer() {
+    const l = level(S.t), sel = 1 - Math.min(Math.max(l, 0), 1);
+    const a = (31 + 28 * sel) * D, r = 44;
+    const ix = 110 + r * Math.cos(a), iy = 120 - r * Math.sin(a);
+    armL.setAttribute("x2", ix); armL.setAttribute("y2", iy); idl.setAttribute("cx", ix); idl.setAttribute("cy", iy);
+    const e = sel < 0.02, n = sel > 0.98;
+    outE.setAttribute("fill", e ? "var(--orange)" : "var(--white)"); outE.setAttribute("stroke", "var(--orange)");
+    outN.setAttribute("fill", n ? "var(--orange)" : "var(--white)"); outN.setAttribute("stroke", "var(--orange)");
+    tE.style.fill = e ? "#fff" : "var(--fg)"; tN.style.fill = n ? "#fff" : "var(--fg)";
+    stt.textContent = e ? "E is live" : n ? "N is live" : "switching: neither";
+  }
+
+  function stats() {
+    const k1 = document.getElementById("k1"), v1 = document.getElementById("v1"), k2 = document.getElementById("k2"), v2 = document.getElementById("v2"), u2 = document.getElementById("u2");
+    if (S.box === "square") {
+      let d = (S.k * 30 + S.H - 20) / 360; if (S.inv) d = 1 - d;
+      k1.textContent = "Duty"; v1.textContent = Math.round(d * 100) + " %";
+      k2.textContent = "High for"; v2.textContent = (2 * d).toFixed(2); u2.textContent = "port turns of every 2";
+    } else {
+      k1.textContent = "Rate up"; v1.textContent = (RISE / (2 * S.f)).toFixed(2);
+      k2.textContent = "Rate down"; v2.textContent = S.f >= 1 ? "cliff" : (RISE / (2 * (1 - S.f))).toFixed(2);
+      u2.textContent = "mm of pitch line per port turn";
+    }
+  }
+  function frame() {
+    const x = tx(fr(S.t / 2) * 2);
+    cursor.setAttribute("x1", x); cursor.setAttribute("x2", x);
+    dot.setAttribute("cx", x); dot.setAttribute("cy", ly(level(S.t)));
+    drawCam(); drawSteer();
+  }
+  function all() { drawTrace(); stats(); frame(); }
+
+  // ---- controls
+  const $ = (id) => document.getElementById(id);
+  function setBox(b) {
+    S.box = b;
+    $("bSq").setAttribute("aria-pressed", b === "square"); $("bRp").setAttribute("aria-pressed", b === "ramp");
+    $("sqBox").hidden = b !== "square"; $("rpBox").hidden = b !== "ramp";
+    all();
+  }
+  $("bSq").addEventListener("click", () => setBox("square"));
+  $("bRp").addEventListener("click", () => setBox("ramp"));
+  $("pair").addEventListener("change", (e) => { S.H = +e.target.value; $("phase").max = S.H === 230 ? 4 : 3; S.k = Math.min(S.k, +$("phase").max); $("phase").value = S.k; phLabel(); all(); });
+  function phLabel() { $("phOut").textContent = S.k * 30 + "° (" + S.k + (S.k === 1 ? " click)" : " clicks)"); }
+  $("phase").addEventListener("input", (e) => { S.k = +e.target.value; phLabel(); all(); });
+  $("inv").addEventListener("change", (e) => { S.inv = e.target.checked; all(); });
+  $("frac").addEventListener("change", (e) => { S.f = +e.target.value; all(); });
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let last = 0;
+  function tick(ts) { if (!S.playing) return; const dt = last ? Math.min(ts - last, 50) : 16; last = ts; S.t += dt / 6000; frame(); requestAnimationFrame(tick); }
+  $("play").addEventListener("click", () => {
+    if (reduce) { S.t += 30 / 360; frame(); return; }
+    S.playing = !S.playing; $("play").textContent = S.playing ? "Stop" : "Crank"; last = 0; if (S.playing) requestAnimationFrame(tick);
+  });
+  $("step").addEventListener("click", () => { S.t += 30 / 360; frame(); });
+  all();
+})();
+</script>
+
+<script src="makerworld.js"></script>
+<script src="mw.js"></script>
+</body></html>

@@ -1,0 +1,312 @@
+<!doctype html><html><head>
+<meta name="viewport" content="width=device-width, initial-scale=1"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+
+<title>Gear Box Brain</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column with wide figure bands; colors are the gear system's own role code */
+:root {
+  --bg: #F6F1E6; --panel: #EDE3D0; --ink: #1B1B1B; --mute: #5d574c; --rule: #d6cab2;
+  --drive: #D63A2F; --in: #1F6FD6; --out: #E07A18; --show: #2FA84F; --gear: #FBF8F1; --bought: #9AA0A6; --board: #2a3a4a; --onfill: #ffffff;
+  --display: "Rubik", "Trebuchet MS", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #17150f; --panel: #221f17; --ink: #EDE6D6; --mute: #a69e8c; --rule: #3a3528;
+  --drive: #e8554a; --in: #4a8ff0; --out: #f29a45; --show: #49c46a; --gear: #2c2920; --bought: #6f757c; --board: #8fa6bd; --onfill: #111; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #17150f; --panel: #221f17; --ink: #EDE6D6; --mute: #a69e8c; --rule: #3a3528;
+  --drive: #e8554a; --in: #4a8ff0; --out: #f29a45; --show: #49c46a; --gear: #2c2920; --bought: #6f757c; --board: #8fa6bd; --onfill: #111; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font: 16px/1.6 var(--body); }
+.wrap { max-width: 980px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 44px; }
+.prose { max-width: 68ch; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.4rem); font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: 1.6rem; font-weight: 700; }
+h3 { font-size: 1.15rem; font-weight: 500; }
+p { margin: 0; }
+section { display: grid; gap: 16px; min-width: 0; }
+.eyebrow { font: 500 0.78rem/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--mute); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: 500 0.78rem/1 var(--mono); padding: 6px 10px; border-radius: 999px; border: 1.5px solid currentColor; }
+.c-drive { color: var(--drive); } .c-in { color: var(--in); } .c-out { color: var(--out); } .c-show { color: var(--show); }
+.lead { font-size: 1.12rem; }
+.mute { color: var(--mute); }
+figure { margin: 0; display: grid; gap: 8px; min-width: 0; }
+figcaption { font-size: 0.88rem; color: var(--mute); max-width: 70ch; }
+.fig { overflow-x: auto; background: var(--panel); border-radius: 12px; padding: 12px; }
+.fig svg { display: block; width: 100%; min-width: 560px; height: auto; }
+.fig.sq svg { min-width: 340px; max-width: 520px; margin: 0 auto; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.opt { background: var(--panel); border-radius: 12px; padding: 18px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.opt ul { margin: 0; padding-left: 1.1em; }
+.opt .tag { font: 500 0.75rem/1 var(--mono); color: var(--mute); letter-spacing: 0.06em; text-transform: uppercase; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font: 600 0.78rem/1.3 var(--mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--mute); }
+td code, p code, li code { font: 0.86em var(--mono); }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+.renders { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.renders img { border-radius: 10px; background: #fffff0; width: 100%; height: auto; }
+ol.prog { margin: 0; padding-left: 1.3em; display: grid; gap: 12px; }
+.total td { font-weight: 600; }
+a { color: var(--in); }
+/* svg */
+.shell { fill: var(--panel); stroke: var(--mute); stroke-width: 1.5; }
+.grid { stroke: var(--rule); stroke-dasharray: 4 4; }
+.gear { fill: var(--gear); stroke: var(--mute); stroke-width: 1; }
+.in { fill: var(--in); } .out { fill: var(--out); } .show { fill: var(--show); }
+.bought { fill: var(--bought); opacity: .55; } .enc { fill: var(--bought); }
+.board { fill: var(--board); } .btn { fill: var(--bought); }
+.hood { fill: none; stroke: var(--ink); stroke-width: 1; stroke-dasharray: 3 3; }
+.lbl { fill: var(--ink); font: 600 11px var(--body); } .lbl.small { font-size: 9.5px; font-weight: 400; }
+.lbl.onfill, .t1.onfill, .t2.onfill { fill: var(--onfill); }
+.a-in { stroke: var(--in); stroke-width: 3; } .a-out { stroke: var(--out); stroke-width: 3; }
+.mk-in { fill: var(--in); } .mk-out { fill: var(--out); } .mk-ink { fill: var(--ink); }
+.t1 { fill: var(--ink); font: 700 13px var(--display); text-anchor: middle; }
+.t2 { fill: var(--ink); font: 400 11.5px var(--body); text-anchor: middle; }
+.b-drive { fill: var(--drive); } .b-in { fill: var(--in); } .b-out { fill: var(--out); } .b-show { fill: var(--show); }
+.b-plain { fill: var(--bg); stroke: var(--mute); stroke-width: 1.2; } .b-board { fill: var(--bg); stroke: var(--ink); stroke-width: 1.5; }
+.brainbox { fill: none; stroke: var(--drive); stroke-width: 2; stroke-dasharray: 6 4; }
+.ln { fill: none; stroke: var(--ink); stroke-width: 1.6; } .ln.dash { stroke-dasharray: 5 4; }
+.pin-in { fill: var(--in); } .pin-out { fill: var(--out); } .pin-enc { fill: var(--show); } .pin-btn { fill: var(--drive); }
+.w-in { stroke: var(--in); stroke-width: 2; } .w-out { stroke: var(--out); stroke-width: 2; } .w-enc { stroke: var(--show); stroke-width: 2; } .w-btn { stroke: var(--drive); stroke-width: 2; }
+</style>
+
+<div class="wrap">
+<nav style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-weight:700"><a href="index.html" style="color:inherit">← All boxes</a><span style="opacity:.6;font-weight:400">Gear Box System</span></nav>
+
+<header style="display:grid;gap:14px">
+  <div class="eyebrow">Gear Box System · exploratory side box</div>
+  <h1>The brain box</h1><div class="mw-slot" data-makerworld="box:brain,box:cbdrive,box:cbsense"></div>
+  <p class="lead prose">An ESP32-C3 in a 2×2 box that reads the angle of a gear lane and turns another. The gear boxes stay mechanical. The brain sits at the edge of a layout and supplies the three things gears can't do: branch on a value, multiply two moving values, and remember. Its headline lesson is closed-loop control.</p>
+  <div class="chips"><span class="chip c-in">sense</span><span class="chip c-show">compute</span><span class="chip c-out">actuate</span><span class="chip c-drive">feedback</span></div>
+</header>
+
+<section>
+  <h2>Why a brain at all</h2>
+  <figure>
+    <div class="fig"><svg viewBox="0 0 760 250" role="img" aria-label="Sense, compute, actuate loop">
+<defs><marker id="lp" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="mk-ink"/></marker></defs>
+<g class="blk"><rect x="10" y="40" width="110" height="56" rx="8" class="b-drive"/><text x="65" y="66" class="t1">CRANK</text><text x="65" y="84" class="t2">your hand</text></g>
+<g class="blk"><rect x="150" y="40" width="110" height="56" rx="8" class="b-plain"/><text x="65" y="66" class="t1" transform="translate(140 0)">÷4 box</text><text x="205" y="84" class="t2">any boxes</text></g>
+<rect x="290" y="16" width="300" height="200" rx="14" class="brainbox"/>
+<text x="440" y="38" class="t1">BRAIN</text>
+<g><rect x="306" y="52" width="80" height="48" rx="8" class="b-in"/><text x="346" y="73" class="t1 onfill">SENSE</text><text x="346" y="89" class="t2 onfill">AS5600</text></g>
+<g><rect x="400" y="52" width="80" height="48" rx="8" class="b-show"/><text x="440" y="73" class="t1 onfill">COMPUTE</text><text x="440" y="89" class="t2 onfill">ESP32-C3</text></g>
+<g><rect x="494" y="52" width="80" height="48" rx="8" class="b-out"/><text x="534" y="73" class="t1 onfill">ACTUATE</text><text x="534" y="89" class="t2 onfill">DRV8833+N20</text></g>
+<g><rect x="400" y="140" width="80" height="44" rx="8" class="b-plain"/><text x="440" y="160" class="t1">ENCODER</text><text x="440" y="176" class="t2">motor shaft</text></g>
+<g class="blk"><rect x="630" y="40" width="120" height="56" rx="8" class="b-plain"/><text x="690" y="66" class="t1">COUNTER</text><text x="690" y="84" class="t2">reads 3.0</text></g>
+<line x1="120" y1="68" x2="148" y2="68" class="ln" marker-end="url(#lp)"/>
+<line x1="260" y1="68" x2="304" y2="76" class="ln" marker-end="url(#lp)"/>
+<line x1="386" y1="76" x2="398" y2="76" class="ln" marker-end="url(#lp)"/>
+<line x1="480" y1="76" x2="492" y2="76" class="ln" marker-end="url(#lp)"/>
+<line x1="574" y1="76" x2="628" y2="68" class="ln" marker-end="url(#lp)"/>
+<path d="M534 100 V162 H482" class="ln" marker-end="url(#lp)"/>
+<path d="M400 162 H372 V120 H420 V102" class="ln dash" marker-end="url(#lp)"/>
+<text x="560" y="140" class="t2" text-anchor="start">feedback: the wire</text>
+<text x="560" y="155" class="t2" text-anchor="start">that gears can’t be</text>
+<text x="20" y="140" class="t2" text-anchor="start">Gears only flow east and north,</text>
+<text x="20" y="156" class="t2" text-anchor="start">so a chain never comes back to</text>
+<text x="20" y="172" class="t2" text-anchor="start">its own start. The brain closes</text>
+<text x="20" y="188" class="t2" text-anchor="start">the loop electrically.</text>
+</svg></div>
+    <figcaption>Press GO and output A turns exactly three turns into a counter, whatever the battery or the load. The motor's encoder tells the brain where the shaft is, and the brain corrects until it gets there.</figcaption>
+  </figure>
+  <div class="prose" style="display:grid;gap:12px">
+    <p>Open loop means "run for two seconds" and land somewhere new every time. Closed loop means measure, compare, correct. On this grid it has a second meaning. Motion only flows east and north, so a gear chain can never come back to its own start. A mechanical feedback loop has to live inside one box, the way a governor does. A brain closes the loop with a wire, or by radio.</p>
+    <p>The same hardware teaches more. <strong>Where you measure matters:</strong> the motor encoder sits before the printed gears and never sees backlash, while the sensor on an input port does. <strong>Gain:</strong> too low lags, too high hunts across the backlash. <strong>Quantization:</strong> 4096 ADC steps, about 2600 encoder counts a port turn. And <strong>code as a box:</strong> a brain can impersonate any ratio box in three lines, which is exactly why it stays at the edge.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Two ways to build it</h2>
+  <div class="two">
+    <div class="opt">
+      <span class="tag">Recommended first</span>
+      <h3>BRAIN · Seeed XIAO ESP32-C3</h3>
+      <ul>
+        <li>One 2×2 box: 2 motor outputs, 2 sensed inputs, 3 contacts</li>
+        <li>All 11 pins yours; loop closes inside the box</li>
+        <li>1S LiPo charged through the same USB-C you program with</li>
+        <li>Arduino or MicroPython</li>
+        <li>About $45</li>
+      </ul>
+    </div>
+    <div class="opt">
+      <span class="tag">If a kit is on the shelf</span>
+      <h3>CyberBrick pair · DRIVE + SENSE</h3>
+      <ul>
+        <li>Receiver shield → <strong>DRIVE</strong>: 2 motors, plus 4 servos and 2 LED ports, no inputs</li>
+        <li>Transmitter shield → <strong>SENSE</strong>: 4 sensed lanes, 4 buttons, no motors</li>
+        <li>Loop closes by radio across the layout</li>
+        <li>MicroPython only; coarser stock motor control</li>
+        <li>About $75 for both boxes</li>
+      </ul>
+    </div>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th></th><th>BRAIN (XIAO)</th><th>DRIVE (receiver)</th><th>SENSE (transmitter)</th></tr></thead>
+    <tbody>
+      <tr><td>Footprint</td><td>2×2</td><td>2×2</td><td>2×2</td></tr>
+      <tr><td>Outputs</td><td>E1, E2 + N (two N20 trains)</td><td>E1, E2 + N (two N20 trains)</td><td>none</td></tr>
+      <tr><td>Sensed inputs</td><td>2 (W, S)</td><td>none (all pins used)</td><td>4 (W ×2, S ×2) + 2 spare analog</td></tr>
+      <tr><td>Contacts</td><td>GO, MODE, EXT jack</td><td>core button</td><td>3 buttons + EXT jack</td></tr>
+      <tr><td>Power</td><td>1S LiPo, 3.7 V</td><td>2S pack, 7.4 V</td><td>2S pack (takes 1S–3S)</td></tr>
+      <tr><td>Motor</td><td>N20 6 V 100 rpm + hall encoder</td><td>the motor box's N20 12 V 150 rpm</td><td>—</td></tr>
+      <tr><td>Port speed, budget</td><td>~24 rpm, ~10 stages</td><td>~37 rpm, ~12 stages</td><td>inputs cost 2</td></tr>
+      <tr><td>Code</td><td>Arduino or MicroPython</td><td colspan="2">Bambu's MicroPython (no third-party firmware)</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>What's in the box</h2>
+  <div class="two" style="align-items:start">
+    <figure>
+      <div class="fig sq"><svg viewBox="-30 -30 402 402" role="img" aria-label="Top view of the BRAIN box">
+<defs>
+<marker id="ah-a-in" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="mk-in"/></marker>
+<marker id="ah-a-out" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="mk-out"/></marker>
+</defs>
+<rect x="24.0" y="24.0" width="294.4" height="294.4" rx="6" class="shell"/><line x1="171.2" y1="24.0" x2="171.2" y2="318.4" class="grid"/><line x1="24.0" y1="171.2" x2="318.4" y2="171.2" class="grid"/><rect x="63.1" y="208.0" width="93.1" height="27.6" rx="2" class="bought"/><rect x="63.1" y="208.0" width="20.7" height="27.6" rx="2" class="enc"/><text x="116.0" y="225.2" class="lbl small" text-anchor="middle">N20 + encoder</text><rect x="63.1" y="60.8" width="93.1" height="27.6" rx="2" class="bought"/><rect x="63.1" y="60.8" width="20.7" height="27.6" rx="2" class="enc"/><text x="116.0" y="78.0" class="lbl small" text-anchor="middle">N20 + encoder</text><circle cx="244.8" cy="244.8" r="46.0" class="gear" /><circle cx="189.6" cy="221.8" r="18.4" class="gear" /><text x="244.8" y="248.2" class="lbl" text-anchor="middle">K</text><text x="189.6" y="225.2" class="lbl small" text-anchor="middle">B</text><circle cx="244.8" cy="97.6" r="46.0" class="gear" /><circle cx="189.6" cy="74.6" r="18.4" class="gear" /><text x="244.8" y="101.0" class="lbl" text-anchor="middle">K</text><text x="189.6" y="78.0" class="lbl small" text-anchor="middle">B</text><circle cx="300.0" cy="244.8" r="18.4" class="out" /><text x="300.0" y="248.2" class="lbl onfill" text-anchor="middle">E1</text><circle cx="300.0" cy="97.6" r="18.4" class="out" /><text x="300.0" y="101.0" class="lbl onfill" text-anchor="middle">E2</text><circle cx="244.8" cy="42.4" r="18.4" class="out" /><text x="244.8" y="45.8" class="lbl onfill" text-anchor="middle">N</text><circle cx="40.1" cy="281.6" r="16.1" class="in" /><text x="40.1" y="285.0" class="lbl onfill" text-anchor="middle">W</text><circle cx="97.6" cy="300.0" r="18.4" class="in" /><text x="97.6" y="303.4" class="lbl onfill" text-anchor="middle">S</text><circle cx="68.4" cy="261.8" r="18.4" class="gear" /><circle cx="68.4" cy="261.8" r="6.9" class="show" /><rect x="41.2" y="234.7" width="54.3" height="54.3" class="hood"/><circle cx="125.8" cy="276.3" r="18.4" class="gear" /><circle cx="125.8" cy="276.3" r="6.9" class="show" /><rect x="98.7" y="249.2" width="54.3" height="54.3" class="hood"/><text x="68.4" y="230.8" class="lbl small" text-anchor="middle">AS5600 hood</text><rect x="47.0" y="127.5" width="92.0" height="69.0" rx="2" class="bought"/><text x="93.0" y="164.3" class="lbl" text-anchor="middle">1S LiPo</text><rect x="242.7" y="162.5" width="40.9" height="10.1" rx="2" class="board"/><text x="263.2" y="155.1" class="lbl small" text-anchor="middle">XIAO (USB-C up)</text><rect x="185.9" y="156.6" width="35.0" height="29.2" rx="2" class="board"/><text x="203.4" y="198.8" class="lbl small" text-anchor="middle">DRV8833</text><circle cx="162.0" cy="120.6" r="10.3" class="btn" /><text x="162.0" y="104.5" class="lbl small" text-anchor="middle">GO</text><circle cx="129.8" cy="120.6" r="10.3" class="btn" /><text x="129.8" y="104.5" class="lbl small" text-anchor="middle">MODE</text><circle cx="103.3" cy="120.6" r="10.3" class="btn" /><text x="103.3" y="104.5" class="lbl small" text-anchor="middle">EXT</text><rect x="54.8" y="97.6" width="30.4" height="18.4" rx="2" class="bought"/><text x="70.0" y="90.7" class="lbl small" text-anchor="middle">PWR</text><line x1="-22.0" y1="281.6" x2="10.2" y2="281.6" class="a-in" marker-end="url(#ah-a-in)"/><line x1="97.6" y1="364.4" x2="97.6" y2="332.2" class="a-in" marker-end="url(#ah-a-in)"/><line x1="323.0" y1="244.8" x2="355.2" y2="244.8" class="a-out" marker-end="url(#ah-a-out)"/><line x1="323.0" y1="97.6" x2="355.2" y2="97.6" class="a-out" marker-end="url(#ah-a-out)"/><line x1="244.8" y1="19.4" x2="244.8" y2="-12.8" class="a-out" marker-end="url(#ah-a-out)"/>
+<text x="24.0" y="16.0" class="lbl small" text-anchor="start">north</text>
+<text x="318.4" y="334.4" class="lbl small" text-anchor="end">128 × 128 mm, 2×2 cells</text>
+</svg></div>
+      <figcaption>BRAIN from above, to scale. Blue ports come in, orange ports go out. Each output row is the motor box's train (bevel 10:15, then 12:40, then 32:16, x2.5 torque). Each input meshes a sense stack whose green magnet puck turns under an AS5600 in a hood on the lid.</figcaption>
+    </figure>
+    <figure>
+      <img src="boxes/brain/img/brain_inside.png" alt="OpenSCAD render of the BRAIN box with the lid off" style="border-radius:12px;background:#fffff0">
+      <figcaption>The model with the lid off. The XIAO stands on its end at the right so its USB-C meets the lid. Gray parts are bought.</figcaption>
+    </figure>
+  </div>
+  <div class="prose" style="display:grid;gap:12px">
+    <p><strong>Why N20s.</strong> A port wants about 40 mNm, and the motor box already proves an N20 train fits the 21.6 mm inside height. A 28BYJ-48 stepper is 28 mm across, so it doesn't fit, and it needs four pins and 5 V. A micro servo only turns 180°, so it suits a lever or a flag rather than a line. CyberBrick gets four servo ports free.</p>
+    <p><strong>Why AS5600 sensors.</strong> They give an absolute angle on one analog pin, either direction, with no contact and almost no drag. Optical slot sensors on a printed disc are the cheaper, more visible alternative on the same pins. The ESP32-C3's ADC tops out near 2.5 V on both boards, so each sensor goes through a 10 kΩ over 22 kΩ divider.</p>
+  </div>
+</section>
+
+<section>
+  <h2>BRAIN wiring and the 11 pins</h2>
+  <figure>
+    <div class="fig"><svg viewBox="0 0 760 420" role="img" aria-label="BRAIN wiring">
+<rect x="210" y="30" width="120" height="360" rx="10" class="b-board"/>
+<text x="270" y="22" class="t1">XIAO ESP32-C3</text>
+<text x="318" y="64" class="t2" text-anchor="end">D0 · GPIO2</text><circle cx="326" cy="60" r="4" class="pin-btn"/><line x1="330" y1="60" x2="470" y2="60" class="w-btn"/><text x="476" y="64" class="t2" text-anchor="start">GO button</text><text x="318" y="94" class="t2" text-anchor="end">D1 · GPIO3</text><circle cx="326" cy="90" r="4" class="pin-in"/><line x1="330" y1="90" x2="470" y2="90" class="w-in"/><text x="476" y="94" class="t2" text-anchor="start">IN1 angle</text><text x="318" y="124" class="t2" text-anchor="end">D2 · GPIO4</text><circle cx="326" cy="120" r="4" class="pin-in"/><line x1="330" y1="120" x2="470" y2="120" class="w-in"/><text x="476" y="124" class="t2" text-anchor="start">IN2 angle</text><text x="318" y="154" class="t2" text-anchor="end">D3 · GPIO5</text><circle cx="326" cy="150" r="4" class="pin-out"/><line x1="330" y1="150" x2="470" y2="150" class="w-out"/><text x="476" y="154" class="t2" text-anchor="start">AIN1 (out A)</text><text x="318" y="184" class="t2" text-anchor="end">D4 · GPIO6</text><circle cx="326" cy="180" r="4" class="pin-out"/><line x1="330" y1="180" x2="470" y2="180" class="w-out"/><text x="476" y="184" class="t2" text-anchor="start">AIN2 (out A)</text><text x="318" y="214" class="t2" text-anchor="end">D5 · GPIO7</text><circle cx="326" cy="210" r="4" class="pin-out"/><line x1="330" y1="210" x2="470" y2="210" class="w-out"/><text x="476" y="214" class="t2" text-anchor="start">BIN1 (out B)</text><text x="318" y="244" class="t2" text-anchor="end">D10 · GPIO10</text><circle cx="326" cy="240" r="4" class="pin-out"/><line x1="330" y1="240" x2="470" y2="240" class="w-out"/><text x="476" y="244" class="t2" text-anchor="start">BIN2 (out B)</text><text x="318" y="274" class="t2" text-anchor="end">D7 · GPIO20</text><circle cx="326" cy="270" r="4" class="pin-enc"/><line x1="330" y1="270" x2="470" y2="270" class="w-enc"/><text x="476" y="274" class="t2" text-anchor="start">encoder A</text><text x="318" y="304" class="t2" text-anchor="end">D6 · GPIO21</text><circle cx="326" cy="300" r="4" class="pin-enc"/><line x1="330" y1="300" x2="470" y2="300" class="w-enc"/><text x="476" y="304" class="t2" text-anchor="start">encoder B (1 kΩ)</text><text x="318" y="334" class="t2" text-anchor="end">D8 · GPIO8</text><circle cx="326" cy="330" r="4" class="pin-btn"/><line x1="330" y1="330" x2="470" y2="330" class="w-btn"/><text x="476" y="334" class="t2" text-anchor="start">EXT jack</text><text x="318" y="364" class="t2" text-anchor="end">D9 · GPIO9</text><circle cx="326" cy="360" r="4" class="pin-btn"/><line x1="330" y1="360" x2="470" y2="360" class="w-btn"/><text x="476" y="364" class="t2" text-anchor="start">MODE / BOOT</text>
+<g>
+<rect x="10" y="40" width="120" height="50" rx="8" class="b-plain"/><text x="70" y="62" class="t1">1S LiPo</text><text x="70" y="78" class="t2">3.0–4.2 V</text>
+<rect x="10" y="120" width="120" height="40" rx="8" class="b-drive"/><text x="70" y="145" class="t1 onfill">PWR toggle</text>
+<path d="M70 90 V118" class="ln"/><path d="M130 140 H170 V200 H208" class="ln"/><text x="150" y="194" class="t2">BAT+</text>
+<path d="M130 140 H170 V 400 H600 V210" class="ln"/><text x="176" y="394" class="t2" text-anchor="start">VM (battery, through the toggle) · 470 µF here</text>
+<text x="70" y="240" class="t2">3V3 out powers</text><text x="70" y="256" class="t2">both AS5600s and</text><text x="70" y="272" class="t2">both encoder halls</text>
+</g>
+<rect x="590" y="136" width="160" height="118" rx="8" class="b-out"/><text x="670" y="190" class="t1 onfill">DRV8833</text><text x="670" y="208" class="t2 onfill">→ motors A, B</text>
+<rect x="590" y="76" width="160" height="58" rx="8" class="b-in"/><text x="670" y="104" class="t2 onfill">AS5600 OUT → 10k/22k</text>
+</svg></div>
+    <figcaption>Every pin is used. The DRV8833's inputs have pull-downs, so they stay off the strapping pins (GPIO 2, 8 and 9). The three contacts go there because they idle high. MODE is the C3's BOOT pin, which makes it a recovery button too.</figcaption>
+  </figure>
+  <div class="tbl"><table>
+    <thead><tr><th>Pin</th><th>GPIO</th><th>Use</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td>D0</td><td>2</td><td><span class="dot" style="background:var(--drive)"></span>GO button</td><td>10 kΩ pull-up, strapping pin</td></tr>
+      <tr><td>D1</td><td>3</td><td><span class="dot" style="background:var(--in)"></span>IN1 angle</td><td>ADC1, via divider</td></tr>
+      <tr><td>D2</td><td>4</td><td><span class="dot" style="background:var(--in)"></span>IN2 angle</td><td>ADC1, via divider</td></tr>
+      <tr><td>D3 / D4</td><td>5 / 6</td><td><span class="dot" style="background:var(--out)"></span>output A, AIN1/AIN2</td><td>PWM 20 kHz</td></tr>
+      <tr><td>D5 / D10</td><td>7 / 10</td><td><span class="dot" style="background:var(--out)"></span>output B, BIN1/BIN2</td><td>PWM 20 kHz</td></tr>
+      <tr><td>D7</td><td>20</td><td><span class="dot" style="background:var(--show)"></span>encoder A</td><td>UART RX, free (USB serial is built in)</td></tr>
+      <tr><td>D6</td><td>21</td><td><span class="dot" style="background:var(--show)"></span>encoder B</td><td>through 1 kΩ: the boot ROM prints on this pin</td></tr>
+      <tr><td>D8</td><td>8</td><td><span class="dot" style="background:var(--drive)"></span>EXT jack</td><td>10 kΩ pull-up, strapping pin</td></tr>
+      <tr><td>D9</td><td>9</td><td><span class="dot" style="background:var(--drive)"></span>MODE button</td><td>BOOT pin</td></tr>
+    </tbody>
+  </table></div>
+  <p class="prose mute">To add something, trade a pin: GO becomes a servo signal, EXT becomes full quadrature on one encoder, or two pins become I²C to an MCP23017 for sixteen more contacts.</p>
+</section>
+
+<section>
+  <h2>The CyberBrick pair</h2>
+  <div class="prose" style="display:grid;gap:12px">
+    <p>CyberBrick is Bambu's toy-electronics system: one ESP32-C3 core board that plugs into a transmitter shield (a remote control) or a receiver shield (motors, servos, LEDs). The two shields use the pins completely differently, so one core can't be both. A transmitter box senses and a receiver box drives, and they pair over 2.4 GHz at about 10 m. Out of the box, with no code, a SENSE input's angle can already set a DRIVE motor's speed.</p>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th></th><th>Transmitter shield → SENSE</th><th>Receiver shield → DRIVE</th></tr></thead>
+    <tbody>
+      <tr><td>Supply</td><td>4.5–12.6 V (1S–3S), 65 mA</td><td>7.4–12.6 V (2S–3S), 3 A max</td></tr>
+      <tr><td>Inputs</td><td>6 analog L1–L3, R1–R3 (GPIO 0–5), SH1.0 3-pin with 3.3 V; 4 digital K1–K4 (GPIO 6, 7, 21, 20), active low</td><td>none free</td></tr>
+      <tr><td>Outputs</td><td>none</td><td>2 DC motors (HTD8811, GPIO 4/5, 6/7); 4 servo headers at 5 V (GPIO 0–3); 2 WS2812 ports (GPIO 21, 20)</td></tr>
+      <tr><td>In the box</td><td>AS5600s on L1, L2, R1, R2; buttons on K1–K3; EXT on K4; L3 and R3 spare</td><td>two N20 trains; LED windows on the lid; servo headers free</td></tr>
+    </tbody>
+  </table></div>
+  <div class="renders">
+    <figure style="margin:0;display:grid;gap:6px;min-width:0"><img src="boxes/brain/img/brain_exploded.png" alt="BRAIN exploded" style="width:100%;border-radius:10px;background:#F8F8F6;"><figcaption style="font-size:.9rem;opacity:.75">BRAIN exploded: lid and hoods lifted off the motors, sense stacks and boards.</figcaption></figure>
+    <figure><img src="boxes/brain/img/cbdrive_inside.png" alt="DRIVE box with the lid off"><figcaption>DRIVE: the BRAIN's trains with the motor box's own cradles. The board and pack sizes are guesses until measured.</figcaption></figure>
+    <figure><img src="boxes/brain/img/cbsense_iso.png" alt="SENSE box with four sensor hoods"><figcaption>SENSE: four sensed lanes. Two hoods share walls. It ends the lines it reads.</figcaption></figure>
+  </div>
+  <p class="prose">A layout that closes a loop by radio: put SENSE directly north of DRIVE. DRIVE's N port meets SENSE's S1, so SENSE reads DRIVE's own output, while W0 reads a crank. SENSE sends DRIVE the command that makes one follow the other. The feedback crosses the layout through the air, which the gears alone can never do.</p>
+</section>
+
+<section>
+  <h2>Three programs</h2>
+  <ol class="prog prose">
+    <li><strong>Electronic gearbox.</strong> Crank into IN1. Output A follows at ratio k: error = k × IN1 − output, power = gain × error. MODE cycles k through 1, −1, ¼, 3 and π. Then raise the gain until it hunts, and you've found backlash and instability in a minute.</li>
+    <li><strong>Exactly three turns.</strong> GO drives output B into a counter. Open loop (full power for a fixed time) misses, and misses differently on a tired battery. Closed loop (count, slow near the end, stop) reads 3.0 every time, and pushes back if you hold it.</li>
+    <li><strong>The <code>if</code> box.</strong> If IN2 spins faster than a limit, or a trip flag closes EXT, stop output A and back output B off half a turn. Gears have no <code>if</code>. Variation: output A = IN1 + IN2, an adder in code beside the planetary adder.</li>
+  </ol>
+</section>
+
+<section>
+  <h2>Rough bill of materials</h2>
+  <div class="two" style="align-items:start">
+    <div class="tbl"><table>
+      <thead><tr><th colspan="2">BRAIN (XIAO)</th><th>~USD</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Seeed XIAO ESP32-C3</td><td>5</td></tr>
+        <tr><td>1</td><td>DRV8833 carrier (Pololu 2130; generic ~1.50)</td><td>6</td></tr>
+        <tr><td>2</td><td>N20 6 V 100 rpm with hall encoder</td><td>16</td></tr>
+        <tr><td>2</td><td>AS5600 module with magnet</td><td>6</td></tr>
+        <tr><td>1</td><td>1S LiPo 803040, 1000 mAh, protected</td><td>7</td></tr>
+        <tr><td>1</td><td>MTS-102 toggle</td><td>1</td></tr>
+        <tr><td>2</td><td>7 mm panel push buttons</td><td>1</td></tr>
+        <tr><td>1</td><td>3.5 mm panel jack + switch lead</td><td>2</td></tr>
+        <tr><td>—</td><td>470 µF, 100 nF ×2, resistors</td><td>1</td></tr>
+        <tr><td>—</td><td>wire, heat-shrink, JST-PH</td><td>2</td></tr>
+        <tr class="total"><td></td><td>Total</td><td>≈ 45</td></tr>
+      </tbody>
+    </table></div>
+    <div class="tbl"><table>
+      <thead><tr><th colspan="2">CyberBrick pair</th><th>~USD</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>CyberBrick hardware kit (cores, transmitter shield, 7.4 V pack and charger; check it includes a receiver shield)</td><td>45</td></tr>
+        <tr><td>2</td><td>N20 12 V 150 rpm with SH1.0 leads</td><td>8</td></tr>
+        <tr><td>4</td><td>AS5600 module with magnet</td><td>12</td></tr>
+        <tr><td>—</td><td>dividers, capacitors, SH1.0 3-pin leads</td><td>3</td></tr>
+        <tr><td>—</td><td>2 toggles, 3 buttons, 1 jack</td><td>5</td></tr>
+        <tr class="total"><td></td><td>Total</td><td>≈ 75</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <p class="prose mute">Prices are typical single-unit listings in October 2026, not quotes. The kit price is STEMfinity's listing. Bambu's own store pages couldn't be read from here.</p>
+</section>
+
+<section>
+  <h2>What isn't proven yet</h2>
+  <ul class="prose" style="margin:0;padding-left:1.2em;display:grid;gap:6px">
+    <li>The sizes of the AS5600 board, the N20 encoder board and both CyberBrick boards are assumptions in the model, marked "measure".</li>
+    <li>The XIAO's standing cradle, and whether the USB-C plug seats fully 0.4 mm under the lid top.</li>
+    <li>Port torque at 3.7 V and the 10 and 12 stage budgets. Hang a weight on the first print.</li>
+    <li>The CyberBrick pin maps come from community reverse engineering. Check your boards before soldering.</li>
+    <li>Checked: all three boxes render, and at turn 0 no moving part touches anything and the bought parts clear the shell and lid. The full fit check passes on main.</li>
+  </ul>
+  <p class="prose mute">Sources: Seeed XIAO ESP32-C3 wiki; Bambu Lab CyberBrick component list and user manual; CyberBrick MicroPython quick reference; rotorman/CyberBrick_ESPNOW wiki.</p>
+</section>
+
+<footer style="border-top:1px solid currentColor;opacity:.85;padding-top:16px;margin-top:24px;font-weight:700"><a href="index.html" style="color:inherit">← Back to all boxes</a> </footer>
+</div>
+
+
+<script src="makerworld.js"></script>
+<script src="mw.js"></script>
+</body></html>

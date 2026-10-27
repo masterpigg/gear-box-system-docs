@@ -1,0 +1,112 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TOLL pass-through counter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F6F1E6;--panel:#EDE3D0;--ink:#2A241C;--muted:#6B6152;--line:#D6C9B0;--fam:#1E1E1E;--famink:#FFFFFF;
+--red:#C8352B;--blue:#2F6FD0;--orange:#E07A1F;--green:#3E9A4A;--white:#FFFFFF;--bone:#E9DFC8;--plot1:#2F6FD0;--plot2:#C8352B}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1C1915;--panel:#28231C;--ink:#F1E9DA;--muted:#B5A88F;--line:#463D30;--fam:#5A5A5A;--plot1:#6FA2F0;--plot2:#F0776B}}
+:root[data-theme="dark"]{--bg:#1C1915;--panel:#28231C;--ink:#F1E9DA;--muted:#B5A88F;--line:#463D30;--fam:#5A5A5A;--plot1:#6FA2F0;--plot2:#F0776B}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif}
+main{max-width:960px;margin:0 auto;padding:24px max(16px,env(safe-area-inset-left)) 64px}
+nav a{color:var(--muted);text-decoration:none;font-size:15px}
+nav a:hover{color:var(--ink)}
+h1,h2,h3{font-family:"Bricolage Grotesque",sans-serif;line-height:1.15}
+h1{font-size:clamp(40px,8vw,68px);font-weight:800;margin:6px 0 8px;letter-spacing:-.02em}
+h2{font-size:28px;margin:44px 0 12px}
+h3{font-size:20px;margin:28px 0 8px}
+.eyebrow{display:inline-block;background:var(--fam);color:var(--famink);font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:999px;margin-top:20px}
+.lede{font-size:21px;max-width:44em}
+.readout{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 6px}
+.readout div{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 14px}
+.readout b{display:block;font-family:"JetBrains Mono",monospace;font-size:18px}
+.readout span{font-size:13px;color:var(--muted)}
+figure{margin:20px 0;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px;overflow:hidden}
+figure img{width:100%;height:auto;display:block;border-radius:8px;background:#fff}
+figcaption{font-size:14px;color:var(--muted);padding:8px 4px 2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.grid figure{margin:0}
+table{border-collapse:collapse;width:100%;font-size:15px}
+.tw{overflow-x:auto;margin:12px 0}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+code{font-family:"JetBrains Mono",monospace;font-size:.88em;background:var(--panel);padding:1px 5px;border-radius:4px}
+.chip{display:inline-block;width:12px;height:12px;border-radius:3px;border:1px solid var(--line);vertical-align:-1px;margin-right:6px}
+ol li,ul li{margin:6px 0}
+.note{border-left:4px solid var(--fam);background:var(--panel);padding:12px 16px;border-radius:0 10px 10px 0}
+svg text{font-family:"Atkinson Hyperlegible",sans-serif;fill:var(--ink)}
+.train{overflow-x:auto}.train svg{width:100%;min-width:620px;height:auto;display:block}
+footer{margin-top:48px;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<main>
+<nav><a href="index.html">← All boxes</a></nav>
+<span class="eyebrow">Readouts</span>
+<h1>TOLL</h1><div class="mw-slot" data-makerworld="box:toll"></div>
+<p class="lede">A counter that doesn't end the line. It counts turns to a tenth, <b>0.0 to 9.9</b>, like <a href="counter.html">TURNS</a>, and passes the line on out of E. Put it anywhere in a line and it keeps a tally of what went through, like a toll booth.</p>
+<div class="readout">
+<div><b>1 × 1</b><span>cell</span></div>
+<div><b>E = W</b><span>forward, x1</span></div>
+<div><b>0.0 – 9.9</b><span>turns that went by</span></div>
+<div><b>4</b><span>torque cost, stages</span></div>
+<div><b>fit-checked</b><span>on main, not printed</span></div>
+</div>
+<figure><img src="boxes/toll/img/toll_iso.png" alt="TOLL assembled"><figcaption>Assembled, reading 4.7. In on the west, out on the east.</figcaption></figure>
+<figure><img src="boxes/toll/img/toll_read.png" alt="Windows at 0.0, 4.7 and 9.9"><figcaption>The windows from the model at turn 0, 1692 and 3564: 0.0, 4.7, 9.9.</figcaption></figure>
+
+<h2>Ports</h2>
+<div class="tw"><table>
+<tr><th>Port</th><th>Side</th><th>Lane</th><th>Teeth</th><th>Layer</th><th>Role</th></tr>
+<tr><td><span class="chip" style="background:var(--blue)"></span>W</td><td>W</td><td>B</td><td>16</td><td>1</td><td>input</td></tr>
+<tr><td><span class="chip" style="background:var(--orange)"></span>E</td><td>E</td><td>B</td><td>16</td><td>1</td><td>output, x1 forward</td></tr>
+</table></div>
+
+<h2>How it works</h2>
+<figure><img src="boxes/toll/img/toll_top.png" alt="Lid off, from above"><figcaption>Lid off. The big idler A carries the line from W under the wheels to U, and U hands it on to E.</figcaption></figure>
+<p>The line runs <b>through</b> the tenths wheel: W (16) → A (30) → U (16) → E (16). That's three meshes, so the output is forward and x1. U turns clockwise, one turn per turn of the line, so it shows tenths just like TURNS' U.</p>
+<p>The rest is TURNS. As U goes from 9 to 0, its carry tooth kicks the pinion P 72°, and P steps the turns wheel T one digit. Between carries, P's long teeth straddle U's ring and lock T in place.</p>
+<p class="note"><b>What changed from TURNS.</b> To mesh the E port, U has to sit 16 mm from it, so both wheels moved up 2.3 mm, and a 30-tooth idler reaches from W to U under the row.</p>
+
+<h2>Exploded</h2>
+<figure><img src="boxes/toll/img/toll_exploded.png" alt="Exploded"><figcaption>Lid, wheels, stacks, keepers.</figcaption></figure>
+
+<h2>Torque cost</h2>
+<p><b>4 stages</b>: three meshes through to E, plus the carry once per turn. The counter adds a little drag, so whatever comes after TOLL gets slightly less.</p>
+
+<h2>Parts</h2>
+<ul>
+<li><span class="chip" style="background:var(--bone)"></span>Shell (bone, Readouts band), two keepers, a cap on A.</li>
+<li><span class="chip" style="background:#1E1E1E"></span>Lid in Readouts black, white raised lettering.</li>
+<li><span class="chip" style="background:var(--blue)"></span>Port W. <span class="chip" style="background:var(--orange)"></span>Port E.</li>
+<li><span class="chip" style="background:var(--white)"></span>Stacks A, U, P, T.</li>
+<li><span class="chip" style="background:var(--green)"></span>Two digit wheels.</li>
+<li>Bought: nothing.</li>
+</ul>
+<p><b>Drop-in order:</b> W, E and the keepers; A; U; P at rest; T; the cap; the wheels at 0; the lid. Every part is standard, so once the design thread adds it to the catalog, the library draws it like any other box.</p>
+
+<h2>Checked</h2>
+<ul>
+<li>Every moving part against every other, exported and intersected: clean at line turn 0, 170, 324, 340, 350 and 360 (through the carry), and at 3590.</li>
+<li>Fixed parts against each other: clean.</li>
+<li>The reading matches the model at 0.0, 4.7 and 9.9.</li>
+</ul>
+<h2>Verify when printed</h2>
+<ul>
+<li>The carry's kick downstream: E slows a little as U pushes P once per turn.</li>
+<li>A (30 teeth) in one cell, 1.4 mm from T's column.</li>
+</ul>
+
+</main>
+<script src="makerworld.js"></script>
+<script src="mw.js"></script>
+</body>
+</html>
+
+</body></html>

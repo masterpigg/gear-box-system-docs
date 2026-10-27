@@ -1,0 +1,496 @@
+<!doctype html><html><head>
+<meta name="viewport" content="width=device-width, initial-scale=1"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+
+<title>Gear Box Percussion</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: one reading column of plates; each box gets a diagram plate (drawn like a printed part on a bone lid) and its numbers beside it. */
+:root {
+  --bg: #F6F1E6;        /* bone paper */
+  --plate: #EDE3D0;     /* the lid color */
+  --ink: #1B1B1B;
+  --muted: #5E584C;
+  --line: #CDBFA4;
+  --drive: #D63A2F;     /* red: energy in */
+  --in: #1F6FD6;        /* blue: inputs */
+  --out: #E07A12;       /* orange: outputs */
+  --show: #2A9A49;      /* green: what you watch */
+  --gear: #FFFFFF;      /* white parts */
+  --metal: #8C939B;
+  --rubber: #3A3A3A;
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A1815; --plate: #26231E; --ink: #F1EADC; --muted: #B3A993; --line: #4A4337;
+  --drive: #F0604F; --in: #5A9BF0; --out: #F2A24E; --show: #4CC46E; --gear: #3A362F; --metal: #9AA3AD; --rubber: #C9C1B2; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1A1815; --plate: #26231E; --ink: #F1EADC; --muted: #B3A993; --line: #4A4337;
+  --drive: #F0604F; --in: #5A9BF0; --out: #F2A24E; --show: #4CC46E; --gear: #3A362F; --metal: #9AA3AD; --rubber: #C9C1B2; color-scheme: dark }
+
+body { background: var(--bg); color: var(--ink); font: 16px/1.55 var(--body); }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 64px; display: grid; gap: 44px; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.1; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 800; }
+h3 { font-size: 1.15rem; font-weight: 500; }
+p { margin: 0; max-width: 66ch; }
+.lede { font-size: 1.12rem; color: var(--muted); }
+.eyebrow { font: 700 .75rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+code, .mono { font-family: var(--mono); font-size: .92em; }
+section { display: grid; gap: 18px; }
+.cols { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 24px; align-items: start; }
+@media (max-width: 760px) { .cols { grid-template-columns: 1fr; } }
+.plate { background: var(--plate); border: 1px solid var(--line); border-radius: 6px; padding: 14px; overflow-x: auto; }
+.plate svg { display: block; width: 100%; height: auto; min-width: 460px; }
+.plate.small svg { min-width: 0; }
+.cap { font-size: .86rem; color: var(--muted); margin-top: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: 7px 10px 7px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 700; }
+.tbl { overflow-x: auto; }
+.num td:first-child { color: var(--muted); width: 38%; }
+.teach { border-left: 4px solid var(--show); padding: 6px 0 6px 12px; font-weight: 700; }
+.family { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 760px) { .family { grid-template-columns: 1fr; } }
+.card { display: grid; gap: 6px; padding: 14px 0 0; border-top: 3px solid var(--ink); }
+.card .name { font: 800 1.5rem/1 var(--display); }
+.card a { color: inherit; }
+.verdict { font: 700 .72rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; padding: 3px 7px; border-radius: 3px; white-space: nowrap; }
+.v-use { background: var(--show); color: var(--bg); }
+.v-buy { background: var(--in); color: var(--bg); }
+.v-no { background: var(--line); color: var(--ink); }
+.v-later { border: 1px solid var(--muted); color: var(--muted); }
+/* svg text and strokes from tokens */
+svg text { fill: var(--ink); font-family: var(--body); font-size: 12px; }
+svg .lbl { fill: var(--muted); font-size: 11px; }
+svg .mono { font-family: var(--mono); }
+.s-ink { stroke: var(--ink); fill: none; }
+.s-mut { stroke: var(--muted); fill: none; }
+.f-plate { fill: var(--plate); }
+.f-bg { fill: var(--bg); }
+.f-gear { fill: var(--gear); stroke: var(--ink); }
+.f-show { fill: var(--show); stroke: var(--ink); }
+.f-in { fill: var(--in); }
+.f-out { fill: var(--out); }
+.f-drive { fill: var(--drive); }
+.f-metal { fill: var(--metal); stroke: var(--ink); }
+.f-line { fill: var(--line); stroke: var(--ink); }
+.f-ink { fill: var(--ink); }
+/* sequencer */
+.seq { display: grid; gap: 10px; }
+.grid { display: grid; grid-template-columns: 64px repeat(8, minmax(28px, 1fr)); gap: 4px; align-items: center; }
+.grid .row { font: 700 .78rem/1 var(--mono); letter-spacing: .06em; }
+.cell { aspect-ratio: 1; border: 1px solid var(--line); background: var(--bg); border-radius: 4px; cursor: pointer; font: 700 .85rem var(--mono); color: var(--ink); padding: 0; max-width: 100%; }
+.cell[data-v="x"] { background: color-mix(in srgb, var(--show) 45%, var(--bg)); }
+.cell[data-v="X"] { background: var(--show); color: var(--bg); }
+.cell.now { outline: 3px solid var(--drive); outline-offset: -1px; }
+.cell:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid var(--in); outline-offset: 2px; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+button.go { font: 700 .95rem var(--body); padding: 8px 16px; border-radius: 4px; border: 0; background: var(--drive); color: #fff; cursor: pointer; }
+select, input[type=range] { font: inherit; accent-color: var(--drive); }
+.strings { font: .9rem var(--mono); color: var(--muted); }
+.chain { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font: 700 .85rem var(--mono); }
+.chain span.b { padding: 5px 9px; border: 1.5px solid var(--ink); border-radius: 4px; background: var(--plate); }
+.chain span.b.hot { border-color: var(--show); box-shadow: inset 0 -3px 0 var(--show); }
+.chain span.arr { color: var(--muted); }
+.combo { display: grid; gap: 6px; padding-block: 10px; border-bottom: 1px solid var(--line); }
+ul { margin: 0; padding-left: 1.2em; max-width: 66ch; }
+li + li { margin-top: 4px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="wrap">
+<nav style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-weight:700"><a href="index.html" style="color:inherit">← All boxes</a><span style="opacity:.6;font-weight:400">Gear Box System</span></nav>
+
+<header style="display:grid;gap:14px">
+  <div class="eyebrow">Gear Box System · fit-checked · 2026-10-27</div>
+  <h1>Gear Box Percussion</h1><div class="mw-slot" data-makerworld="box:beat,box:boom,box:roll"></div>
+  <p class="lede">Three boxes that turn the line into rhythm. Plastic doesn't ring like metal, so they lean on what plastic does well: clacks, toks and thumps. Where a box needs a ringing note, it uses a bought steel tine, the way the motor box buys its N20.</p>
+</header>
+
+<section aria-labelledby="fam">
+  <h2 id="fam">The family</h2>
+  <div class="family">
+    <div class="card"><span class="eyebrow">1 cell · W→E ×1</span><span class="name">BEAT</span><p>A drummer on a wire. A rhythm wheel lifts a little hammer and drops it: tok, tok, tok, tok.</p><p class="teach">Frequency and rhythm</p></div>
+    <div class="card"><span class="eyebrow">2 cells · end box</span><span class="name">BOOM</span><p>Click, click, click… BOOM. A snail cam winds a band for one crank turn, then lets go into a drum.</p><p class="teach">Energy storage</p></div>
+    <div class="card"><span class="eyebrow">2 cells · end box</span><span class="name">ROLL</span><p>A programmable drum machine. A swappable disc plays a drum, a tok block and a tine, eight steps a bar.</p><p class="teach">Programs as data</p></div>
+  </div>
+</section>
+
+<section aria-labelledby="snd">
+  <h2 id="snd">What actually sounds good</h2>
+  <p>PLA soaks up vibration roughly a hundred times faster than steel. A printed bar goes "tck" and is silent in a few hundredths of a second; a steel tine rings for seconds. So the boxes use plastic for percussion and buy metal for tone.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Sound source</th><th>What you get</th><th></th></tr></thead>
+    <tbody>
+      <tr><td>Reeds snapping off ratchet teeth</td><td>Loud and crisp: plastic's best sound</td><td><span class="verdict v-use">use · BOOM's clicker</span></td></tr>
+      <tr><td>Hard head on a hollow block with a slit</td><td>A good "tok", like a temple block</td><td><span class="verdict v-use">use · tok voice</span></td></tr>
+      <tr><td>Packing tape or balloon skin over a hollow box</td><td>A real thump. The box itself is the drum's body</td><td><span class="verdict v-use">use · drums</span></td></tr>
+      <tr><td>Kalimba tine, clamped and struck</td><td>Rings clearly. Slide it in its clamp to tune it</td><td><span class="verdict v-buy">buy · ting voice</span></td></tr>
+      <tr><td>Hardwood dowel on felt (claves)</td><td>A bright "tock"</td><td><span class="verdict v-buy">buy · swap-in</span></td></tr>
+      <tr><td>Chime tubes, glockenspiel bars, bells</td><td>Beautiful, but long: a 50 mm bar is already a high note</td><td><span class="verdict v-later">later · 2-cell CHIME</span></td></tr>
+      <tr><td>Bead rattles</td><td>Fine shaken, quiet when tapped</td><td><span class="verdict v-later">later</span></td></tr>
+      <tr><td>Printed tuned bars or tines</td><td>Dull, short, out of tune</td><td><span class="verdict v-no">only to show why metal rings</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section aria-labelledby="act">
+  <h2 id="act">The action every box shares</h2>
+  <p>It is a piano action laid flat on the lid. A lobe on a turning disc lifts the key slowly; at the lobe's cliff the key falls, stops on its rest, and the springy beater carries the head on through a 1 mm gap to strike the voice, then bounces clear so the voice can ring.</p>
+  <div class="plate">
+    <svg viewBox="0 0 680 270" role="img" aria-label="Side view of the action: disc with a lobe, key on a pivot, back-check, beater, head and voice">
+      <!-- lid -->
+      <rect x="20" y="226" width="640" height="14" class="f-plate" stroke="var(--ink)"/>
+      <text x="26" y="258" class="lbl">lid top, z 26</text>
+      <!-- cheeks + back-check -->
+      <rect x="92" y="78" width="40" height="148" class="f-line" opacity=".55"/>
+      <rect x="92" y="78" width="16" height="10" class="f-ink"/>
+      <rect x="92" y="88" width="16" height="5" fill="var(--rubber)"/>
+      <text x="40" y="70" class="lbl">back-check + felt</text>
+      <!-- disc edge-on with one lobe -->
+      <rect x="200" y="212" width="170" height="14" class="f-gear"/>
+      <path d="M232 212 L300 212 L300 186 Z" class="f-gear"/>
+      <path d="M300 212 L300 186" stroke="var(--drive)" stroke-width="2.5"/>
+      <text x="300" y="250" class="lbl" text-anchor="middle">cliff</text>
+      <text x="240" y="250" class="lbl" text-anchor="middle">ramp</text>
+      <path d="M232 222 l6 -3 M370 219 h18" class="s-mut"/>
+      <text x="392" y="222" class="lbl">disc turns this way →</text>
+      <!-- key -->
+      <rect x="96" y="96" width="232" height="18" rx="2" class="f-gear"/>
+      <circle cx="122" cy="105" r="6" class="f-metal"/>
+      <text x="138" y="132" class="lbl">axle: 1.75 mm filament</text>
+      <!-- nub -->
+      <rect x="290" y="114" width="12" height="62" class="f-gear"/>
+      <circle cx="296" cy="178" r="6" class="f-gear"/>
+      <text x="310" y="168" class="lbl">nub</text>
+      <!-- beater strip + head + ball -->
+      <rect x="312" y="110" width="210" height="5" class="f-show"/>
+      <rect x="500" y="98" width="44" height="36" rx="6" class="f-show"/>
+      <circle cx="522" cy="138" r="8" class="f-metal"/>
+      <text x="420" y="102" class="lbl">beater: a thin, springy strip</text>
+      <text x="552" y="122" class="lbl">head + 6 mm</text>
+      <text x="552" y="135" class="lbl">steel ball</text>
+      <!-- voice -->
+      <rect x="470" y="152" width="140" height="74" rx="4" class="f-plate" stroke="var(--ink)"/>
+      <rect x="560" y="152" width="30" height="4" class="f-ink"/>
+      <text x="540" y="196" text-anchor="middle">voice</text>
+      <text x="540" y="212" text-anchor="middle" class="lbl">tok block, drum or tine</text>
+      <path d="M612 146 v10 M606 146 h12 M606 156 h12" class="s-ink"/>
+      <text x="622" y="154" class="lbl">1 mm let-off</text>
+      <!-- labels -->
+      <text x="190" y="90" class="lbl">key</text>
+      <path d="M296 72 v18" stroke="var(--drive)" stroke-width="2" marker-end="url(#ah)"/>
+      <path d="M522 62 v26" stroke="var(--drive)" stroke-width="2" marker-end="url(#ah)"/>
+      <text x="300" y="66" class="lbl">lift ×1</text>
+      <text x="526" y="56" class="lbl">head lift ×2 to ×4</text>
+      <defs><marker id="ah" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="var(--drive)"/></marker></defs>
+    </svg>
+  </div>
+  <p class="cap">Colors follow the system's roles: white parts move force, green is what you watch, gray is bought metal.</p>
+</section>
+
+<section aria-labelledby="beat">
+  <div class="eyebrow">Box 1</div>
+  <h2 id="beat">BEAT</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px"><figure style="margin:0;display:grid;gap:6px;min-width:0"><img src="boxes/beat/img/beat_iso.png" alt="BEAT assembled" style="width:100%;border-radius:6px;background:#F8F8F6;border:1px solid var(--line)"><figcaption class="cap" style="margin:0">BEAT assembled</figcaption></figure><figure style="margin:0;display:grid;gap:6px;min-width:0"><img src="boxes/beat/img/beat_exploded.png" alt="BEAT exploded" style="width:100%;border-radius:6px;background:#F8F8F6;border:1px solid var(--line)"><figcaption class="cap" style="margin:0">BEAT exploded</figcaption></figure></div>
+  <div class="cols">
+    <div style="display:grid;gap:14px">
+      <div class="plate">
+        <svg viewBox="0 0 400 300" role="img" aria-label="BEAT seen from above: ports, gear train, wheel, key and voice">
+          <rect x="40" y="20" width="256" height="256" rx="6" class="f-plate" stroke="var(--ink)"/>
+          <!-- scale: 4 px per mm, center (168,148) -->
+          <circle cx="72" cy="148" r="32" class="f-in" opacity=".9"/><text x="72" y="152" text-anchor="middle" style="fill:#fff;font-weight:700">W 16</text>
+          <circle cx="168" cy="148" r="64" fill="none" stroke="var(--ink)" stroke-dasharray="4 3"/><text x="168" y="226" text-anchor="middle" class="lbl">T 32, under the lid</text>
+          <circle cx="246" cy="107" r="24" fill="none" stroke="var(--ink)" stroke-dasharray="4 3"/><text x="246" y="80" text-anchor="middle" class="lbl">I 12</text>
+          <circle cx="272" cy="148" r="24" class="f-out"/><text x="272" y="152" text-anchor="middle" style="font-weight:700">E 12</text>
+          <g id="beatwheel"></g>
+          <!-- key along y = -9.5 (south = down) -->
+          <rect x="88" y="178" width="92" height="16" rx="2" class="f-gear"/>
+          <rect x="104" y="170" width="8" height="32" class="f-line"/><rect x="104" y="170" width="8" height="32" transform="translate(0,0)" opacity="0"/>
+          <rect x="170" y="182" width="82" height="7" class="f-show"/>
+          <circle cx="250" cy="186" r="18" class="f-show"/>
+          <rect x="222" y="190" width="52" height="80" rx="4" class="f-plate" stroke="var(--ink)" opacity=".85"/>
+          <text x="248" y="246" text-anchor="middle" class="lbl">tok</text>
+          <text x="248" y="258" text-anchor="middle" class="lbl">block</text>
+          <text x="80" y="214" class="lbl">pivot</text>
+          <text x="320" y="152" class="lbl">→ the line</text>
+          <text x="320" y="166" class="lbl">goes on ×1</text>
+        </svg>
+      </div>
+      <div class="plate small">
+        <svg viewBox="0 0 400 150" role="img" aria-label="Two rhythm wheels: four, and the 3-3-2 clave">
+          <g id="wheelFour" transform="translate(90,75)"></g>
+          <g id="wheelClave" transform="translate(300,75)"></g>
+          <text x="90" y="146" text-anchor="middle" class="mono">Xxxx</text>
+          <text x="300" y="146" text-anchor="middle" class="mono">X..X..X.</text>
+        </svg>
+        <p class="cap">Wheels from strings: X loud (3.5 mm lobe), x soft (2.2 mm), dot a rest. The red edge is the cliff, where the hammer drops.</p>
+      </div>
+    </div>
+    <div style="display:grid;gap:12px">
+      <p class="teach">Frequency and rhythm: taps a minute = turns a minute × taps per turn.</p>
+      <table class="num"><tbody>
+        <tr><td>Train</td><td>W 16 → T 32 → I 12 → E 12, three meshes, ×1</td></tr>
+        <tr><td>Wheel</td><td>on T, ×½ of the port</td></tr>
+        <tr><td>Key</td><td>×2.4 from nub to head</td></tr>
+        <tr><td>Head drop</td><td>about 8 mm on an X</td></tr>
+        <tr><td>Tempo</td><td>port rpm × ½ × taps per wheel. On the motor box, <code>Xxxx</code> is 90 a minute</td></tr>
+        <tr><td>Cost</td><td>3 through to E</td></tr>
+        <tr><td>Voices</td><td>tok block, or a kalimba tine (30.5 mm free, about 790 Hz)</td></tr>
+      </tbody></table>
+      <p>Because the line passes through, BEATs chain. A TEE into two BEATs with <code>Xxx</code> and <code>Xxxx</code> plays three against four, which meet every twelve taps.</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="boom">
+  <div class="eyebrow">Box 2</div>
+  <h2 id="boom">BOOM</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px"><figure style="margin:0;display:grid;gap:6px;min-width:0"><img src="boxes/boom/img/boom_iso.png" alt="BOOM assembled" style="width:100%;border-radius:6px;background:#F8F8F6;border:1px solid var(--line)"><figcaption class="cap" style="margin:0">BOOM assembled</figcaption></figure><figure style="margin:0;display:grid;gap:6px;min-width:0"><img src="boxes/boom/img/boom_exploded.png" alt="BOOM exploded" style="width:100%;border-radius:6px;background:#F8F8F6;border:1px solid var(--line)"><figcaption class="cap" style="margin:0">BOOM exploded</figcaption></figure></div>
+  <div class="cols">
+    <div style="display:grid;gap:14px">
+      <div class="plate">
+        <svg viewBox="0 0 680 230" role="img" aria-label="BOOM side view: snail cam, key with band, beater over the drum">
+          <rect x="20" y="196" width="640" height="14" class="f-plate" stroke="var(--ink)"/>
+          <!-- snail edge-on -->
+          <rect x="150" y="182" width="96" height="14" class="f-gear"/>
+          <path d="M152 182 L244 160 L244 182 Z" class="f-gear"/>
+          <path d="M244 160 V182" stroke="var(--drive)" stroke-width="2.5"/>
+          <text x="196" y="226" class="lbl" text-anchor="middle">snail: 6 mm over 330°</text>
+          <!-- cheeks -->
+          <rect x="60" y="70" width="34" height="126" class="f-line" opacity=".55"/>
+          <!-- key raised (wound) -->
+          <g transform="rotate(-11 80 92)">
+            <rect x="58" y="84" width="300" height="18" rx="2" class="f-gear"/>
+            <rect x="192" y="102" width="12" height="44" class="f-gear"/>
+            <rect x="352" y="98" width="230" height="6" class="f-show"/>
+            <rect x="562" y="86" width="46" height="34" rx="6" class="f-show"/>
+          </g>
+          <circle cx="80" cy="92" r="6" class="f-metal"/>
+          <!-- band -->
+          <path d="M330 52 L330 178" stroke="var(--rubber)" stroke-width="3"/>
+          <rect x="320" y="176" width="20" height="20" class="f-line"/>
+          <text x="340" y="150" class="lbl">loom band,</text>
+          <text x="340" y="163" class="lbl">stretched</text>
+          <!-- drum -->
+          <rect x="430" y="162" width="200" height="34" class="f-plate" stroke="var(--ink)"/>
+          <path d="M430 162 H630" stroke="var(--ink)" stroke-width="3"/>
+          <text x="530" y="186" text-anchor="middle">drum: tape skin</text>
+          <path d="M590 120 V154" stroke="var(--drive)" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#ah2)"/>
+          <text x="600" y="146" class="lbl">BOOM</text>
+          <defs><marker id="ah2" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="var(--drive)"/></marker></defs>
+          <text x="40" y="40" class="lbl">key ×4.1: the head rises about 22 mm</text>
+        </svg>
+      </div>
+      <div class="plate small">
+        <svg viewBox="0 0 400 160" role="img" aria-label="Head height over three crank turns: a slow rise and a sudden drop each turn">
+          <line x1="40" y1="130" x2="380" y2="130" class="s-mut"/>
+          <line x1="40" y1="20" x2="40" y2="130" class="s-mut"/>
+          <text x="36" y="34" text-anchor="end" class="lbl">22</text>
+          <text x="36" y="134" text-anchor="end" class="lbl">0</text>
+          <text x="44" y="16" class="lbl">head height, mm</text>
+          <path id="saw" fill="none" stroke="var(--show)" stroke-width="2.5"/>
+          <text x="153" y="148" text-anchor="middle" class="lbl">1</text>
+          <text x="266" y="148" text-anchor="middle" class="lbl">2</text>
+          <text x="379" y="148" text-anchor="end" class="lbl">3 crank turns</text>
+        </svg>
+        <p class="cap">Energy goes in over a whole turn and comes out in a few milliseconds: the same energy, hundreds of times the power.</p>
+      </div>
+    </div>
+    <div style="display:grid;gap:12px">
+      <p class="teach">Energy storage: work in slowly, all of it out at once.</p>
+      <table class="num"><tbody>
+        <tr><td>Train</td><td>W 16 → C 32, one mesh, ×½</td></tr>
+        <tr><td>Rhythm</td><td>one BOOM per crank turn (two port turns)</td></tr>
+        <tr><td>Spring</td><td>one loom band, doubled, over the key and under a lid post</td></tr>
+        <tr><td>Clicker</td><td>24-tooth ratchet rim and a reed printed on the lid: 24 clicks per boom, and it stops the band winding the line backwards</td></tr>
+        <tr><td>Drum</td><td>a shell over a 40 mm hole: the whole box is the drum body, with a 10 mm vent</td></tr>
+        <tr><td>Strike</td><td>about 20 to 40 mJ, a hundred times a BEAT tap (estimate)</td></tr>
+        <tr><td>Cost</td><td>2, plus the wind-up: plan on 6</td></tr>
+      </tbody></table>
+      <p>A QUARTER box in front stretches the build to four crank turns of clicking before each boom.</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="roll">
+  <div class="eyebrow">Box 3</div>
+  <h2 id="roll">ROLL</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px"><figure style="margin:0;display:grid;gap:6px;min-width:0"><img src="boxes/roll/img/roll_iso.png" alt="ROLL assembled" style="width:100%;border-radius:6px;background:#F8F8F6;border:1px solid var(--line)"><figcaption class="cap" style="margin:0">ROLL assembled</figcaption></figure><figure style="margin:0;display:grid;gap:6px;min-width:0"><img src="boxes/roll/img/roll_exploded.png" alt="ROLL exploded" style="width:100%;border-radius:6px;background:#F8F8F6;border:1px solid var(--line)"><figcaption class="cap" style="margin:0">ROLL exploded</figcaption></figure></div>
+  <p>The player piano, the music box and the Jacquard loom share one idea: the machine is fixed and the program is something you swap. ROLL is a disc music box (the Polyphon of the 1880s) with three drums instead of a comb. Print a disc from three strings, or push pegs into the blank disc by hand.</p>
+  <div class="cols">
+    <div class="plate small">
+      <svg viewBox="0 0 400 330" role="img" aria-label="ROLL program disc seen from above, with three rings and the three keys reading it">
+        <g id="rollDisc" transform="translate(170,165)"></g>
+        <text x="20" y="320" class="lbl">rings: drum 8 mm, ting 12.5 mm, tok 17 mm. Read heads at 61°, −34°, 0°.</text>
+      </svg>
+    </div>
+    <div class="seq">
+      <p class="teach">Programs as data: same machine, new disc, new song.</p>
+      <div class="grid" id="grid" role="grid" aria-label="Program editor: three voices by eight steps"></div>
+      <div class="controls">
+        <button class="go" id="play" type="button">Play</button>
+        <label for="preset">Disc</label>
+        <select id="preset"><option>rock</option><option>clave</option><option>march</option><option>train</option><option>blank</option></select>
+        <label for="tempo">Steps a minute</label>
+        <input id="tempo" type="range" min="60" max="480" step="10" value="180">
+        <span class="mono" id="tempoOut">180</span>
+      </div>
+      <p class="strings" id="strings"></p>
+      <p class="cap">Click a step to cycle rest, soft, loud. The sounds are synthesized stand-ins. 180 steps a minute is what the motor box gives.</p>
+    </div>
+  </div>
+  <table class="num"><tbody>
+    <tr><td>Train</td><td>W 16 → D 32, one mesh, ×½; 8 steps a disc turn: one bar per crank turn</td></tr>
+    <tr><td>Keys</td><td>three on one filament axle, 7 mm apart; beaters fan out to the voices</td></tr>
+    <tr><td>Skew</td><td>the read heads sit at different angles, so each ring's lobes are turned to match. Tape heads need the same fix</td></tr>
+    <tr><td>Voices</td><td>drum (tape skin over a 14 mm hole), tok block, kalimba tine (23 mm free, about 1.4 kHz)</td></tr>
+    <tr><td>Pegs</td><td>one size per ring; each slot is wider at the cliff end, so a peg only fits the right way round</td></tr>
+    <tr><td>Cost</td><td>2, plus up to three keys at once: plan on 4</td></tr>
+  </tbody></table>
+</section>
+
+<section aria-labelledby="combo">
+  <h2 id="combo">Playing with the other boxes</h2>
+  <div class="combo"><div class="chain"><span class="b">GENEVA</span><span class="arr">→</span><span class="b hot">ROLL</span></div><p><strong>A clock.</strong> A Geneva step is a quarter port turn, which is exactly one ROLL step. Each crank turn plays one step with a crisp jump, then everything waits.</p></div>
+  <div class="combo"><div class="chain"><span class="b">MOTOR</span><span class="arr">→</span><span class="b hot">BEAT</span><span class="arr">→</span><span class="b">HALF</span><span class="arr">→</span><span class="b hot">BEAT</span></div><p><strong>Steady tempo and half time.</strong> The motor never rushes; the HALF box makes the second drummer play half as fast.</p></div>
+  <div class="combo"><div class="chain"><span class="b">CRANK</span><span class="arr">→</span><span class="b">TEE</span><span class="arr">→</span><span class="b hot">BEAT Xxx</span><span class="arr">+ N:</span><span class="b hot">BEAT Xxxx</span></div><p><strong>Three against four.</strong> Two wheels on one line meet every twelve taps: the lowest common multiple, by ear.</p></div>
+  <div class="combo"><div class="chain"><span class="b">CRANK</span><span class="arr">→</span><span class="b">QUARTER</span><span class="arr">→</span><span class="b hot">BOOM</span></div><p><strong>A long build.</strong> Four crank turns of clicking before each boom.</p></div>
+</section>
+
+<section aria-labelledby="files">
+  <h2 id="files">What to check first</h2>
+  <ul>
+    <li>All three are clean in the fit check in test 0 at several angles, through lobes and drops, and test 7 shows only resting face contacts.</li>
+    <li>First prints should prove the let-off (does the head bounce clear of the voice), the loom band's force and the clicker reed, and the pegs' hold in the blank disc.</li>
+  </ul>
+</section>
+<footer style="border-top:1px solid var(--line);padding-top:16px;font-weight:700"><a href="index.html" style="color:inherit">← Back to all boxes</a></footer>
+</div>
+
+<script>
+(function () {
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+  const pol = (r, a) => [r * Math.cos(a * Math.PI / 180), -r * Math.sin(a * Math.PI / 180)];
+  // a lobe in plan: an annular sector from the cliff (a0) to a0 + span, shaded by height; the cliff edge red
+  function lobe(g, r, a0, span, h, w) {
+    const p = [];
+    for (let i = 0; i <= 10; i++) p.push(pol(r - w / 2, a0 + span * i / 10));
+    for (let i = 10; i >= 0; i--) p.push(pol(r + w / 2, a0 + span * i / 10));
+    g.appendChild(el("path", { d: "M" + p.map(q => q.join(" ")).join(" L") + " Z", fill: "var(--gear)", stroke: "var(--ink)", "stroke-width": 0.8, opacity: 0.55 + 0.45 * h }));
+    const c1 = pol(r - w / 2, a0), c2 = pol(r + w / 2, a0);
+    g.appendChild(el("line", { x1: c1[0], y1: c1[1], x2: c2[0], y2: c2[1], stroke: "var(--drive)", "stroke-width": 2.5 }));
+  }
+  function wheel(g, R, rings, opts) {
+    g.innerHTML = "";
+    g.appendChild(el("circle", { r: R, fill: "var(--gear)", stroke: "var(--ink)", "stroke-width": 1.2 }));
+    g.appendChild(el("circle", { r: R * 0.22, fill: "var(--plate)", stroke: "var(--ink)" }));
+    for (const ring of rings) {
+      const n = ring.prog.length, st = 360 / n, span = st * (ring.frac || 0.8);
+      for (let k = 0; k < n; k++) {
+        const ch = ring.prog[k];
+        if (ch !== "X" && ch !== "x") continue;
+        // step k plays when the disc has turned k steps; the disc turns CCW, so lobes run clockwise from the read head
+        const a0 = ring.at - st / 2 - k * st - span / 2;
+        lobe(g, ring.r, a0, span, ch === "X" ? 1 : 0.4, ring.w);
+      }
+      if (opts && opts.heads) {
+        const hp = pol(ring.r, ring.at);
+        g.appendChild(el("circle", { cx: hp[0], cy: hp[1], r: 5, fill: "var(--show)", stroke: "var(--ink)" }));
+      }
+    }
+  }
+  // BEAT plan wheel (4 px/mm) and the two example wheels
+  wheel(document.getElementById("beatwheel"), 50, [{ prog: "Xxxx", r: 38, at: -90, w: 12, frac: 0.4 }], { heads: true });
+  document.getElementById("beatwheel").setAttribute("transform", "translate(168,148)");
+  wheel(document.getElementById("wheelFour"), 58, [{ prog: "Xxxx", r: 44, at: -90, w: 14, frac: 0.4 }], { heads: true });
+  wheel(document.getElementById("wheelClave"), 58, [{ prog: "X..X..X.", r: 44, at: -90, w: 14, frac: 0.8 }], { heads: true });
+
+  // BOOM sawtooth: 3 turns, rise over 330 of 360 degrees, drop
+  (function () {
+    const x0 = 40, x1 = 380, y0 = 130, yT = 30, per = (x1 - x0) / 3;
+    let d = "M" + x0 + " " + y0;
+    for (let t = 0; t < 3; t++) {
+      const xs = x0 + t * per, xr = xs + per * (15 / 360), xc = xs + per * (345 / 360);
+      d += " L" + xr + " " + y0 + " L" + xc + " " + yT + " L" + xc + " " + y0 + " L" + (xs + per) + " " + y0;
+    }
+    document.getElementById("saw").setAttribute("d", d);
+  })();
+
+  // ROLL: program editor, disc drawing and a small synth
+  const PRESETS = {
+    rock: ["X...X...", "..X...X.", "x.x.x.x."],
+    clave: ["X..X..X.", "....X...", "xxxxxxxx"],
+    march: ["X.x.X.x.", "..X...X.", "X......."],
+    train: ["X.......", "x.x.x.x.", ".x.x.x.x"],
+    blank: ["........", "........", "........"]
+  };
+  const VOICES = ["DRUM", "TOK", "TING"];
+  // disc geometry at 6 px/mm: rings 8, 17, 12.5 mm; heads at 61, 0, -34 degrees
+  const RINGS = [{ r: 48, at: 61, w: 14 }, { r: 102, at: 0, w: 16 }, { r: 75, at: -34, w: 16 }];
+  let prog = PRESETS.rock.map(s => s.split(""));
+  const grid = document.getElementById("grid");
+  const cells = [];
+  function draw() {
+    wheel(document.getElementById("rollDisc"), 122, RINGS.map((g, i) => ({ prog: prog[i].join(""), r: g.r, at: g.at, w: g.w, frac: 0.7 })), { heads: true });
+    document.getElementById("strings").textContent = prog.map((p, i) => VOICES[i].padEnd(5) + p.join("")).join("   ");
+    cells.forEach((row, i) => row.forEach((c, k) => { c.dataset.v = prog[i][k]; c.textContent = prog[i][k] === "." ? "" : prog[i][k]; c.setAttribute("aria-label", VOICES[i] + " step " + (k + 1) + ": " + ({ ".": "rest", x: "soft", X: "loud" })[prog[i][k]]); }));
+  }
+  grid.appendChild(document.createElement("span"));
+  for (let k = 0; k < 8; k++) { const s = document.createElement("span"); s.className = "row"; s.style.textAlign = "center"; s.textContent = k + 1; grid.appendChild(s); }
+  for (let i = 0; i < 3; i++) {
+    const lab = document.createElement("span"); lab.className = "row"; lab.textContent = VOICES[i]; grid.appendChild(lab);
+    cells[i] = [];
+    for (let k = 0; k < 8; k++) {
+      const b = document.createElement("button"); b.type = "button"; b.className = "cell"; b.id = "c" + i + k;
+      b.addEventListener("click", () => { prog[i][k] = ({ ".": "x", x: "X", X: "." })[prog[i][k]]; draw(); });
+      grid.appendChild(b); cells[i][k] = b;
+    }
+  }
+  document.getElementById("preset").addEventListener("change", e => { prog = PRESETS[e.target.value].map(s => s.split("")); draw(); });
+  const tempo = document.getElementById("tempo"), tempoOut = document.getElementById("tempoOut");
+  tempo.addEventListener("input", () => { tempoOut.textContent = tempo.value; });
+  draw();
+
+  let ctx = null, timer = null, step = 0;
+  function hit(v, loud) {
+    const t = ctx.currentTime, g = ctx.createGain(), amp = loud ? 0.9 : 0.4;
+    g.connect(ctx.destination);
+    if (v === 0) { // drum: a falling sine thump
+      const o = ctx.createOscillator(); o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(48, t + 0.25);
+      g.gain.setValueAtTime(amp, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.35); o.connect(g); o.start(t); o.stop(t + 0.4);
+    } else if (v === 1) { // tok: a short band-passed click
+      const n = ctx.createBuffer(1, ctx.sampleRate * 0.06, ctx.sampleRate), d = n.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3);
+      const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(); s.buffer = n; f.type = "bandpass"; f.frequency.value = 1100; f.Q.value = 6;
+      g.gain.value = amp * 2.2; s.connect(f); f.connect(g); s.start(t);
+    } else { // ting: a struck tine, 1.4 kHz with a long ring
+      const o = ctx.createOscillator(), o2 = ctx.createOscillator(), g2 = ctx.createGain();
+      o.frequency.value = 1390; o2.frequency.value = 1390 * 6.27; g2.gain.value = 0.12;
+      g.gain.setValueAtTime(amp * 0.35, t); g.gain.exponentialRampToValueAtTime(0.001, t + 1.2);
+      o.connect(g); o2.connect(g2); g2.connect(g); o.start(t); o2.start(t); o.stop(t + 1.3); o2.stop(t + 0.2);
+    }
+  }
+  function tick() {
+    cells.forEach(row => row.forEach(c => c.classList.remove("now")));
+    for (let i = 0; i < 3; i++) { cells[i][step].classList.add("now"); const ch = prog[i][step]; if (ch !== ".") hit(i, ch === "X"); }
+    step = (step + 1) % 8;
+    timer = setTimeout(tick, 60000 / Number(tempo.value));
+  }
+  document.getElementById("play").addEventListener("click", e => {
+    if (timer) { clearTimeout(timer); timer = null; e.target.textContent = "Play"; cells.forEach(r => r.forEach(c => c.classList.remove("now"))); return; }
+    try { ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); ctx.resume(); } catch (err) { e.target.textContent = "No audio here"; return; }
+    step = 0; e.target.textContent = "Stop"; tick();
+  });
+})();
+</script>
+
+
+<script src="makerworld.js"></script>
+<script src="mw.js"></script>
+</body></html>

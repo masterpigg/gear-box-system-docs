@@ -1,0 +1,209 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FORK Junction Box</title>
+<style>
+/* Layout: one reading column with wide figure bands; the six role colors carry the meaning, as on the boxes */
+:root {
+  --bg: #F6F1E6; --panel: #EDE3D0; --fg: #23211D; --muted: #6B655A; --line: #CFC3AC;
+  --red: #D63A2F; --blue: #1F6FD6; --orange: #E07A16; --green: #2A9A48; --white: #FFFDF8;
+  --ink: #1B1B1B;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #2C3035; --ink: #ECE6DA; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #2C3035; --ink: #ECE6DA; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 17px/1.6 var(--f-body); }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 64px; display: grid; gap: 48px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.7rem; font-weight: 700; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; max-width: 66ch; }
+section { display: grid; gap: 16px; min-width: 0; }
+.eyebrow { font: 600 0.75rem/1 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 1.2rem; max-width: 60ch; }
+.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+.hero > div { display: grid; gap: 16px; min-width: 0; }
+.hero img { border-radius: 10px; background: #FFFDE7; width: 100%; min-width: 0; }
+.shot { width: 100%; max-width: 640px; justify-self: center; }
+.shot img { width: 100%; border-radius: 10px; background: #FFFDE7; }
+@media (max-width: 760px) { .hero { grid-template-columns: 1fr; } }
+.sym { display: inline-grid; place-items: center; width: 1.3em; height: 1.3em; border-radius: 50%; background: var(--green); color: var(--white); font-family: var(--f-display); font-size: 0.8em; vertical-align: 0.1em; }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+figure { margin: 0; display: grid; gap: 8px; min-width: 0; }
+figcaption { font-size: 0.9rem; color: var(--muted); }
+.panel { background: var(--panel); border-radius: 10px; padding: 16px; }
+svg { display: block; width: 100%; height: auto; }
+svg text { font-family: var(--f-mono); fill: var(--fg); }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.scroll { overflow-x: auto; }
+code, .mono { font-family: var(--f-mono); font-size: 0.88em; }
+.kinds td:first-child { font-weight: 700; white-space: nowrap; }
+.kinds tr.us td { background: color-mix(in srgb, var(--green) 14%, transparent); }
+.sim { display: grid; grid-template-columns: 300px 1fr; gap: 24px; align-items: start; }
+@media (max-width: 760px) { .sim { grid-template-columns: 1fr; } }
+.controls { display: grid; gap: 14px; min-width: 0; }
+label { font-weight: 700; display: flex; justify-content: space-between; gap: 8px; }
+input[type=range] { width: 100%; accent-color: var(--red); }
+button { font: 700 1rem var(--f-display); padding: 10px 18px; border-radius: 999px; border: 2px solid var(--red); background: var(--red); color: #fff; cursor: pointer; }
+button.ghost { background: transparent; color: var(--red); }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; }
+.readout { font: 600 0.95rem var(--f-mono); color: var(--muted); }
+.result { font: 700 3rem/1 var(--f-display); color: var(--green); }
+ul.plain { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 66ch; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+.cols > div { display: grid; gap: 10px; align-content: start; min-width: 0; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style></head><body>
+<div class="wrap">
+<p class="readout"><a href="index.html" style="color:var(--blue)">← All gear boxes</a> · family: <a href="spin.html" style="color:var(--blue)">SPIN</a> · FORK · <a href="shuffle.html" style="color:var(--blue)">SHUFFLE</a></p>
+
+<header class="hero">
+  <div>
+    <span class="eyebrow">Gear Box System · junction box · fit-checked</span>
+    <h1>FORK <span class="sym">?</span></h1><div class="mw-slot" data-makerworld="box:fork"></div>
+    <p class="lede">The line comes in on West and leaves East or North, and a flick of the wheel decides which. It's the Blue Ball Machine's random junction, and the gear system's first "if".</p>
+    <p class="readout">1 cell · W in (16) · E out (22) or N out (24) · x1 · cost 5</p>
+  </div>
+  <div class="panel"><svg id="hero" viewBox="0 0 400 400" role="img" aria-label="Top view of the turret inside FORK"></svg></div>
+</header>
+
+<section>
+  <span class="eyebrow">Using it</span>
+  <h2>Roll, lock, route</h2>
+  <div class="cols">
+    <div><h3>1. Roll</h3><p>Flick the green wheel on the lid. It coasts, clicks, and a spring detent parks it on one of six sectors: E, N, E, N, E, N. The sector by the blue lock on the south edge is the result.</p></div>
+    <div><h3>2. Lock</h3><p>Push the blue latch in. Its tooth drops into the notch under it and holds the wheel still.</p></div>
+    <div><h3>3. Route</h3><p>Crank West. The line comes out East or North, whichever came up. Unlock and flick again for the next choice.</p></div>
+  </div>
+  <p>For a software person this is sample-and-hold: the roll is the random draw, the lock holds the sample, and the route uses it. <code>if (coin()) east(); else north();</code></p>
+</section>
+
+<section>
+  <span class="eyebrow">Try it</span>
+  <h2>Flick, then crank</h2>
+  <p>A small model of the box. Flick to roll, then crank: the line follows the planet that sits on an output. Crank without locking and watch the carrier walk.</p>
+  <div class="sim panel">
+    <div class="controls">
+      <div class="row">
+        <button id="flick" type="button">Flick</button>
+        <button id="lock" class="ghost" type="button">Lock</button>
+        <button id="crank" class="ghost" type="button">Crank</button>
+      </div>
+      <div><div class="result" id="res">–</div><div class="readout" id="info">Flick the wheel to start.</div></div>
+      <div class="readout" id="tally">E 0 · N 0</div>
+    </div>
+    <svg id="sim" viewBox="0 0 400 400" role="img" aria-label="FORK simulator"></svg>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">How it works</span>
+  <h2>A turret of planets round the line's sun</h2>
+  <p>The wheel turns a planet carrier inside the box. The line drives a sun gear in the middle, and three planets ride round it on the carrier, always in mesh. Two output stacks stand outside the planets' circle: X at the south-east drives East, Y at the north-west drives North. They are exactly 180 degrees apart round that circle. With planets every 120 degrees and the wheel resting every 60, a planet sits on X at every other rest and on Y at the rests between, never both.</p>
+  <div class="scroll"><table>
+    <thead><tr><th>Path</th><th>Gears</th><th>Meshes</th></tr></thead>
+    <tbody>
+      <tr><td>To East</td><td class="mono">W 16 → I 12 → Z 12/sun 12 → planet 13 → X 14 → E 22</td><td>5, forward, x1</td></tr>
+      <tr><td>To North</td><td class="mono">W 16 → I 12 → Z 12/sun 12 → planet 13 → Y 14 → N 24</td><td>5, forward, x1</td></tr>
+    </tbody>
+  </table></div>
+  <p>The planets never leave the sun, so nothing clashes while the wheel coasts. They roll through X and Y in mesh, which twitches the outputs a little during a roll. The sun is on layer 3, above the input gears, so the planets pass over everything else in the box.</p>
+  <h3>Why there's a lock</h3>
+  <p>When you crank, the planet passes torque from the sun to the output and pushes back on the carrier with about twice the force. That is a few tens of mNm, ten times what the detent spring holds. Without the lock the carrier walks round and the line slides off its output. Leave the lock out once on purpose: it shows why a program has to hold a sample before using it.</p>
+  <figure class="shot"><img src="boxes/fork/img/fork_iso.png" alt="Render of FORK assembled: a one-cell box with a green wheel on the lid marked with E and N arrows, a blue latch by its edge and orange output gears showing at the sides."><figcaption>Assembled render, the wheel resting on an E sector.</figcaption></figure>
+  <figure class="shot"><img src="boxes/fork/img/fork_exploded.png" alt="Exploded render of FORK: the shell with orange output gears, the lid, the white planet carrier with three planet gears under it, the green wheel, the blue latch and the detent spring."><figcaption>Exploded: shell and output gears, lid, then the turret (carrier plate with its three planets underneath), the wheel, the detent spring and the blue latch.</figcaption></figure>
+</section>
+
+<section>
+  <span class="eyebrow">Status</span>
+  <h2>Fit-checked in OpenSCAD, not yet printed</h2>
+  <p>The fit check is clean with the wheel on E and on N. Verify on the first print: the latch's hold and travel, the carrier's long center pin and its wobble, the planet axles and caps, how much the planets passing X and Y shortens the coast, and an E/N tally for bias. A crank-rolled version (rolled from S through SPIN's freewheel) is a possible variant.</p>
+</section>
+</div>
+
+<script>
+(function () {
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (tag, at, parent) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); if (parent) parent.appendChild(e); return e; };
+  const k = 5, X = (x) => 200 + k * x, Y = (y) => 200 - k * y;
+  const R = 12.5, ax = -43.43, ay = 136.57;
+  const posX = [18.88, -17.87], posY = [-18.88, 17.88];
+  function board(svg, labels) {
+    el("rect", { x: X(-28.7), y: Y(28.7), width: 57.4 * k, height: 57.4 * k, rx: 4, fill: "var(--bg)", stroke: "var(--line)", "stroke-width": 10 }, svg);
+    const g = (c, r, col, lab, dy) => { el("circle", { cx: X(c[0]), cy: Y(c[1]), r: r * k, fill: col, "fill-opacity": 0.3, stroke: col, "stroke-width": 2.5 }, svg); if (labels && lab) el("text", { x: X(c[0]), y: Y(c[1]) + (dy || 4), "font-size": 12, "text-anchor": "middle" }, svg).textContent = lab; };
+    g([-24, 0], 8, "var(--blue)", "W");
+    g([21, 0], 11, "var(--orange)", "E");
+    g([0, 20], 12, "var(--orange)", "N");
+    g([-10.9, -5], 6, "var(--muted)", "I");
+    g(posX, 7, "var(--muted)", "X");
+    g(posY, 7, "var(--muted)", "Y");
+    el("circle", { cx: X(0), cy: Y(0), r: R * k, fill: "none", stroke: "var(--green)", "stroke-width": 1.5, "stroke-dasharray": "5 5" }, svg);
+    g([0, 0], 6, "var(--muted)", "sun");
+  }
+  function planets(svg, c, active) {
+    const grp = el("g", {}, svg);
+    for (let p = 0; p < 3; p++) {
+      const a = (c + ax + 120 * p) * Math.PI / 180, x = R * Math.cos(a), y = R * Math.sin(a);
+      el("line", { x1: X(0), y1: Y(0), x2: X(x), y2: Y(y), stroke: "var(--green)", "stroke-width": 4, opacity: 0.6 }, grp);
+      el("circle", { cx: X(x), cy: Y(y), r: 6.5 * k, fill: "var(--white)", "fill-opacity": 0.75, stroke: "var(--fg)", "stroke-width": 2 }, grp);
+    }
+    return grp;
+  }
+  const H = document.getElementById("hero"); board(H, true); planets(H, 0);
+  el("text", { x: 200, y: 392, "font-size": 12, "text-anchor": "middle" }, H).textContent = "planet on X: route East";
+
+  // simulator
+  const S = document.getElementById("sim"); board(S, true);
+  let c = 0, rest = 0, locked = false, pg = planets(S, 0), path = null, tally = { E: 0, N: 0 }, anim = null;
+  const res = document.getElementById("res"), info = document.getElementById("info"), lockB = document.getElementById("lock");
+  const draw = () => { pg.remove(); pg = planets(S, c); };
+  const route = () => (((rest % 2) + 2) % 2 === 0 ? "E" : "N");
+  const showPath = (on) => {
+    if (path) { path.remove(); path = null; }
+    if (!on) return;
+    const r = route(), pts = r === "E" ? [[-24, 0], [-10.9, -5], [0, 0], [R * Math.cos(ax * Math.PI / 180), R * Math.sin(ax * Math.PI / 180)], posX, [21, 0], [32, 0]]
+                                        : [[-24, 0], [-10.9, -5], [0, 0], [R * Math.cos(ay * Math.PI / 180), R * Math.sin(ay * Math.PI / 180)], posY, [0, 20], [0, 32]];
+    path = el("polyline", { points: pts.map(([x, y]) => X(x) + "," + Y(y)).join(" "), fill: "none", stroke: "var(--red)", "stroke-width": 4, "stroke-linejoin": "round" }, S);
+  };
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const spinTo = (target, done) => {
+    if (anim) cancelAnimationFrame(anim);
+    const c0 = c, T = reduce ? 1 : 1400, t0 = performance.now();
+    const step = (t) => { const u = Math.min(1, (t - t0) / T); c = c0 + (target - c0) * (1 - (1 - u) * (1 - u)); draw(); if (u < 1) anim = requestAnimationFrame(step); else { anim = null; done && done(); } };
+    anim = requestAnimationFrame(step);
+  };
+  document.getElementById("flick").addEventListener("click", () => {
+    if (locked) { info.textContent = "Unlock first: the latch holds the wheel."; return; }
+    showPath(false);
+    const n = 6 + Math.floor(Math.random() * 30); rest += n;
+    spinTo(60 * rest, () => { res.textContent = route(); info.textContent = "Rolled. Lock it before you crank."; });
+  });
+  lockB.addEventListener("click", () => { locked = !locked; lockB.textContent = locked ? "Unlock" : "Lock"; info.textContent = locked ? "Locked. Crank to route the line." : "Unlocked."; });
+  document.getElementById("crank").addEventListener("click", () => {
+    if (res.textContent === "–") { info.textContent = "Flick first."; return; }
+    if (!locked) {
+      // the carrier walks: the planet's reaction pushes it off the output
+      showPath(false); info.textContent = "Not locked: the carrier walked off its output, and the line goes nowhere.";
+      spinTo(c + 25, null); return;
+    }
+    if (Math.abs(c - 60 * rest) > 0.5) { spinTo(60 * rest); }
+    showPath(true); tally[route()]++;
+    document.getElementById("tally").textContent = `E ${tally.E} · N ${tally.N}`;
+    info.textContent = route() === "E" ? "The line leaves East." : "The line leaves North.";
+  });
+})();
+</script>
+<script src="makerworld.js"></script>
+<script src="mw.js"></script>
+</body></html>
+
+</body></html>

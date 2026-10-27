@@ -1,0 +1,239 @@
+<!doctype html><html><head>
+<meta name="viewport" content="width=device-width, initial-scale=1"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+
+<title>Trig Box and Wave Plotter</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one reading column; the live demo (three diagrams under one angle slider) sits up top like a bench model. */
+:root{
+  --bg:#F3F4EF; --panel:#FFFFFF; --fg:#1E2126; --muted:#5B6168; --line:#D5D8D0; --grid:#E6E9E1;
+  --bone:#EDE3D0; --green:#2FA84F; --orange:#E07A12; --blue:#1F6FD6; --red:#D63A2F; --ink:#1B1B1B;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",ui-sans-serif,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#15181B; --panel:#1D2125; --fg:#E7E9E4; --muted:#9AA19A; --line:#343A3F; --grid:#262B30;
+  --bone:#3A352C; --green:#4CC46B; --orange:#F29A40; --blue:#5C9BEB; --red:#E8655B; --ink:#E7E9E4; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#15181B; --panel:#1D2125; --fg:#E7E9E4; --muted:#9AA19A; --line:#343A3F; --grid:#262B30;
+  --bone:#3A352C; --green:#4CC46B; --orange:#F29A40; --blue:#5C9BEB; --red:#E8655B; --ink:#E7E9E4; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:16px/1.6 var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+main{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:44px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(30px,5vw,46px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:26px;font-weight:800}
+h3{font-size:18px;font-weight:600}
+p{margin:0;max-width:68ch}
+.eyebrow{font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stack{display:flex;flex-direction:column;gap:14px}
+.lede{font-size:18px;color:var(--fg)}
+.bench{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:16px}
+.ctrl{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px}
+.ctrl label{font:500 13px var(--mono);color:var(--muted)}
+#theta{flex:1 1 260px;accent-color:var(--green);min-width:0}
+button{font:600 14px var(--body);background:var(--fg);color:var(--bg);border:0;border-radius:6px;padding:8px 14px;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+.read{display:flex;gap:10px;flex-wrap:wrap}
+.chip{font:500 14px var(--mono);font-variant-numeric:tabular-nums;border:1px solid var(--line);border-radius:999px;padding:4px 12px;white-space:nowrap}
+.chip b{font-weight:500;color:var(--muted);margin-right:6px}
+.chip.inf{border-color:var(--red);color:var(--red)}
+.diagrams{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.diagrams figure{margin:0;min-width:0;display:flex;flex-direction:column;gap:6px}
+.diagrams .wide{grid-column:1/-1}
+figcaption{font-size:14px;color:var(--muted)}
+svg{width:100%;height:auto;display:block}
+svg text{font-family:var(--mono);fill:var(--muted)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.two>*{min-width:0}
+.shot{background:#F7F7F4;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1px solid var(--line)}
+th{font:500 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+tr.pick td{background:color-mix(in srgb,var(--green) 12%,transparent)}
+.tag{font:500 12px var(--mono);padding:2px 8px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.tag.go{color:var(--green)} .tag.no{color:var(--muted)}
+ul{margin:0;padding-left:20px;max-width:68ch;display:flex;flex-direction:column;gap:6px}
+code{font:500 14px var(--mono)}
+.note{border-left:3px solid var(--orange);padding-left:14px}
+@media (max-width:700px){.diagrams,.two{grid-template-columns:1fr}.diagrams .wide{grid-column:auto}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+<main>
+<nav style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-weight:700"><a href="index.html" style="color:inherit">← All boxes</a><span style="opacity:.6;font-weight:400">Gear Box System</span></nav>
+  <header class="stack">
+    <span class="eyebrow">Gear Box System · fit-checked · 27 Oct 2026</span>
+    <h1>The trig box and the wave plotter</h1><div class="mw-slot" data-makerworld="box:trig,box:wave"></div>
+    <p class="lede">A gear turns a peg round a circle. Two sliders riding on the peg read cos and sin, a long arm crossing a ruler reads tan, and a second box draws the sine wave on a card: one wave for every turn of the crank.</p>
+  </header>
+
+  <section class="stack">
+    <h2>Exploded views</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px"><figure style="margin:0;display:grid;gap:6px;min-width:0"><img src="boxes/trig/img/trig_exploded.png" alt="TRIG exploded" style="width:100%;border-radius:10px;background:#F8F8F6;"><figcaption style="font-size:.9rem;opacity:.75">TRIG exploded: the lid with its scales, the green cos and sin yokes and the tan arm lifted off the gear train.</figcaption></figure><figure style="margin:0;display:grid;gap:6px;min-width:0"><img src="boxes/wave/img/wave_exploded.png" alt="WAVE exploded" style="width:100%;border-radius:10px;background:#F8F8F6;"><figcaption style="font-size:.9rem;opacity:.75">WAVE exploded: the green carriage with its rack and the pen puck lifted off the lid and the gears.</figcaption></figure></div>
+  </section>
+
+  <section class="bench" aria-label="Live model">
+    <div class="ctrl">
+      <label for="theta">angle θ</label>
+      <input id="theta" type="range" min="0" max="360" step="1" value="30">
+      <button id="play" type="button">Turn the crank</button>
+    </div>
+    <div class="read" id="read"></div>
+    <div class="diagrams">
+      <figure><svg id="circle" viewBox="-36 -36 72 72" role="img" aria-label="Unit circle cell from above"></svg>
+        <figcaption>West cell from above. The peg (white) is 12 mm out, which counts as 1. The cos yoke slides east–west, the sin yoke north–south; they cross over the peg.</figcaption></figure>
+      <figure><svg id="tan" viewBox="-36 -36 72 72" role="img" aria-label="Tangent cell from above"></svg>
+        <figcaption>East cell. The arm turns with the peg; where its hairline crosses the ruler on x = 1 is tan θ. Past 63° it leaves the ruler.</figcaption></figure>
+      <figure class="wide"><svg id="wave" viewBox="-36 -20 124 40" role="img" aria-label="Wave plotter"></svg>
+        <figcaption>The wave box. The pen sits where the yoke's slot (y = 8 sin θ) crosses the carriage's slot (x = 8 mm per radian). One turn moves the pen 2π × 8 = 50.3 mm: the circle, unrolled.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="stack">
+    <h2>What gets built</h2>
+    <div class="two">
+      <div class="stack">
+        <figure class="shot" style="margin:0"><img alt="TRIG box render: green yokes over the disc in the west cell, the tan arm and ruler in the east cell" src="boxes/trig/img/trig_iso.png"></figure>
+        <h3>TRIG · 2 cells · W in, E out at ×1 · cost 6</h3>
+        <p>Inside, R1 (the circle) and R2 (the tangent) are 32-tooth gears joined by a 32-tooth idler, so they turn exactly together, at half the port speed: one crank turn is one turn of the circle. A 16/16 stack brings the line back down to the E port. Five meshes, so the output runs forward.</p>
+      </div>
+      <div class="stack">
+        <figure class="shot" style="margin:0"><img alt="WAVE box render: green pen bar from the disc across the card, white carriage with a rack driven by a pinion" src="boxes/wave/img/wave_iso.png"></figure>
+        <h3>WAVE · 2 cells · W in, end box · cost 4</h3>
+        <p>R carries a peg 8 mm out that drives the pen bar. R drives P (28 teeth), whose 14-tooth pinion moves the carriage's rack 8 mm per radian, the same 8 mm as the peg. So the card gets y = 8 sin(x/8), true to scale. After one wave the rack runs off the pinion and the carriage stops; slide it back for the next card.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="stack">
+    <h2>Reading each window</h2>
+    <ul>
+      <li><b>θ</b>: the black radius line on the disc points at a protractor ring printed round it (ticks every 15°). Forward on the line turns everything counter-clockwise, the way angles grow in maths.</li>
+      <li><b>cos</b>: the lower green yoke's south pointer reads −1 to 1 under the south rail.</li>
+      <li><b>sin</b>: the upper yoke's east pointer reads −1 to 1 beside the east rail. Where the two bars cross is the point (cos θ, sin θ).</li>
+      <li><b>tan</b>: the arm's hairline on the ruler, −2 to 2. One bar through the center, so both ends read the same ruler: tan repeats every 180°.</li>
+    </ul>
+    <p class="note"><b>Infinity, handled honestly.</b> Past 63° the arm runs off the top of the ruler, which is marked ∞. At 90° the arm is parallel to the ruler and never meets it. Keep turning and the other half of the arm comes back in at the bottom, at −2. A tan <i>slider</i> was rejected on purpose: it would have to jump from +∞ to −∞, and the force on it grows without limit near 90°, so it would jam.</p>
+  </section>
+
+  <section class="stack">
+    <h2>How to draw the wave</h2>
+    <p>Every gear in the system turns on a vertical axis, so the good options keep it that way.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Option</th><th>Draws</th><th>Fits</th><th></th></tr></thead>
+      <tbody>
+        <tr class="pick"><td><b>Card plotter.</b> Pen in two slotted bars: sin yoke for y, rack-driven carriage for x. Card stays still.</td><td>The textbook graph, to scale</td><td>2 cells</td><td><span class="tag go">recommended, built</span></td></tr>
+        <tr><td><b>Turntable.</b> A paper disc turns slowly under a pen on a sin yoke.</td><td>A sine wave wrapped round a ring</td><td>1 cell</td><td><span class="tag no">later, as a spirograph box</span></td></tr>
+        <tr><td><b>Paper tape</b> pulled past a fixed pen.</td><td>An endless graph</td><td>Needs a horizontal roller and a roll outside the grid</td><td><span class="tag no">rejected</span></td></tr>
+        <tr><td><b>Drum</b> with paper wrapped round it.</td><td>The graph, rolled up</td><td>Pen must move up and down</td><td><span class="tag no">rejected</span></td></tr>
+      </tbody></table></div>
+    <p>The card plotter wins because it draws the picture in every textbook and gets the proportions right for free. A moving pen beats a moving card: a card that slides under a fixed pen sweeps twice its own length and would run over the circle.</p>
+  </section>
+
+  <section class="stack">
+    <h2>Things to try</h2>
+    <ul>
+      <li>Read 30°, 45° and 60°: sin .5 / .71 / .87, cos .87 / .71 / .5, tan .58 / 1 / 1.73.</li>
+      <li>Watch cos and sin trade places: cos is sin a quarter turn early. Shift the card a quarter wave (12.6 mm) and redraw: it lands on top.</li>
+      <li>Put a ×2 box between TRIG and WAVE: two shorter waves per card. Frequency, before anyone names it.</li>
+    </ul>
+  </section>
+
+  <section class="stack">
+    <h2>Status</h2>
+    <p>Both boxes are on main and fit-checked in OpenSCAD and render. Their own interference checks are clean at several angles, with only resting contacts. Still to verify on the first print: drop-in order and capture, the yokes' sliding friction, the 4 mm printed peg, the narrow rack and pinion, the pen with a real fineliner refill, and how cleanly the rack runs off at the end of a wave.</p>
+  </section>
+<footer style="border-top:1px solid currentColor;opacity:.85;padding-top:16px;margin-top:24px;font-weight:700"><a href="index.html" style="color:inherit">← Back to all boxes</a> </footer>
+</main>
+<script>
+(function(){
+const NS="http://www.w3.org/2000/svg";
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function el(p,t,a,txt){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;p.appendChild(e);return e;}
+const R=12, deg=Math.PI/180;
+const S={circle:document.getElementById('circle'),tan:document.getElementById('tan'),wave:document.getElementById('wave')};
+function grid(svg,x0,y0,w,h){for(let x=Math.ceil(x0/4)*4;x<=x0+w;x+=4)el(svg,'line',{x1:x,y1:y0,x2:x,y2:y0+h,stroke:'var(--grid)','stroke-width':.2});
+  for(let y=Math.ceil(y0/4)*4;y<=y0+h;y+=4)el(svg,'line',{x1:x0,y1:y,x2:x0+w,y2:y,stroke:'var(--grid)','stroke-width':.2});}
+function lid(svg,x0,y0,w,h){el(svg,'rect',{x:x0,y:y0,width:w,height:h,rx:1.5,fill:'var(--bone)',stroke:'var(--line)','stroke-width':.3});}
+function drawCircle(t){
+  const s=S.circle; s.innerHTML=''; lid(s,-31,-31,62,62);
+  const c=Math.cos(t*deg), n=Math.sin(t*deg), px=R*c, py=-R*n;
+  // protractor
+  for(let a=0;a<360;a+=15){const L=a%90==0?3.2:a%45==0?2.4:1.4, r0=16;el(s,'line',{x1:r0*Math.cos(a*deg),y1:-r0*Math.sin(a*deg),x2:(r0+L)*Math.cos(a*deg),y2:-(r0+L)*Math.sin(a*deg),stroke:'var(--ink)','stroke-width':.5});}
+  // rails
+  [[-19.4,20.5],[-19.4,-25.5]].forEach(([x,y])=>el(s,'rect',{x,y,width:38.8,height:5,rx:.8,fill:'var(--panel)',stroke:'var(--line)','stroke-width':.3}));
+  [[20.5,-19.4],[-25.5,-19.4]].forEach(([x,y])=>el(s,'rect',{x,y,width:5,height:38.8,rx:.8,fill:'var(--panel)',stroke:'var(--line)','stroke-width':.3}));
+  // scales
+  [-1,-.5,0,.5,1].forEach(v=>{el(s,'line',{x1:R*v,y1:26.1,x2:R*v,y2:27.7,stroke:'var(--ink)','stroke-width':.5});el(s,'text',{x:R*v,y:30.4,'font-size':2.2,'text-anchor':'middle'},v==0?'0':String(v).replace('0.','.'));
+    el(s,'line',{x1:26.1,y1:-R*v,x2:27.7,y2:-R*v,stroke:'var(--ink)','stroke-width':.5});});
+  el(s,'text',{x:20,y:30.4,'font-size':2.4},'cos'); el(s,'text',{x:27,y:-21,'font-size':2.4},'sin');
+  // disc
+  el(s,'circle',{cx:0,cy:0,r:15,fill:'#FBFAF6',stroke:'var(--line)','stroke-width':.4});
+  el(s,'line',{x1:0,y1:0,x2:px,y2:py,stroke:'#1B1B1B','stroke-width':.8});
+  // cos yoke (vertical bar at x=px)
+  el(s,'rect',{x:px-4.7,y:-25.5,width:9.4,height:51,rx:1,fill:'var(--green)','fill-opacity':.8});
+  el(s,'rect',{x:px-2.2,y:-14.7,width:4.4,height:29.4,rx:2.2,fill:'var(--bone)'});
+  el(s,'path',{d:`M${px-1.6} 25.5 L${px+1.6} 25.5 L${px} 27.7 Z`,fill:'var(--green)'});
+  // sin yoke (horizontal bar at y=py)
+  el(s,'rect',{x:-25.5,y:py-4.7,width:51,height:9.4,rx:1,fill:'var(--green)','fill-opacity':.8});
+  el(s,'rect',{x:-14.7,y:py-2.2,width:29.4,height:4.4,rx:2.2,fill:'var(--bone)'});
+  el(s,'path',{d:`M25.5 ${py-1.6} L25.5 ${py+1.6} L27.7 ${py} Z`,fill:'var(--green)'});
+  el(s,'circle',{cx:px,cy:py,r:2,fill:'#FFFFFF',stroke:'#1B1B1B','stroke-width':.4});
+}
+function drawTan(t){
+  const s=S.tan; s.innerHTML=''; lid(s,-31,-31,62,62);
+  const ink='var(--ink)';
+  el(s,'circle',{cx:0,cy:0,r:R,fill:'none',stroke:ink,'stroke-width':.8});
+  el(s,'line',{x1:6.6,y1:0,x2:R,y2:0,stroke:ink,'stroke-width':.6});
+  el(s,'line',{x1:R,y1:-24.4,x2:R,y2:24.4,stroke:ink,'stroke-width':.8});
+  for(let k=-4;k<=4;k++){el(s,'line',{x1:R,y1:-k*6,x2:R+(k%2==0?3:2),y2:-k*6,stroke:ink,'stroke-width':.6});
+    el(s,'text',{x:R+3.8,y:-k*6+.8,'font-size':2.1},(k/2).toString().replace('0.','.'));}
+  el(s,'text',{x:R,y:-25.6,'font-size':3.2,'text-anchor':'middle'},'∞');el(s,'text',{x:R,y:28.4,'font-size':3.2,'text-anchor':'middle'},'∞');
+  const c=Math.cos(t*deg), n=Math.sin(t*deg);
+  const g=el(s,'g',{transform:`rotate(${-t})`});
+  el(g,'rect',{x:-28,y:-2,width:56,height:4,rx:2,fill:'var(--green)'});
+  el(g,'line',{x1:-27,y1:0,x2:27,y2:0,stroke:'#1B1B1B','stroke-width':.5});
+  el(g,'circle',{cx:R,cy:0,r:1.3,fill:'#1B1B1B'});
+  el(s,'circle',{cx:0,cy:0,r:6,fill:'var(--green)'});
+  if(Math.abs(c)>1e-6){const y=R*n/c; if(Math.abs(y)<=24.2) el(s,'circle',{cx:R,cy:-y,r:1.6,fill:'none',stroke:'var(--red)','stroke-width':.6});}
+}
+function drawWave(t){
+  const s=S.wave; s.innerHTML=''; lid(s,-34,-18,120,36);
+  const A=8, xs=0, th=t*deg, px=xs+A*th, py=-A*Math.sin(th);
+  el(s,'rect',{x:xs-3,y:-14,width:2*Math.PI*A+6,height:28,fill:'#FFFFFF',stroke:'var(--line)','stroke-width':.3});
+  // circle beside the card
+  el(s,'circle',{cx:-20,cy:0,r:A,fill:'none',stroke:'var(--muted)','stroke-width':.4,'stroke-dasharray':'1 1'});
+  el(s,'circle',{cx:-20+A*Math.cos(th),cy:py,r:1.2,fill:'#FFFFFF',stroke:'#1B1B1B','stroke-width':.3});
+  let d=''; for(let a=0;a<=t;a+=2){const r=a*deg;d+=(a?'L':'M')+(xs+A*r).toFixed(2)+' '+(-A*Math.sin(r)).toFixed(2);} d+='L'+px.toFixed(2)+' '+py.toFixed(2);
+  if(t>0) el(s,'path',{d,fill:'none',stroke:'#1B1B1B','stroke-width':.5});
+  // pen bar (yoke) and carriage
+  el(s,'rect',{x:-30,y:py-2.35,width:114,height:4.7,rx:1,fill:'var(--green)','fill-opacity':.45});
+  el(s,'rect',{x:px-2.35,y:-16,width:4.7,height:32,rx:1,fill:'var(--muted)','fill-opacity':.35});
+  el(s,'line',{x1:-20+A*Math.cos(th),y1:py,x2:px,y2:py,stroke:'var(--green)','stroke-width':.3,'stroke-dasharray':'1 .8'});
+  el(s,'circle',{cx:px,cy:py,r:2.5,fill:'var(--green)'});
+  el(s,'text',{x:xs,y:17,'font-size':2.6},'x = 8 mm × θ (radians)');
+  el(s,'text',{x:-30,y:17,'font-size':2.6},'peg circle');
+}
+function fmt(v){return (v>=0?' ':'−')+Math.abs(v).toFixed(2);}
+function update(t){
+  drawCircle(t);drawTan(t);drawWave(t);
+  const c=Math.cos(t*deg), n=Math.sin(t*deg); const tn=Math.abs(c)<1e-9?Infinity:n/c;
+  const tanTxt=!isFinite(tn)?'undefined':Math.abs(tn)>2?(tn>0?'off the top':'off the bottom')+' ('+tn.toFixed(1)+')':fmt(tn);
+  document.getElementById('read').innerHTML=`<span class="chip"><b>θ</b>${String(Math.round(t)).padStart(3,' ')}°</span><span class="chip"><b>cos</b>${fmt(c)}</span><span class="chip"><b>sin</b>${fmt(n)}</span><span class="chip${Math.abs(tn)>2?' inf':''}"><b>tan</b>${tanTxt}</span>`;
+}
+const slider=document.getElementById('theta'); slider.addEventListener('input',()=>update(+slider.value));
+let timer=null; const btn=document.getElementById('play');
+btn.addEventListener('click',()=>{ if(timer){clearInterval(timer);timer=null;btn.textContent='Turn the crank';return;}
+  if(+slider.value>=360) slider.value=0; btn.textContent='Stop';
+  timer=setInterval(()=>{let v=+slider.value+2; if(v>360){clearInterval(timer);timer=null;btn.textContent='Turn the crank';v=360;} slider.value=v; update(v);},40);});
+update(+slider.value);
+})();
+</script>
+
+
+<script src="makerworld.js"></script>
+<script src="mw.js"></script>
+</body></html>

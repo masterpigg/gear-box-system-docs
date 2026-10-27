@@ -1,0 +1,257 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SHUFFLE Number Box</title>
+<style>
+/* Layout: one reading column with wide figure bands; the six role colors carry the meaning, as on the boxes */
+:root {
+  --bg: #F6F1E6; --panel: #EDE3D0; --fg: #23211D; --muted: #6B655A; --line: #CFC3AC;
+  --red: #D63A2F; --blue: #1F6FD6; --orange: #E07A16; --green: #2A9A48; --white: #FFFDF8;
+  --ink: #1B1B1B;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #2C3035; --ink: #ECE6DA; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #2C3035; --ink: #ECE6DA; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 17px/1.6 var(--f-body); }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 64px; display: grid; gap: 48px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.7rem; font-weight: 700; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; max-width: 66ch; }
+section { display: grid; gap: 16px; min-width: 0; }
+.eyebrow { font: 600 0.75rem/1 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 1.2rem; max-width: 60ch; }
+.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+.hero > div { display: grid; gap: 16px; min-width: 0; }
+.hero img { border-radius: 10px; background: #FFFDE7; width: 100%; min-width: 0; }
+.shot { width: 100%; max-width: 640px; justify-self: center; }
+.shot img { width: 100%; border-radius: 10px; background: #FFFDE7; }
+@media (max-width: 760px) { .hero { grid-template-columns: 1fr; } }
+.sym { display: inline-grid; place-items: center; width: 1.3em; height: 1.3em; border-radius: 50%; background: var(--green); color: var(--white); font-family: var(--f-display); font-size: 0.8em; vertical-align: 0.1em; }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+figure { margin: 0; display: grid; gap: 8px; min-width: 0; }
+figcaption { font-size: 0.9rem; color: var(--muted); }
+.panel { background: var(--panel); border-radius: 10px; padding: 16px; }
+svg { display: block; width: 100%; height: auto; }
+svg text { font-family: var(--f-mono); fill: var(--fg); }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.scroll { overflow-x: auto; }
+code, .mono { font-family: var(--f-mono); font-size: 0.88em; }
+.kinds td:first-child { font-weight: 700; white-space: nowrap; }
+.kinds tr.us td { background: color-mix(in srgb, var(--green) 14%, transparent); }
+.sim { display: grid; grid-template-columns: 300px 1fr; gap: 24px; align-items: start; }
+@media (max-width: 760px) { .sim { grid-template-columns: 1fr; } }
+.controls { display: grid; gap: 14px; min-width: 0; }
+label { font-weight: 700; display: flex; justify-content: space-between; gap: 8px; }
+input[type=range] { width: 100%; accent-color: var(--red); }
+button { font: 700 1rem var(--f-display); padding: 10px 18px; border-radius: 999px; border: 2px solid var(--red); background: var(--red); color: #fff; cursor: pointer; }
+button.ghost { background: transparent; color: var(--red); }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; }
+.readout { font: 600 0.95rem var(--f-mono); color: var(--muted); }
+.result { font: 700 3rem/1 var(--f-display); color: var(--green); }
+ul.plain { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 66ch; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+.cols > div { display: grid; gap: 10px; align-content: start; min-width: 0; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style></head><body>
+<div class="wrap">
+<p class="readout"><a href="index.html" style="color:var(--blue)">← All gear boxes</a> · family: <a href="spin.html" style="color:var(--blue)">SPIN</a> · <a href="fork.html" style="color:var(--blue)">FORK</a> · SHUFFLE</p>
+
+<header class="hero">
+  <div>
+    <span class="eyebrow">Gear Box System · number box · fit-checked</span>
+    <h1>SHUFFLE <span class="sym">Σ</span></h1><div class="mw-slot" data-makerworld="box:shuffle"></div>
+    <p class="lede">Turn the crank once and the dial shows a number from 1 to 6. The numbers look random, but nothing in the box is. Crank backwards and the same numbers come back in reverse. It's <code>rand()</code> made of gears and string.</p>
+    <p class="readout">2 cells · W in (16) · end box · cost 4 · repeats after 30,381 numbers</p>
+  </div>
+  <figure class="panel" style="margin:0"><img src="boxes/shuffle/img/shuffle_iso.png" alt="Render of SHUFFLE: a two-cell box with three green follower rods carrying pulleys, a white cord running over and under pulleys along the lid, and a green dial numbered 1 to 6 twice." style="width:100%;border-radius:10px;background:#FFFDE7"></figure>
+</header>
+
+<section>
+  <span class="eyebrow">Using it</span>
+  <h2>Crank, read, crank again</h2>
+  <div class="cols">
+    <div><h3>1. Crank</h3><p>One turn of the crank box's handle is one number. Read it at the pointer under the green dial.</p></div>
+    <div><h3>2. Replay</h3><p>Crank backwards one turn and the number before comes back. Every number is fixed by where the gears are, so the sequence plays both ways.</p></div>
+    <div><h3>3. Seed</h3><p>Line the gears up on their marks and you start the same sequence every time. That starting place is the seed.</p></div>
+  </div>
+  <p>SPIN is random because your hand can't repeat itself. SHUFFLE is the other kind: a rule that only looks random. Put them side by side and you have the difference between a dice roll and <code>srand(seed); rand() % 6 + 1</code>.</p>
+</section>
+
+<section>
+  <span class="eyebrow">Try it</span>
+  <h2>Three waves, one string, one dial</h2>
+  <p>This uses the model's own numbers. Each crank lifts or lowers the three rods, the string adds their heights, and the dial shows the sum folded onto 1 to 6.</p>
+  <div class="sim panel">
+    <div class="controls">
+      <div class="row">
+        <button id="fwd" type="button">Crank</button>
+        <button id="back" class="ghost" type="button">Crank back</button>
+      </div>
+      <div class="row">
+        <button id="run" class="ghost" type="button">Crank 100 times</button>
+        <button id="reset" class="ghost" type="button">Reset</button>
+      </div>
+      <div><div class="result" id="res">3</div><div class="readout" id="info">Number 0, the starting place.</div></div>
+      <div class="readout" id="hist" aria-live="polite"></div>
+      <svg id="bars" viewBox="0 0 240 90" role="img" aria-label="How often each number has come up"></svg>
+      <div class="readout" id="seq"></div>
+    </div>
+    <div>
+      <svg id="cord" viewBox="0 0 640 215" role="img" aria-label="Side view of the three rods, their pulleys and the cord"></svg>
+      <svg id="dial" viewBox="0 0 200 200" role="img" aria-label="The dial" style="max-width:220px;display:block;margin:0 auto"></svg>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">How it works</span>
+  <h2>Clocks that don't agree, added with a string</h2>
+  <div class="cols">
+    <div><h3>Three clocks</h3><p>The crank turns a chain of three gears with 39, 41 and 19 teeth. One number moves the line 32 teeth, so each gear comes back to where it started after 39, 41 and 19 numbers. Those share no factor, so all three line up again only after 39 × 41 × 19 = 30,381 numbers.</p></div>
+    <div><h3>Three waves</h3><p>Each gear carries a heart cam, which lifts its rod at a steady rate and lowers it the same way. So each rod's height is a triangle wave, from 0 to 8 mm.</p></div>
+    <div><h3>A string adds them</h3><p>The cord is tied at one end, goes over a pulley on each rod and under fixed pulleys between, every leg straight up and down. Lift a rod by h and it takes up 2h of cord, so the free end moves twice the sum, exactly. Kelvin's tide-predicting machine added its waves this way in 1872.</p></div>
+  </div>
+  <h3>Why the dial turns so far</h3>
+  <p>Three waves added pile up in the middle, like the total of three dice. Read the sum straight off a scale and you'd see mostly middling numbers, each one close to the last. So the dial is geared fine: 1.5 mm of summed height turns it one 30-degree sector, it carries 1 to 6 twice, and it goes round more than once across the range. Only the sum "mod 9 mm" shows. That fold spreads the numbers evenly and breaks up the pattern, the same trick as SPIN's mod 6 and the low bits of a hash.</p>
+  <div class="scroll"><table>
+    <thead><tr><th>Test (3,000 numbers, ideal parts)</th><th>Result</th><th>Pass mark (about)</th></tr></thead>
+    <tbody>
+      <tr><td>Each number equally often (χ², 5 dof)</td><td class="mono">0.2</td><td class="mono">under 11</td></tr>
+      <tr><td>Pairs of neighbors (χ², 35 dof, worst of lags 1 to 3)</td><td class="mono">29</td><td class="mono">under 50</td></tr>
+      <tr><td>The same gears, no fold (sum read off a scale)</td><td class="mono">1,000+</td><td class="mono">fails</td></tr>
+      <tr><td>Teeth chosen by eye (26, 34, 38), with the fold</td><td class="mono">170</td><td class="mono">fails</td></tr>
+      <tr><td>Full period, counts of 1 to 6</td><td class="mono">5098 · 5120 · 5072 · 5002 · 5017 · 5072</td><td class="mono">30,381 numbers</td></tr>
+    </tbody>
+  </table></div>
+  <p>It's a fair toy generator, not a good one. Real generators pass hundreds of tests, and three waves added can't: there are slow patterns in the numbers that you'd find with enough cranking. Hunting for them is a good exercise.</p>
+  <figure class="shot"><img src="boxes/shuffle/img/shuffle_exploded.png" alt="Exploded render: the shell with the white cam gears and blue input, the lid with its pulley wall, three green follower rods with forks, white pulleys, the green dial and its cap."><figcaption>Exploded render. The three big white gears are the clocks; the heart cams sit on top of them, under the lid.</figcaption></figure>
+</section>
+
+<section>
+  <span class="eyebrow">Status</span>
+  <h2>Fit-checked in OpenSCAD, not yet printed</h2>
+  <p>The fit check found three clashes, all fixed: the corner pulleys moved east, the follower bushes got notches for the fixed pulleys, and the rods' forks got narrower. Parts to buy: about 40 cm of 0.3 mm braided fishing line, a small rubber band, and 1.75 mm filament for eight pulley axles. On the first print, check that backlash and cord stretch stay well under one sector (3 mm of cord), or the replay test fails at the edges between numbers.</p>
+</section>
+</div>
+
+<script>
+(function () {
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (tag, at, parent) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); if (parent) parent.appendChild(e); return e; };
+  // each rod's rise (micrometers) at number n, from the model (lib/shuffle.scad, shuf_rise at turn = 720 n)
+  const A = [1936,4745,7590,5548,2739,494,3140,5949,7179,4344,1555,1555,4344,7179,5949,3140,494,2739,5548,7590,4745,1936,1181,3943,6769,6359,3541,821,2338,5147,8000,5147,2338,821,3541,6359,6769,3943,1181];
+  const B = [6049,2612,1135,4520,8000,4520,1135,2612,6049,6439,2993,797,4138,7610,4902,1491,2230,5665,6829,3375,487,3757,7220,5284,1848,1848,5284,7220,3757,487,3375,6829,5665,2230,1491,4902,7610,4138,797,2993,6439];
+  const C = [4661,6316,1398,3837,7158,2190,3013,8000,3013,2190,7158,3837,1398,6316,4661,664,5484,5484,664];
+  const P = 39 * 41 * 19, md = (n, m) => ((n % m) + m) % m;
+  const rises = (n) => [A[md(n, 39)], B[md(n, 41)], C[md(n, 19)]].map((v) => v / 1000);
+  const numberOf = (s) => md(Math.floor(s / 1.5 + 1e-9), 6) + 1;   // 1.5 mm of sum per sector, 1..6 twice round the dial
+
+  // side view: x along the box (mm), z up (mm)
+  const cord = document.getElementById("cord");
+  const k = 5.8, X = (x) => 30 + k * (x + 40), Z = (z) => 200 - k * (z - 19);
+  el("rect", { x: X(-40), y: Z(26), width: X(62) - X(-40), height: Z(20) - Z(26), fill: "var(--line)", opacity: 0.6 }, cord);
+  el("text", { x: X(-39), y: Z(20.2), "font-size": 12, fill: "var(--muted)" }, cord).textContent = "lid (cams and gears under it)";
+  el("rect", { x: X(-36), y: Z(34), width: X(53) - X(-36), height: Z(26) - Z(34), fill: "var(--line)", opacity: 0.35 }, cord);
+  const fixedX = [-21, 4, 19, 34, 49], rodX = [-28.5, 11.5, 41.5];
+  for (const x of fixedX) el("circle", { cx: X(x), cy: Z(31), r: 3 * k, fill: "var(--white)", stroke: "var(--fg)", "stroke-width": 2 }, cord);
+  el("circle", { cx: X(-33), cy: Z(31), r: 4, fill: "var(--fg)" }, cord);
+  el("text", { x: X(-33), y: Z(31) + 30, "font-size": 12, "text-anchor": "middle", fill: "var(--muted)" }, cord).textContent = "tied";
+  el("text", { x: X(57.6), y: Z(28) - 10, "font-size": 12, "text-anchor": "middle", fill: "var(--muted)" }, cord).textContent = "to dial";
+  const rods = rodX.map((x, i) => {
+    const g = el("g", {}, cord);
+    const rod = el("rect", { x: X(x) - 6, width: 12, fill: "var(--green)" }, g);
+    const pul = el("circle", { cx: X(x), r: 4.5 * k, fill: "var(--white)", "fill-opacity": 0.85, stroke: "var(--fg)", "stroke-width": 2 }, g);
+    const lab = el("text", { x: X(x), "font-size": 13, "text-anchor": "middle", fill: "var(--fg)" }, g);
+    return { x, rod, pul, lab, t: ["39", "41", "19"][i] };
+  });
+  const path = el("path", { fill: "none", stroke: "var(--red)", "stroke-width": 3, "stroke-linejoin": "round" }, cord);
+  const R = 4.5 * k, r = 3 * k;
+  function drawCord(h) {
+    const top = h.map((v) => 38.95 + v);            // pulley centers
+    const pz = (z) => Z(z);
+    let d = `M ${X(-33)} ${pz(31)} L ${X(-33)} ${pz(top[0])} A ${R} ${R} 0 0 1 ${X(-24)} ${pz(top[0])} L ${X(-24)} ${pz(31)} A ${r} ${r} 0 0 0 ${X(-21)} ${pz(28)}`;
+    d += ` L ${X(4)} ${pz(28)} A ${r} ${r} 0 0 0 ${X(7)} ${pz(31)} L ${X(7)} ${pz(top[1])} A ${R} ${R} 0 0 1 ${X(16)} ${pz(top[1])} L ${X(16)} ${pz(31)} A ${r} ${r} 0 0 0 ${X(19)} ${pz(28)}`;
+    d += ` L ${X(34)} ${pz(28)} A ${r} ${r} 0 0 0 ${X(37)} ${pz(31)} L ${X(37)} ${pz(top[2])} A ${R} ${R} 0 0 1 ${X(46)} ${pz(top[2])} L ${X(46)} ${pz(31)} A ${r} ${r} 0 0 0 ${X(49)} ${pz(28)} L ${X(57.6)} ${pz(28)}`;
+    path.setAttribute("d", d);
+    rods.forEach((o, i) => {
+      o.rod.setAttribute("y", pz(top[i])); o.rod.setAttribute("height", pz(22) - pz(top[i]));
+      o.pul.setAttribute("cy", pz(top[i]));
+      o.lab.setAttribute("y", pz(top[i]) + 5); o.lab.textContent = h[i].toFixed(1);
+    });
+  }
+
+  // the dial
+  const dial = document.getElementById("dial"), dg = el("g", {}, dial);
+  el("circle", { cx: 100, cy: 100, r: 86, fill: "var(--green)" }, dg);
+  for (let k = 0; k < 12; k++) {
+    const a0 = (270 + 30 * k) * Math.PI / 180, a = (285 + 30 * k) * Math.PI / 180;
+    el("line", { x1: 100 + 22 * Math.cos(a0), y1: 100 - 22 * Math.sin(a0), x2: 100 + 86 * Math.cos(a0), y2: 100 - 86 * Math.sin(a0), stroke: "var(--ink)", "stroke-width": 1.5 }, dg);
+    const t = el("text", { x: 100 + 62 * Math.cos(a), y: 100 - 62 * Math.sin(a) + 8, "font-size": 24, "text-anchor": "middle", fill: "var(--ink)", "font-weight": 700 }, dg);
+    t.textContent = String(k % 6 + 1);
+  }
+  el("circle", { cx: 100, cy: 100, r: 14, fill: "var(--white)", stroke: "var(--ink)", "stroke-width": 1.5 }, dial);
+  el("path", { d: "M 100 188 L 92 199 L 108 199 Z", fill: "var(--ink)" }, dial);
+
+  // state
+  let n = 0, shown = rises(0), anim = null;
+  const counts = [0, 0, 0, 0, 0, 0], recent = [];
+  const res = document.getElementById("res"), info = document.getElementById("info");
+  function draw(h) {
+    const s = h[0] + h[1] + h[2];
+    drawCord(h);
+    dg.setAttribute("transform", `rotate(${20 * s} 100 100)`);
+  }
+  function bars() {
+    const svg = document.getElementById("bars"); svg.innerHTML = "";
+    const tot = counts.reduce((a, b) => a + b, 0), mx = Math.max(1, ...counts);
+    counts.forEach((c, i) => {
+      const h = 60 * c / mx, x = 12 + 38 * i;
+      el("rect", { x, y: 70 - h, width: 26, height: h, rx: 3, fill: "var(--orange)" }, svg);
+      el("text", { x: x + 13, y: 86, "font-size": 12, "text-anchor": "middle", fill: "var(--fg)" }, svg).textContent = String(i + 1);
+      el("text", { x: x + 13, y: 66 - h, "font-size": 10, "text-anchor": "middle", fill: "var(--muted)" }, svg).textContent = c ? String(c) : "";
+    });
+    document.getElementById("hist").textContent = tot ? `${tot} cranked so far. Each number should get about a sixth.` : "Counts of each number appear here.";
+    document.getElementById("seq").textContent = recent.length ? "Last numbers: " + recent.slice(-16).join(" ") : "";
+  }
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function go(to, count) {
+    const from = shown.slice(), target = rises(to), T = reduce ? 1 : 650, t0 = performance.now();
+    if (anim) cancelAnimationFrame(anim);
+    n = to;
+    const s = target[0] + target[1] + target[2], num = numberOf(s);
+    if (count) { counts[num - 1]++; recent.push(num); }
+    const step = (t) => {
+      const u = Math.min(1, (t - t0) / T), e = u < 0.5 ? 2 * u * u : 1 - 2 * (1 - u) * (1 - u);
+      shown = from.map((v, i) => v + (target[i] - v) * e); draw(shown);
+      if (u < 1) anim = requestAnimationFrame(step);
+      else { anim = null; res.textContent = num; info.textContent = `Number ${md(n, P)} · rods ${target.map((v) => v.toFixed(1)).join(" + ")} = ${s.toFixed(2)} mm`; }
+    };
+    anim = requestAnimationFrame(step);
+    bars();
+  }
+  document.getElementById("fwd").addEventListener("click", () => go(n + 1, true));
+  document.getElementById("back").addEventListener("click", () => go(n - 1, false));
+  document.getElementById("run").addEventListener("click", () => {
+    for (let i = 1; i < 100; i++) { const h = rises(n + i), num = numberOf(h[0] + h[1] + h[2]); counts[num - 1]++; recent.push(num); }
+    go(n + 100, true);
+  });
+  document.getElementById("reset").addEventListener("click", () => { counts.fill(0); recent.length = 0; go(0, false); });
+  draw(shown); bars();
+  info.textContent = `Number 0, the starting place · rods ${shown.map((v) => v.toFixed(1)).join(" + ")} = ${(shown[0] + shown[1] + shown[2]).toFixed(2)} mm`;
+})();
+</script>
+<script src="makerworld.js"></script>
+<script src="mw.js"></script>
+</body></html>
+
+</body></html>

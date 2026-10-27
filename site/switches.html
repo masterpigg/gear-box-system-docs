@@ -1,0 +1,351 @@
+<!doctype html><html><head>
+<meta name="viewport" content="width=device-width, initial-scale=1"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Gear Switch Boxes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:wght@600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: one reading column with wide figure bands; the six role colors carry the meaning, as on the boxes */
+:root {
+  --bg: #F6F1E6; --panel: #EDE3D0; --fg: #23211D; --muted: #6B655A; --line: #CFC3AC;
+  --red: #D63A2F; --blue: #1F6FD6; --orange: #E07A16; --green: #2A9A48; --white: #FFFDF8; --bone: #E8DCC2;
+  --ink: #1B1B1B; --shot: #FFFDE7;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #2C3035; --bone: #4A4438; --ink: #ECE6DA; --shot: #F3EFE0; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #2C3035; --bone: #4A4438; --ink: #ECE6DA; --shot: #F3EFE0; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 17px/1.6 var(--f-body); }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 64px; display: grid; gap: 48px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.4rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.7rem; font-weight: 700; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; max-width: 66ch; }
+a { color: var(--blue); }
+section { display: grid; gap: 16px; min-width: 0; }
+.eyebrow { font: 600 0.75rem/1 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 1.2rem; max-width: 60ch; }
+.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+.hero > div { display: grid; gap: 16px; min-width: 0; }
+@media (max-width: 760px) { .hero { grid-template-columns: 1fr; } }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+figure { margin: 0; display: grid; gap: 8px; min-width: 0; align-content: start; }
+figure img { width: 100%; border-radius: 10px; background: var(--shot); }
+figcaption { font-size: 0.9rem; color: var(--muted); }
+.panel { background: var(--panel); border-radius: 10px; padding: 16px; min-width: 0; }
+svg { display: block; width: 100%; height: auto; }
+svg text { font-family: var(--f-mono); fill: var(--fg); }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.scroll { overflow-x: auto; }
+code, .mono { font-family: var(--f-mono); font-size: 0.88em; }
+.sim { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 760px) { .sim { grid-template-columns: 1fr; } }
+.controls { display: grid; gap: 14px; min-width: 0; }
+label { font-weight: 700; display: flex; justify-content: space-between; gap: 8px; }
+input[type=range] { width: 100%; accent-color: var(--blue); }
+select { font: 600 1rem var(--f-body); padding: 6px 8px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); width: 100%; }
+button { font: 700 1rem var(--f-display); padding: 10px 18px; border-radius: 999px; border: 2px solid var(--red); background: var(--red); color: #fff; cursor: pointer; }
+button.ghost { background: transparent; color: var(--red); }
+button[aria-pressed="true"] { background: var(--blue); border-color: var(--blue); color: #fff; }
+button.seg { border-color: var(--blue); background: transparent; color: var(--blue); padding: 8px 14px; }
+button.seg[aria-pressed="true"] { background: var(--blue); color: #fff; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.readout { font: 600 0.95rem var(--f-mono); color: var(--muted); }
+.result { font: 700 2.6rem/1 var(--f-display); color: var(--orange); }
+ul.plain { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 66ch; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+.cols > div { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.chip { display: inline-block; font: 700 0.75rem/1 var(--f-mono); letter-spacing: 0.06em; padding: 5px 8px; border-radius: 999px; background: var(--bone); color: var(--fg); }
+.chip.ok { background: color-mix(in srgb, var(--green) 25%, transparent); }
+.chip.spec { background: color-mix(in srgb, var(--orange) 25%, transparent); }
+pre { margin: 0; font: 0.85rem/1.5 var(--f-mono); overflow-x: auto; background: var(--panel); padding: 14px; border-radius: 10px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+[hidden] { display: none !important; }
+
+.state { font: 700 1.6rem/1.1 var(--f-display); }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.85rem; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; background: var(--c); vertical-align: 0; }
+</style>
+<div class="wrap">
+<p class="readout"><a href="index.html">← All gear boxes</a> · family: switches · the clocks that drive them: <a href="clocks.html">SQUARE and RAMP</a></p>
+
+<header class="hero">
+  <div>
+    <span class="eyebrow">Gear Box System · switch family · fit-checked</span>
+    <h1>ROUTE · PICK · STEER · SWAP</h1><div class="mw-slot" data-makerworld="box:pick,box:route,box:steer"></div>
+    <p class="lede">Switches made of gears. One swinging gear chooses where the line goes: a knob on the lid sets it, or a second line does, or the box flips it every turn on its own.</p>
+    <p class="readout">1 cell each (SWAP 2) · cost 3 · fit-checked, not printed (SWAP is a spec)</p>
+  </div>
+  <figure><img src="boxes/steer/img/steer_demo.png" alt="CRANK, TAP, SQUARE and STEER on a 2 by 2 grid"><figcaption>A clock steering a line: CRANK, TAP, SQUARE and STEER. The line from TAP leaves STEER on E while SQUARE is high and on N while it is low.</figcaption></figure>
+</header>
+
+<section>
+  <span class="eyebrow">The family</span>
+  <h2>Four ways to choose</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Box</th><th>Who chooses</th><th>Ports</th><th>In code</th><th>State</th></tr></thead>
+    <tbody>
+      <tr><td><b>ROUTE</b></td><td>You, with the knob</td><td class="mono">W in → E or N</td><td class="mono">sel ? north(x) : east(x)</td><td><span class="chip ok">fit-checked</span></td></tr>
+      <tr><td><b>PICK</b></td><td>You, with the knob</td><td class="mono">W or S in → E</td><td class="mono">E = sel ? S : W</td><td><span class="chip ok">fit-checked</span></td></tr>
+      <tr><td><b>STEER</b></td><td>A second line on S</td><td class="mono">W in, S select → E or N</td><td class="mono">level(S) ? east : north</td><td><span class="chip ok">fit-checked</span></td></tr>
+      <tr><td><b>SWAP</b></td><td>The line itself, every turn</td><td class="mono">W in → E, N, E, N…</td><td class="mono">state = !state</td><td><span class="chip spec">spec · works today as 4 boxes</span></td></tr>
+    </tbody>
+  </table></div>
+  <p>FORK, the random junction, is the fifth member: there chance sets the knob.</p>
+</section>
+
+<section>
+  <span class="eyebrow">Try it</span>
+  <h2>The tumbler</h2>
+  <p>Every switch here is a <b>tumbler</b>, the swinging gear a lathe uses to choose its feed direction. A small idler hangs on an arm and rolls round the center gear. Swing the arm and the idler walks into mesh with E, or with N, or stops between them, clear of both.</p>
+  <div class="sim panel">
+    <div class="controls">
+      <div class="row" role="group" aria-label="Who sets the arm">
+        <button class="seg" id="mKnob" type="button" aria-pressed="true">Knob (ROUTE)</button>
+        <button class="seg" id="mClock" type="button" aria-pressed="false">Clock (STEER)</button>
+      </div>
+      <div id="knobBox" class="controls">
+        <label for="sel">Arm <span class="readout" id="selOut">E</span></label>
+        <input id="sel" type="range" min="0" max="1" step="0.01" value="0">
+        <div class="row">
+          <button class="seg" id="rE" type="button">E</button>
+          <button class="seg" id="rM" type="button">neutral</button>
+          <button class="seg" id="rN" type="button">N</button>
+        </div>
+      </div>
+      <p class="readout" id="clockNote" hidden>A SQUARE at 50 % moves the select line: high for one port turn (E), low for the next (N).</p>
+      <div class="row"><button id="crank" type="button">Crank</button></div>
+      <div><div class="state" id="state">E is live</div><div class="readout" id="detail">Idler in mesh with E. N stands still.</div></div>
+      <div class="legend"><span style="--c:var(--blue)">input / arm</span><span style="--c:var(--white);">inner gears</span><span style="--c:var(--orange)">outputs</span></div>
+    </div>
+    <svg id="sim" viewBox="0 0 400 400" role="img" aria-label="Top view of the tumbler inside ROUTE"></svg>
+  </div>
+  <ul class="plain">
+    <li><b>Break before make.</b> At 31° the idler meshes E, at 59° it meshes N. Halfway, the two are 1.2 mm apart tip to tip, so nothing ever drives both.</li>
+    <li><b>The pull.</b> The teeth drag the arm the way the center gear turns. At one rest that pulls the idler out of mesh, so ROUTE and PICK carry FORK's blue latch. Lock it before you crank.</li>
+    <li><b>Shifting while it turns.</b> Swing the arm slowly under load and the idler can land tooth on tooth and bounce. Watch the amber "meshing" state in the model.</li>
+  </ul>
+</section>
+
+<section>
+  <span class="eyebrow">ROUTE</span>
+  <h2>Choose the output</h2>
+  <p>W (24) → A (16, center) → idler (12) → E (16) or N (16). Three meshes either way, so both outputs turn forward at x1. The knob is SPIN's disc, re-notched: SPIN's detent clicks it into E, neutral and N, and FORK's latch locks it.</p>
+  <div class="figs">
+    <figure><img src="boxes/route/img/route_iso.png" alt="ROUTE assembled"><figcaption>ROUTE assembled: the blue knob, E and N marks round it.</figcaption></figure>
+    <figure><img src="boxes/route/img/route_exploded.png" alt="ROUTE exploded"><figcaption>Exploded: arm, idler on its pin, sleeve, knob, detent and latch.</figcaption></figure>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">PICK</span>
+  <h2>Choose the input</h2>
+  <p>ROUTE turned round: W (16) or S (16) → idler (12) → O (16, center) → E (24). The input that isn't chosen turns nothing. Put a CRANK on W and a MOTOR on S and PICK chooses which one drives the row.</p>
+  <div class="figs">
+    <figure><img src="boxes/pick/img/pick_iso.png" alt="PICK assembled"><figcaption>PICK assembled.</figcaption></figure>
+    <figure><img src="boxes/pick/img/pick_exploded.png" alt="PICK exploded, set to S"><figcaption>Exploded, set to S.</figcaption></figure>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">STEER</span>
+  <h2>A second line chooses</h2>
+  <p>ROUTE with the knob taken off. The arm carries a 24-tooth gear on layer 4, and T (12) brings the S port up to it. The line on S is a <b>level</b>, not a speed: move it 5.86 mm of pitch line forward and the arm swings the 28° to E, back and it swings to N. The green dial shows which side is live.</p>
+  <div class="figs">
+    <figure><img src="boxes/steer/img/steer_iso.png" alt="STEER assembled"><figcaption>STEER assembled: the green dial and the SEL mark.</figcaption></figure>
+    <figure><img src="boxes/steer/img/steer_exploded.png" alt="STEER exploded"><figcaption>Exploded: T on the south, the arm with its 24-tooth gear on top.</figcaption></figure>
+  </div>
+  <h3>Who wins, the line or the select?</h3>
+  <p>The tumbler's pull comes out through T into the select line, always the same way. Followed back into a SQUARE clock, it pushes the clock's finger <b>into</b> its cam. So the high dwell holds by the cam's radius, and the low dwell holds against its own rest. STEER needs no latch when a clock drives it.</p>
+  <h3>Synchronizing</h3>
+  <ul class="plain">
+    <li><b>One clock domain.</b> Drive the clock and the data from the same crank, as the demo does, and every switch lands at the same phase of the data line. If it meshes once, it meshes every time.</li>
+    <li><b>Switch in a dwell.</b> The clock's edges are short; the rest of the cycle the arm sits still.</li>
+    <li><b>Sprung engagement.</b> A flexure in the arm lets the idler wait on a tooth tip and drop in. Not drafted.</li>
+  </ul>
+</section>
+
+<section>
+  <span class="eyebrow">SWAP</span>
+  <h2>A different output every turn</h2>
+  <p>Turn the line once and it comes out of E; again and it comes out of N; then E. In electronics this is a toggle, a T flip-flop. You can build it now from four boxes, and a one-box version is specified.</p>
+  <div class="cols">
+    <div class="panel">
+      <h3>Today: four boxes</h3>
+      <svg viewBox="0 0 300 220" role="img" aria-label="CRANK feeds SQUARE and TAP; SQUARE selects, TAP feeds STEER">
+        <g font-size="12">
+          <rect x="10" y="120" width="120" height="80" rx="8" fill="var(--bone)" stroke="var(--red)" stroke-width="3"/><text x="70" y="165" text-anchor="middle">CRANK</text>
+          <rect x="170" y="120" width="120" height="80" rx="8" fill="var(--bone)" stroke="var(--green)" stroke-width="3"/><text x="230" y="158" text-anchor="middle">SQUARE</text><text x="230" y="176" text-anchor="middle" font-size="10">50 %</text>
+          <rect x="10" y="10" width="120" height="80" rx="8" fill="var(--bone)" stroke="var(--line)" stroke-width="3"/><text x="70" y="55" text-anchor="middle">TAP</text>
+          <rect x="170" y="10" width="120" height="80" rx="8" fill="var(--bone)" stroke="var(--blue)" stroke-width="3"/><text x="230" y="55" text-anchor="middle">STEER</text>
+          <path d="M130 160 H168" stroke="var(--fg)" stroke-width="2" marker-end="url(#ar)"/>
+          <path d="M70 120 V92" stroke="var(--fg)" stroke-width="2" marker-end="url(#ar)"/>
+          <path d="M130 50 H168" stroke="var(--fg)" stroke-width="2" marker-end="url(#ar)"/>
+          <path d="M230 120 V92" stroke="var(--green)" stroke-width="2.5" stroke-dasharray="5 3" marker-end="url(#ar)"/>
+          <text x="236" y="110" font-size="10">select</text><text x="134" y="44" font-size="10">data</text>
+        </g>
+        <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--fg)"/></marker></defs>
+      </svg>
+      <p>SQUARE's cycle is two port turns, high for one and low for the next, so STEER sends the line E for one turn and N for the next.</p>
+    </div>
+    <div class="panel">
+      <h3>Spec: one box, two cells</h3>
+      <svg viewBox="0 0 300 220" role="img" aria-label="W drives a Geneva step with a two-lobe cam that swings a tumbler">
+        <g font-size="11">
+          <rect x="10" y="10" width="135" height="200" rx="8" fill="var(--bone)" stroke="var(--line)" stroke-width="3"/>
+          <rect x="155" y="10" width="135" height="200" rx="8" fill="var(--bone)" stroke="var(--line)" stroke-width="3"/>
+          <text x="20" y="32">toggle cell</text><text x="165" y="32">switch cell</text>
+          <circle cx="77" cy="90" r="34" fill="var(--white)" stroke="var(--fg)" stroke-width="1.5"/>
+          <path d="M77 90 L77 56 A34 34 0 0 1 111 90 Z M77 90 L77 124 A34 34 0 0 1 43 90 Z" fill="var(--green)" opacity="0.7"/>
+          <text x="77" y="142" text-anchor="middle">Geneva + 2-lobe cam</text>
+          <path d="M111 90 H180" stroke="var(--green)" stroke-width="2.5" stroke-dasharray="5 3" marker-end="url(#ar2)"/>
+          <text x="118" y="82" font-size="10">level</text>
+          <circle cx="222" cy="110" r="16" fill="var(--white)" stroke="var(--fg)" stroke-width="1.5"/><text x="222" y="114" text-anchor="middle">A</text>
+          <circle cx="252" cy="88" r="10" fill="var(--white)" stroke="var(--blue)" stroke-width="2"/>
+          <text x="278" y="114" text-anchor="end" fill="var(--orange)">E</text><text x="230" y="58" fill="var(--orange)">N</text>
+          <path d="M20 190 H222 V128" stroke="var(--blue)" stroke-width="2" fill="none" marker-end="url(#ar2)"/>
+          <text x="24" y="182">W → data chain</text>
+        </g>
+        <defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--fg)"/></marker></defs>
+      </svg>
+      <p>Each turn of W steps a Geneva a quarter turn. A two-lobe cam on it flips the level every step, and the Geneva's lock holds it between. The switch happens only in the Geneva's 90° of motion: a true edge.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Folded in</span>
+  <h2>SHIFT and TOGGLE</h2>
+  <div class="cols">
+    <div><h3>SHIFT, a two-speed gearbox</h3><p>The old stick-shift item. Inside one cell, W feeds two stacks at x1 and x2. A tumbler on the output stack swings between them: first, neutral, second. It is PICK with both inputs fed from W. A third rest with one more idler gives reverse. Cost 4, spec only.</p></div>
+    <div><h3>TOGGLE, a select you press</h3><p>STEER with a Geneva and a two-lobe cam on the select line. Each select turn flips E and N, and the Geneva holds the arm between. The heart of SWAP.</p></div>
+    <div><h3>Selector, retired</h3><p>The pending selector (one idler, three outputs) is replaced by ROUTE and PICK. Three outputs on one side forces 12-tooth ports; two outputs on two sides doesn't.</p></div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Status</span>
+  <h2>Fit-checked and committed, not yet printed</h2>
+  <p>ROUTE, PICK and STEER pass the build fit checks. SWAP stays a spec. </p>
+  <p>Verify on the first print: the mesh and backlash at each rest, the arm's wobble on the center pin, the latch's hold under a full crank, and on STEER the 28° swing through three meshes of backlash.</p>
+</section>
+</div>
+
+<script>
+(function () {
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (tag, at, parent) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); if (parent) parent.appendChild(e); return e; };
+  const k = 5, X = (x) => 200 + k * x, Y = (y) => 200 - k * y;
+  const D = Math.PI / 180;
+  const svg = document.getElementById("sim");
+  const RESTS = [Math.acos(12 / 14) / D, 90 - Math.acos(12 / 14) / D];   // 31.0, 59.0
+  // gear outline: n teeth, module 1, as a path at the origin
+  function gearPath(n) {
+    const rp = n / 2, ro = rp + 1, rr = rp - 1.25, pts = [];
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * 360, w = 360 / n;
+      [[a - w * 0.5, rr], [a - w * 0.22, rr], [a - w * 0.12, ro], [a + w * 0.12, ro], [a + w * 0.22, rr]].forEach(([b, r]) => pts.push([k * r * Math.cos(b * D), -k * r * Math.sin(b * D)]));
+    }
+    return "M" + pts.map((p) => p[0].toFixed(1) + " " + p[1].toFixed(1)).join("L") + "Z";
+  }
+  // the cell
+  el("rect", { x: X(-30), y: Y(30), width: 60 * k, height: 60 * k, rx: 6, fill: "var(--bg)", stroke: "var(--line)", "stroke-width": 8 }, svg);
+  const lab = (t, x, y, c) => { const e = el("text", { x: X(x), y: Y(y), "text-anchor": "middle", "font-size": 14, "font-weight": 700 }, svg); e.style.fill = c || "var(--muted)"; e.textContent = t; return e; };
+  lab("W", -36.5, -1, "var(--blue)"); lab("E", 36.5, -1, "var(--orange)"); lab("N", 0, 34.5, "var(--orange)");
+  function mkGear(n, x, y, fill, stroke, dash) {
+    const g = el("g", { transform: `translate(${X(x)} ${Y(y)})` }, svg);
+    const r = el("g", {}, g);
+    el("path", { d: gearPath(n), fill: fill, stroke: stroke, "stroke-width": 1.5, "stroke-dasharray": dash || "none" }, r);
+    el("line", { x1: 0, y1: 0, x2: k * (n / 2 - 2), y2: 0, stroke: stroke, "stroke-width": 2 }, r);
+    el("circle", { cx: 0, cy: 0, r: 7, fill: "var(--panel)", stroke: stroke, "stroke-width": 1.5 }, g);
+    return { g, r, n, x, y, phi: 0 };
+  }
+  const W = mkGear(24, -20, 0, "var(--white)", "var(--blue)");
+  const E = mkGear(16, 24, 0, "var(--white)", "var(--orange)");
+  const N = mkGear(16, 0, 24, "var(--white)", "var(--orange)", "4 2");
+  const A = mkGear(16, 0, 0, "var(--white)", "var(--fg)");
+  const arm = el("line", { stroke: "var(--blue)", "stroke-width": 9, "stroke-linecap": "round", opacity: 0.55 }, svg);
+  const I = mkGear(12, 14, 0, "var(--white)", "var(--fg)");
+  const note = el("text", { x: 200, y: 392, "text-anchor": "middle", "font-size": 11 }, svg); note.style.fill = "var(--muted)";
+  note.textContent = "N is one layer higher (dashed); the idler is two layers tall";
+  const setRot = (G) => G.r.setAttribute("transform", `rotate(${-G.phi})`);
+  // meshing phase: gear 2 driven by gear 1, along the line from 1 to 2 at angle b
+  const meshPhi = (phi1, n1, n2, b) => b + 180 + 180 / n2 - (n1 / n2) * (phi1 - b);
+
+  let mode = "knob", sel = 0, theta = 0, playing = false, last = 0;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const smooth = (x) => x * x * (3 - 2 * x);
+  // the 50 % SQUARE: cycle = 720 degrees of A, ramp 40 of 360 cycle-degrees, high to 200, cliff
+  function clockSel(th) {
+    const u = (((th / 2) % 360) + 360) % 360;
+    let lvl = u < 40 ? smooth(u / 40) : u < 200 ? 1 : u < 204 ? 1 - (u - 200) / 4 : 0;
+    return 1 - lvl;
+  }
+  function draw() {
+    if (mode === "clock") sel = clockSel(theta);
+    const a = RESTS[0] + (RESTS[1] - RESTS[0]) * sel;
+    const ix = 14 * Math.cos(a * D), iy = 14 * Math.sin(a * D);
+    I.g.setAttribute("transform", `translate(${X(ix)} ${Y(iy)})`);
+    arm.setAttribute("x1", X(0)); arm.setAttribute("y1", Y(0)); arm.setAttribute("x2", X(ix)); arm.setAttribute("y2", Y(iy));
+    A.phi = theta; setRot(A);
+    W.phi = meshPhi(A.phi, 16, 24, 180); setRot(W);
+    I.phi = meshPhi(A.phi, 16, 12, a); setRot(I);
+    const st = [];
+    [[E, "E"], [N, "N"]].forEach(([G, name]) => {
+      const dx = G.x - ix, dy = G.y - iy, d = Math.hypot(dx, dy);
+      const b = Math.atan2(dy, dx) / D;
+      if (d < 14.25) { G.phi = meshPhi(I.phi, 12, 16, b); setRot(G); st.push([name, "live"]); }
+      else if (d < 16) st.push([name, "touch"]);
+      else st.push([name, "clear"]);
+    });
+    const live = st.filter((s) => s[1] === "live").map((s) => s[0]);
+    const touch = st.filter((s) => s[1] === "touch").map((s) => s[0]);
+    const S = document.getElementById("state"), Dt = document.getElementById("detail");
+    if (live.length) { S.textContent = live[0] + " is live"; S.style.color = "var(--orange)"; Dt.textContent = "Idler in mesh with " + live[0] + ". " + (live[0] === "E" ? "N" : "E") + " stands still."; }
+    else if (touch.length) { S.textContent = "Meshing " + touch[0]; S.style.color = "#C98A00"; Dt.textContent = "Teeth overlap only at the tips: under load it can land tooth on tooth and bounce."; }
+    else { S.textContent = "Neutral"; S.style.color = "var(--muted)"; Dt.textContent = "Idler clear of both outputs: break before make. Nothing turns but A."; }
+    document.getElementById("selOut").textContent = sel < 0.02 ? "E" : sel > 0.98 ? "N" : Math.round(a) + "°";
+    if (mode === "knob") document.getElementById("sel").value = sel;
+  }
+  function tick(ts) {
+    if (!playing) return;
+    const dt = last ? Math.min(ts - last, 50) : 16; last = ts;
+    theta += dt * 0.12;
+    draw();
+    requestAnimationFrame(tick);
+  }
+  const crank = document.getElementById("crank");
+  crank.addEventListener("click", () => {
+    if (reduce && !playing) { theta += 90; draw(); return; }
+    playing = !playing; crank.textContent = playing ? "Stop" : "Crank"; last = 0;
+    if (playing) requestAnimationFrame(tick);
+  });
+  document.getElementById("sel").addEventListener("input", (e) => { sel = +e.target.value; draw(); });
+  [["rE", 0], ["rM", 0.5], ["rN", 1]].forEach(([id, v]) => document.getElementById(id).addEventListener("click", () => { sel = v; draw(); }));
+  function setMode(m) {
+    mode = m;
+    document.getElementById("mKnob").setAttribute("aria-pressed", m === "knob");
+    document.getElementById("mClock").setAttribute("aria-pressed", m === "clock");
+    document.getElementById("knobBox").hidden = m !== "knob";
+    document.getElementById("clockNote").hidden = m !== "clock";
+    draw();
+  }
+  document.getElementById("mKnob").addEventListener("click", () => setMode("knob"));
+  document.getElementById("mClock").addEventListener("click", () => setMode("clock"));
+  draw();
+})();
+</script>
+
+<script src="makerworld.js"></script>
+<script src="mw.js"></script>
+</body></html>

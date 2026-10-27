@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FACE Clock Box</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: the house style of the box pages (one reading column, wide figure bands); a live clock replica is the hero */
+:root {
+  --bg: #F6F1E6; --panel: #EDE3D0; --fg: #23211D; --muted: #6B655A; --line: #CFC3AC;
+  --red: #D63A2F; --blue: #1F6FD6; --orange: #E07A16; --green: #2A9A48; --white: #FFFDF8;
+  --dial: #1E1E1E; --mark: #EDE8DA; --hand: #2FA84F;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #2C3035;
+  --dial: #111214; --mark: #E4DED2; --hand: #4CC46B; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #2C3035;
+  --dial: #111214; --mark: #E4DED2; --hand: #4CC46B; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 17px/1.6 var(--f-body); }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 64px; display: grid; gap: 48px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.7rem; font-weight: 700; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p, ul { margin: 0; max-width: 66ch; }
+ul { padding-left: 1.2em; display: grid; gap: 6px; }
+section { display: grid; gap: 16px; min-width: 0; }
+a { color: var(--blue); }
+.eyebrow { font: 600 0.75rem/1 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 1.2rem; max-width: 60ch; }
+.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+.hero > div { display: grid; gap: 16px; min-width: 0; }
+@media (max-width: 760px) { .hero { grid-template-columns: 1fr; } }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+figure { margin: 0; display: grid; gap: 8px; min-width: 0; }
+figure img { width: 100%; border-radius: 10px; background: #FFFDE7; }
+figcaption { font-size: 0.9rem; color: var(--muted); }
+.panel { background: var(--panel); border-radius: 10px; padding: 16px; }
+svg { display: block; width: 100%; height: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.scroll { overflow-x: auto; }
+code, .mono { font-family: var(--f-mono); font-size: 0.88em; }
+.sim { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: start; }
+@media (max-width: 760px) { .sim { grid-template-columns: 1fr; } }
+.controls { display: grid; gap: 14px; min-width: 0; }
+.controls fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 6px; }
+.controls legend { font-weight: 700; padding: 0; margin-bottom: 4px; }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg label { font: 600 0.85rem var(--f-mono); border: 2px solid var(--line); border-radius: 999px; padding: 4px 10px; cursor: pointer; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg input:checked + span { color: var(--red); }
+.seg label:has(input:checked) { border-color: var(--red); }
+.seg label:has(input:focus-visible) { outline: 3px solid var(--blue); outline-offset: 2px; }
+.btns { display: flex; flex-wrap: wrap; gap: 8px; }
+button { font: 700 1rem var(--f-display); padding: 10px 18px; border-radius: 999px; border: 2px solid var(--red); background: var(--red); color: #fff; cursor: pointer; }
+button.ghost { background: transparent; color: var(--red); }
+button:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.read { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-family: var(--f-mono); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.read dt { color: var(--muted); }
+.read dd { margin: 0; font-weight: 600; }
+.meter { height: 10px; border-radius: 5px; background: var(--line); overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--red); width: 100%; }
+.note { font-size: 0.9rem; color: var(--muted); }
+.clock { max-width: 460px; justify-self: center; width: 100%; }
+.dialbg { fill: var(--dial); }
+.mk { fill: var(--mark); }
+.mkt { fill: var(--mark); font-family: var(--f-display); font-weight: 700; }
+.hand { fill: var(--hand); }
+.dg text { font-family: var(--f-mono); fill: var(--fg); }
+.timeline td:first-child { white-space: nowrap; font-weight: 700; }
+footer { border-top: 1px solid var(--line); padding-top: 16px; font-weight: 700; }
+footer span { font-weight: 400; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="eyebrow"><a href="index.html" style="color:inherit">← All boxes</a> · Readouts · fit-checked · 2×2 cells · cost 8</div>
+
+<header class="hero">
+  <div>
+    <h1>FACE: a clock that counts TICK's beats</h1><div class="mw-slot" data-makerworld="box:face"></div>
+    <p class="lede">An hour hand, a minute hand and a small seconds dial, on the line a TICK regulates. One beat of the foliot is one second. Inside, gears divide by 60, by 60 again and by 12, exactly as a clock's do.</p>
+    <p>It keeps time as well as its foliot does, which is not very well. That's the lesson: a clock is a counter, and all its error lives in the thing it counts.</p>
+  </div>
+  <figure><img src="boxes/face/img/face_iso.png" alt="The FACE box assembled: a charcoal lid with a white chapter ring, green hour and minute hands at 10:09, and a seconds dial at six o'clock"><figcaption>Assembled, at 10:09:30. 128 × 128 mm, an end box with one input (S, west cell).</figcaption></figure>
+</header>
+
+<section>
+  <h2>Run it: SPRING, TEE, TICK and FACE</h2>
+  <p>Wind the spring and let it go. Every tick of the foliot moves the seconds hand 6°. Watch how long one wind lasts, and whether the face keeps up with a real stopwatch.</p>
+  <div class="sim">
+    <svg class="clock" id="clock" viewBox="-64 -64 128 128" role="img" aria-label="Clock face showing the simulated time"></svg>
+    <div class="controls">
+      <fieldset>
+        <legend>TICK's balls</legend>
+        <div class="seg">
+          <label><input type="radio" name="balls" id="b12" value="12"><span>inner</span></label>
+          <label><input type="radio" name="balls" id="b18" value="18" checked><span>middle</span></label>
+          <label><input type="radio" name="balls" id="b24" value="24"><span>outer</span></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Drive</legend>
+        <div class="seg">
+          <label><input type="radio" name="drive" id="d0" value="0" checked><span>SPRING</span></label>
+          <label><input type="radio" name="drive" id="d1" value="1"><span>+1 DOUBLE</span></label>
+          <label><input type="radio" name="drive" id="d2" value="2"><span>+2 DOUBLE</span></label>
+          <label><input type="radio" name="drive" id="dw" value="w"><span>steady</span></label>
+        </div>
+      </fieldset>
+      <div class="btns">
+        <button id="wind" type="button">Wind and release</button>
+        <button id="fast" class="ghost" type="button">Speed ×1</button>
+        <button id="setb" class="ghost" type="button">Push minute hand +5</button>
+      </div>
+      <div><div class="note" style="margin-bottom:4px">Spring</div><div class="meter"><i id="spr"></i></div></div>
+      <dl class="read">
+        <dt>real time</dt><dd id="rt">0.0 s</dd>
+        <dt>beats</dt><dd id="bt">0</dd>
+        <dt>beat now</dt><dd id="br">–</dd>
+        <dt>face gained</dt><dd id="er">0.0 s</dd>
+      </dl>
+      <p class="note">An illustration, not a measurement: the beat is set at one a second for the middle pocket, and a foliot is modeled to swing faster in proportion to the square root of its push. The real numbers come from the first print.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>A clock is four things</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Part of every clock</th><th>In a church clock, 1350</th><th>In a quartz watch</th><th>Here</th></tr></thead>
+    <tbody>
+      <tr><td>Power</td><td>a falling weight</td><td>a battery</td><td>SPRING</td></tr>
+      <tr><td>Oscillator, which sets the rate</td><td>a foliot</td><td>a quartz crystal, 32,768 Hz</td><td>TICK's foliot and its balls</td></tr>
+      <tr><td>Escapement, which lets power through one beat at a time</td><td>a verge</td><td>a driver chip and a stepper</td><td>TICK's pallets</td></tr>
+      <tr><td>Counter, which turns beats into hours</td><td>wheels and a dial</td><td>a chip that halves 15 times, then gears</td><td><b>FACE</b></td></tr>
+    </tbody>
+  </table></div>
+  <p>FACE can't miscount: sixty beats always make one turn of the seconds hand, because gears don't skip. If the clock is wrong, the beats were wrong.</p>
+</section>
+
+<section>
+  <h2>The gear train</h2>
+  <p>TICK lets its line through one escape-wheel tooth per beat: 24° of a 16-tooth port. FACE's port is 16 teeth too. From there:</p>
+  <div class="panel scroll">
+    <svg id="train" viewBox="0 0 900 250" role="img" aria-label="Gear train from the S port to the hour hand"></svg>
+  </div>
+  <ul>
+    <li><b>Seconds.</b> A (16 → 24) and B (12 → 32) make the port's speed a quarter: B turns 6° a beat, once in 60.</li>
+    <li><b>Seconds to minutes, 60:1.</b> 24/12 × 30/12 × 36/12 × 48/12 = 2 × 2.5 × 3 × 4. Three stages would have been enough for the ratio (4 × 3.75 × 4), but three meshes would have run the minute hand backwards. A clock train has to get the count of meshes right as well as the ratio.</li>
+    <li><b>The motion works, 12:1.</b> The cannon pinion (15) drives the minute wheel (45), whose 12 drives the hour wheel (48). Both pairs add up to 60 teeth, so one minute wheel reaches both at 30 mm, and the hour hand rides a pipe round the minute hand's tube. Every clock does this.</li>
+    <li><b>Clockwise, at last.</b> Everywhere else in the system, "forward" is counter-clockwise. Here the hands sit 2, 6 and 8 meshes from the input: even counts, so they turn the way the input gear does, clockwise.</li>
+  </ul>
+  <div class="figs">
+    <figure><img src="boxes/face/img/face_inside.png" alt="FACE with the lid off: the blue input gear at the bottom left, white gears filling the box, the big center wheel and the hour wheel in the middle"><figcaption>Lid off. The port is bottom left; the hour wheel (48) is on top in the middle, the minute wheel at nine o'clock.</figcaption></figure>
+    <figure><img src="boxes/face/img/face_exploded.png" alt="FACE exploded: shell and gears, the lid with the dial printed on it, and the three green hands above"><figcaption>Exploded. Hands, lid, then the train.</figcaption></figure>
+  </div>
+</section>
+
+<section>
+  <h2>Why it needs four cells</h2>
+  <p>The motion works alone needs its two gear pairs 30 mm apart, with 45- and 48-tooth wheels: wider than one cell. A two-cell box holds that but not the 60:1 as well. A layout search over every gear choice and position found no way to fit both in 55 mm of width on four layers. At 2×2 everything sits on the standard four layers, and the dial is 108 mm across, readable from across a table.</p>
+</section>
+
+<section>
+  <h2>Setting the time: a slip collar</h2>
+  <p>The center wheel, which turns once an hour, doesn't drive the minute tube directly. Three springy fingers round its bore grip the tube. That's enough to carry the hands and the motion works, which need almost nothing. Push the minute hand and the fingers slip: the train behind can't be driven backwards through 1:60 of gearing, TICK's pallets and SPRING's plunger. The hour hand follows through the motion works. Real clocks use the same trick, a friction-fit cannon pinion.</p>
+</section>
+
+<section>
+  <h2>One wind, 37 seconds</h2>
+  <p>A full wind of SPRING turns its 16-tooth output 2.5 times: 40 teeth of line. TICK lets 16/15 of a tooth through per beat, so one wind is 37.5 beats. The seconds hand goes ⅝ of the way round; the minute hand moves less than 4°.</p>
+  <p>That isn't a fault in FACE. A real clock puts its spring at the slow end: the barrel turns once in about eight hours and the train speeds up towards the escapement, so one wind lasts days. SPRING runs its line at full speed, so it empties fast. Each DOUBLE in front of TEE doubles the run and halves the push. A falling weight (a future WEIGHT box, not drafted) would push the same all the way down, which a foliot likes best. Try them above.</p>
+</section>
+
+<section>
+  <h2>How good is a clock?</h2>
+  <div class="scroll"><table class="timeline">
+    <thead><tr><th>Regulator</th><th>When</th><th>Typical error</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td>Foliot (TICK)</td><td>about 1300</td><td>a quarter of an hour a day</td><td>no rate of its own: a harder push swings it faster, and a spring's push fades</td></tr>
+      <tr><td>Pendulum</td><td>1656, Huygens</td><td>under a minute a day, soon about 10 s</td><td>its period depends on its length, hardly on the push</td></tr>
+      <tr><td>Balance spring</td><td>1675</td><td>minutes a day at first, seconds later</td><td>a pendulum that works in a pocket</td></tr>
+      <tr><td>Quartz crystal</td><td>1969 (watches)</td><td>about half a second a day</td><td>a crystal rings at 32,768 Hz; halve it 15 times and you have seconds</td></tr>
+      <tr><td>Cesium atom</td><td>1955</td><td>a second in millions of years</td><td>9,192,631,770 vibrations: that number is the definition of a second</td></tr>
+    </tbody>
+  </table></div>
+  <p>FACE with a crystal and a chip instead of TICK would be a quartz watch. To calibrate this one, race the seconds hand against a phone for a minute and move TICK's balls a pocket. With three pockets you can get close, never exact.</p>
+</section>
+
+<section>
+  <h2>Things to try</h2>
+  <ul>
+    <li><b>Count beats.</b> The seconds hand jumps once per tick of the foliot.</li>
+    <li><b>Race a phone.</b> Which pocket comes closest to a real minute?</li>
+    <li><b>Watch it slow down.</b> Time the first ten beats and the last ten of one wind. The spring's push fades, and the foliot follows it.</li>
+    <li><b>Spin the hands.</b> Push the minute hand round twelve times and the hour hand goes once.</li>
+    <li><b>Add DOUBLEs</b> in front of TEE and see how long one wind lasts, and what it does to the beat.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Fit-checked, not yet printed</h2>
+  <p>Drawn in OpenSCAD and checked there for collisions; it is in the catalog on main and passes the full fit check. To check on the first print: how hard the slip collar grips, the 28 mm minute tube printing straight, the seconds wheel's pressed-in pinion, the hands' clearances, and the real beat with each pocket. Parts: 21 prints plus a 4 mm steel rod, 32 mm long.</p>
+</section>
+
+<footer><a href="index.html" style="color:inherit">← Back to all boxes</a></footer>
+</div>
+
+<script>
+(() => {
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (n, a, p) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; };
+
+  // ---- the dial (box units: mm, the lid's center at 0,0; y down in SVG) ----
+  const C = document.getElementById("clock");
+  el("rect", { x: -62.7, y: -62.7, width: 125.4, height: 125.4, rx: 2, class: "dialbg" }, C);
+  for (let k = 0; k < 60; k++) {
+    const g = el("g", { transform: `rotate(${6 * k})` }, C);
+    if (k % 5 === 0) el("rect", { x: -1.1, y: -54, width: 2.2, height: 8, class: "mk" }, g);
+    else el("rect", { x: -0.4, y: -54, width: 0.8, height: 3, class: "mk" }, g);
+  }
+  const num = (t, x, y) => { const e = el("text", { x, y, "font-size": 8, "text-anchor": "middle", "dominant-baseline": "central", class: "mkt" }, C); e.textContent = t; };
+  num("12", 0, -39); num("3", 40, 0); num("9", -40, 0);
+  const sd = el("g", { transform: "translate(0 30)" }, C);
+  el("circle", { r: 14, fill: "none", stroke: "var(--mark)", "stroke-width": 0.8 }, sd);
+  for (let k = 0; k < 12; k++) { const g = el("g", { transform: `rotate(${30 * k})` }, sd); el("rect", { x: -0.45, y: k % 3 ? -13.2 : -13.6, width: 0.9, height: k % 3 ? 2 : 3.2, class: "mk" }, g); }
+  const t60 = el("text", { x: 0, y: -7.4, "font-size": 3, "text-anchor": "middle", "dominant-baseline": "central", class: "mkt" }, sd); t60.textContent = "60";
+  const lbl = el("text", { x: -47, y: 52, "font-size": 5.5, "text-anchor": "middle", class: "mkt" }, C); lbl.textContent = "FACE";
+  const hand = (len, w, tail, hub) => `M ${-w / 2} 0 L ${-w * 0.3} ${-len} Q 0 ${-len - w * 0.6} ${w * 0.3} ${-len} L ${w / 2} 0 L ${w * 0.6} ${tail} L ${-w * 0.6} ${tail} Z`;
+  const hS = el("g", { transform: "translate(0 30)" }, C), hSr = el("g", {}, hS);
+  el("path", { d: hand(12, 1.6, 4), class: "hand" }, hSr); el("circle", { r: 2.6, class: "hand" }, hSr); el("circle", { r: 1.1, fill: "var(--mark)" }, hS);
+  const hH = el("g", {}, C); el("path", { d: hand(30, 4, 6), class: "hand" }, hH); el("circle", { r: 6.4, class: "hand" }, hH);
+  const hM = el("g", {}, C); el("path", { d: hand(47, 2.8, 9), class: "hand" }, hM); el("circle", { r: 5, class: "hand" }, hM);
+  el("circle", { r: 2, fill: "var(--mark)" }, C);
+
+  // ---- the model ----
+  const WIND = 37.5;                       // beats in one full wind (40 teeth of line / (16/15))
+  let st = { beats: 0, real: 0, set: 10 * 60 + 9, energy: 0, phase: 0, speed: 1 };
+  const balls = () => +document.querySelector('input[name="balls"]:checked').value;
+  const drive = () => document.querySelector('input[name="drive"]:checked').value;
+  const total = () => drive() === "w" ? Infinity : WIND * 2 ** +drive();
+  // beats a second: 18 / pocket radius at full push (the sandbox's rate), times sqrt of the push now
+  function rate() {
+    const f0 = 18 / balls(), d = drive();
+    if (d === "w") return st.energy > 0 ? f0 * 0.85 : 0;
+    const left = st.energy;                 // 0..1 of the wind
+    if (left <= 0) return 0;
+    return f0 * Math.sqrt(left / 2 ** +d);
+  }
+  function draw() {
+    const secs = st.beats, face = st.set * 60 + secs;
+    const s = (secs % 60) * 6, m = (face / 60) * 6, h = (face / 3600) * 30;
+    hSr.setAttribute("transform", `rotate(${s})`);
+    hM.setAttribute("transform", `rotate(${m})`);
+    hH.setAttribute("transform", `rotate(${h})`);
+    document.getElementById("rt").textContent = st.real.toFixed(1) + " s";
+    document.getElementById("bt").textContent = Math.floor(st.beats);
+    const r = rate();
+    document.getElementById("br").textContent = r ? r.toFixed(2) + " a second" : "stopped";
+    const e = Math.floor(st.beats) - st.real;
+    document.getElementById("er").textContent = (e >= 0 ? "+" : "−") + Math.abs(e).toFixed(1) + " s";
+    document.getElementById("spr").style.width = (drive() === "w" ? (st.energy > 0 ? 100 : 0) : Math.max(0, st.energy) * 100) + "%";
+  }
+  let last = null;
+  function tick(t) {
+    if (last !== null) {
+      let dt = Math.min(0.1, (t - last) / 1000) * st.speed;
+      while (dt > 0) {
+        const h = Math.min(dt, 0.02), r = rate();
+        if (!r) break;
+        st.real += h; st.phase += r * h;
+        while (st.phase >= 1) {
+          st.phase -= 1; st.beats += 1;
+          if (drive() !== "w") st.energy = Math.max(0, st.energy - 1 / total());
+        }
+        dt -= h;
+      }
+      if (!rate() && st.energy > 0 && drive() !== "w") st.energy = 0;
+    }
+    last = t; draw(); requestAnimationFrame(tick);
+  }
+  document.getElementById("wind").onclick = () => { st.beats = 0; st.real = 0; st.phase = 0; st.energy = 1; };
+  document.getElementById("fast").onclick = (ev) => { st.speed = st.speed === 1 ? 10 : 1; ev.target.textContent = "Speed ×" + st.speed; };
+  document.getElementById("setb").onclick = () => { st.set += 5; draw(); };
+  document.querySelectorAll('input[name="drive"], input[name="balls"]').forEach(i => i.onchange = () => { st.energy = 0; st.beats = 0; st.real = 0; st.phase = 0; draw(); });
+  draw(); requestAnimationFrame(tick);
+
+  // ---- the train diagram ----
+  const T = document.getElementById("train");
+  const g = el("g", { class: "dg" }, T);
+  const rows = [
+    ["S", "16", "port", "4", "var(--blue)"], ["A", "24 / 12", "", "2⅔", "var(--muted)"], ["B", "32 / 12", "seconds", "1", "var(--hand)"],
+    ["C", "24 / 12", "", "½", "var(--muted)"], ["D", "30 / 12", "", "⅕", "var(--muted)"], ["E", "36 / 12", "", "1/15", "var(--muted)"],
+    ["W", "48", "minutes", "1/60", "var(--hand)"], ["N", "45 / 12", "motion works", "1/180", "var(--muted)"], ["H", "48", "hours", "1/720", "var(--hand)"]];
+  const x0 = 50, dx = 100;
+  rows.forEach((r, i) => {
+    const x = x0 + i * dx, y = 110;
+    if (i) el("line", { x1: x - dx + 26, y1: y, x2: x - 26, y2: y, stroke: "var(--line)", "stroke-width": 3 }, g);
+    el("circle", { cx: x, cy: y, r: 24, fill: "var(--panel)", stroke: r[4], "stroke-width": 4 }, g);
+    const a = el("text", { x, y: y + 6, "font-size": 18, "text-anchor": "middle", "font-weight": 600 }, g); a.textContent = r[0];
+    const b = el("text", { x, y: y - 36, "font-size": 12, "text-anchor": "middle" }, g); b.textContent = r[1];
+    const c = el("text", { x, y: y + 50, "font-size": 12, "text-anchor": "middle" }, g); c.textContent = r[3];
+    if (r[2]) { const d = el("text", { x, y: y + 70, "font-size": 11, "text-anchor": "middle", style: "fill:var(--muted)" }, g); d.textContent = r[2]; }
+  });
+  const k1 = el("text", { x: 4, y: 74, "font-size": 11, style: "fill:var(--muted)" }, g); k1.textContent = "teeth";
+  const k2 = el("text", { x: 4, y: 236, "font-size": 11, style: "fill:var(--muted)" }, g); k2.textContent = "turns a minute at one beat a second; green = a hand";
+})();
+</script>
+<script src="makerworld.js"></script>
+<script src="mw.js"></script>
+</body>
+</html>

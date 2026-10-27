@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gear Box Catalog</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>/* Layout: one reading column with wide figure bands, as on the SPIN page; the six role colors carry the meaning, as on the boxes */
+:root {
+  --bg: #F6F1E6; --panel: #EDE3D0; --fg: #23211D; --muted: #6B655A; --line: #CFC3AC;
+  --red: #D63A2F; --blue: #1F6FD6; --orange: #E07A16; --green: #2A9A48; --white: #FFFDF8; --bone: #E4D8BF;
+  --card: #FBF8F1; --shot: #F8F8F6;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #DCD6C8; --bone: #8E846F;
+  --card: #212428; --shot: #E9E9E6; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #DCD6C8; --bone: #8E846F;
+  --card: #212428; --shot: #E9E9E6; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 17px/1.6 var(--f-body); }
+a { color: var(--blue); }
+a:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; border-radius: 4px; }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 64px; display: grid; gap: 44px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.6rem; font-weight: 700; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; max-width: 66ch; }
+section { display: grid; gap: 14px; min-width: 0; }
+.eyebrow { font: 600 0.75rem/1.4 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.lede { font-size: 1.15rem; max-width: 60ch; }
+.readout { font: 600 0.85rem/1.5 var(--f-mono); color: var(--muted); }
+nav.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+nav.top a, .foot a { font: 700 1rem var(--f-display); text-decoration: none; }
+.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+.hero > div { display: grid; gap: 14px; min-width: 0; }
+.hero img, figure img { border-radius: 10px; background: var(--shot); width: 100%; min-width: 0; display: block; }
+@media (max-width: 760px) { .hero { grid-template-columns: 1fr; } }
+.sym { display: inline-grid; place-items: center; min-width: 1.3em; height: 1.3em; padding: 0 0.25em; border-radius: 999px; background: var(--fg); color: var(--bg); font-family: var(--f-display); font-size: 0.6em; vertical-align: 0.25em; }
+.sym.small { font-size: 0.75em; vertical-align: 0.1em; }
+.chip { font: 600 0.7rem/1 var(--f-mono); letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 8px; border-radius: 999px; white-space: nowrap; }
+.chip.checked { background: color-mix(in srgb, var(--green) 20%, transparent); color: var(--fg); border: 1px solid var(--green); }
+.chip.draft { background: transparent; color: var(--fg); border: 1px dashed var(--orange); }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+figure { margin: 0; display: grid; gap: 8px; min-width: 0; align-content: start; }
+figcaption { font-size: 0.9rem; color: var(--muted); }
+.panel { background: var(--panel); border-radius: 10px; padding: 16px; }
+.diagram { display: grid; gap: 10px; justify-items: center; }
+.diagram svg { max-width: 340px; }
+svg { display: block; width: 100%; height: auto; }
+svg text { font-family: var(--f-mono); fill: var(--fg); }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+td.num { font-variant-numeric: tabular-nums; font-family: var(--f-mono); }
+.scroll { overflow-x: auto; min-width: 0; }
+code, .mono { font-family: var(--f-mono); font-size: 0.86em; }
+.train { line-height: 1.7; color: var(--fg); padding-top: 12px; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; align-items: start; }
+.cols > div { min-width: 0; }
+ul.plain { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 66ch; }
+ol.steps { margin: 0; padding-left: 2em; display: grid; gap: 8px; max-width: 66ch; }
+ol.steps li::marker { font-family: var(--f-mono); font-weight: 600; color: var(--muted); }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 0; }
+.dot.in { background: var(--blue); } .dot.out { background: var(--orange); }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 8px; border: 1px solid var(--line); vertical-align: -1px; }
+.fn { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font: 600 1rem var(--f-mono); }
+.fn .fin { color: var(--blue); } .fn .fout { color: var(--orange); }
+.fn .fbox { padding: 8px 14px; border: 2px solid var(--fg); border-radius: 8px; font-family: var(--f-display); font-size: 1.1rem; }
+.fn .arrow { color: var(--muted); }
+.meter { display: flex; gap: 4px; flex-wrap: wrap; max-width: 520px; }
+.meter i { flex: 1 0 14px; max-width: 22px; height: 18px; border-radius: 3px; background: var(--panel); border: 1px solid var(--line); }
+.meter i.on { background: var(--fg); border-color: var(--fg); }
+.meter i.b { background: var(--red); border-color: var(--red); }
+.foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-top: 1px solid var(--line); padding-top: 18px; }
+/* master page */
+.mhero { display: grid; gap: 16px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font: 600 0.85rem var(--f-mono); color: var(--muted); }
+.links { color: var(--muted); }
+.ghead { display: grid; gap: 4px; }
+.ghead p { color: var(--muted); }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+.card { display: grid; grid-template-rows: auto 1fr; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; color: var(--fg); text-decoration: none; transition: transform 0.15s, border-color 0.15s; min-width: 0; }
+a.card:hover { transform: translateY(-2px); border-color: var(--fg); }
+a.card:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: var(--shot); display: block; }
+.card .noimg { aspect-ratio: 4 / 3; display: grid; place-items: center; font-size: 3rem; color: var(--muted); background: var(--panel); }
+.card.soon { opacity: 0.75; }
+.cbody { padding: 14px 16px 16px; display: grid; gap: 8px; align-content: start; }
+.ctop { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.cbody p { font-size: 0.95rem; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.figs figure.wide { grid-column: 1 / -1; max-width: 760px; justify-self: center; width: 100%; }
+.fchip { display: inline-block; width: 0.8em; height: 0.8em; border-radius: 3px; margin-right: 0.4em; vertical-align: 0.02em; box-shadow: 0 0 0 1px var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="mhero">
+  <span class="eyebrow">Gear Box System · design pages</span>
+  <h1>The boxes</h1>
+  <p class="lede">Printable gear boxes on a 64 mm grid. Each one passes motion through gears in its walls: in on the West and South, out on the East and North. Every box has a page with its assembled and exploded views, ports, torque cost, parts, assembly and what it teaches.</p>
+  <p class="readout">50 fit-checked · none printed yet · budgets: crank 20 stages, motor 15</p>
+  <div class="legend">
+    <span><span class="sw" style="background:var(--red)"></span>drive</span>
+    <span><span class="sw" style="background:var(--blue)"></span>input port</span>
+    <span><span class="sw" style="background:var(--orange)"></span>output port</span>
+    <span><span class="sw" style="background:var(--green)"></span>display</span>
+    <span><span class="sw" style="background:var(--white)"></span>inner gears</span>
+    <span><span class="sw" style="background:var(--bone)"></span>structure</span>
+  </div>
+  <p class="links"><strong>Try a layout before you print it:</strong> the <a href="sandbox/index.html">sandbox</a> puts boxes on the grid, turns the crank and moves every gear, and flags lanes that miss, undriven channels, ratchet jams, the torque budget and backlash.</p>
+  <p class="links"><strong>Print them:</strong> every box and kit will have its print files on MakerWorld. See <a href="makerworld.html">the MakerWorld list</a>.</p>
+  <p class="links">The rules every box follows are in <a href="standard.html">the box standard</a>. The bigger picture is in <a href="what.html">What the gear boxes can do</a>.</p>
+  <p class="links">Each family heading below carries its <strong>lid color</strong>: the family colors the lid, and the role colors above stay the same on every box. See <a href="colors.html">Family colors</a>.</p>
+  <p class="links"><strong>Where to start:</strong> the <a href="kits.html">kits</a> group the fit-checked boxes into six sets, a starter and five that add to it, each with builds to try, the filament it takes and what to buy.</p>
+  <p class="links"><strong>Carry a layout:</strong> the <a href="deck.html">deck</a> is a printed base the boxes snap down onto, so a whole layout lifts as one piece. In the standard: every shell has a socket under each grid node, checked on a deck by the fit check; not printed yet.</p>
+  <p class="links"><strong>Three plots, one motor:</strong> <a href="threeplots.html">three PLOT boxes drawn from one DRIVE</a>, laid out two ways: 26 boxes with today's parts, or an 11-box tower with PLOT's time on W and the new BRANCH and long wires.</p>
+</header>
+<section><div class="ghead"><h2><span class="fchip" style="background:#D63A2F" title="lid color #D63A2F"></span>Drives and inputs</h2><p>Where motion comes from: a hand, a motor, a press, a spring.</p></div><div class="cards"><a class="card" href="crank.html"><img src="boxes/crank/img/crank_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>CRANK <span class="sym small">↻</span></h3><span class="chip checked">fit-checked</span></div>
+<p>Hand drive: a thumb wheel with a crank knob. Drives E and N forward.</p><p class="readout">1 cell · budget 20</p></div></a><a class="card" href="motor.html"><img src="boxes/motor/img/motor_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>MOTOR <span class="sym small">⚡</span></h3><span class="chip checked">fit-checked</span></div>
+<p>9 V gearmotor drive, two cells wide: forward, off and reverse, ports at about 45 rpm.</p><p class="readout">2×1 cells · budget 15</p></div></a><a class="card" href="store.html"><img src="boxes/store/img/store_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>SPRING <span class="sym small">➰</span></h3><span class="chip checked">fit-checked</span></div>
+<p>A clockwork motor: wind the red knob a turn, lift the plunger and a printed spring drives E; let go and it stops.</p><p class="readout">1 cell · budget 2</p></div></a><a class="card" href="push.html"><img src="boxes/push/img/push_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>PUSH · FLIP · CLICK <span class="sym small">⏵</span></h3><span class="chip checked">fit-checked</span></div>
+<p>A drive you press: a red key pushes a rack, one full press is one port turn. FLIP adds a flipper bat, CLICK a ratchet tally.</p><p class="readout">1 cell · budget 12 press, 4 return</p></div></a></div></section><section><div class="ghead"><h2><span class="fchip" style="background:#FEC600" title="lid color #FEC600"></span>Routing</h2><p>Carry a line across the grid, turn it, split it, lift it.</p></div><div class="cards"><a class="card" href="wire.html"><img src="boxes/wire/img/wire_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>WIRE <span class="sym small">→</span></h3><span class="chip checked">fit-checked</span></div>
+<p>Straight through on both channels: W→E and S→N.</p><p class="readout">1 cell · cost 2</p></div></a><a class="card" href="turn.html"><img src="boxes/turn/img/turn_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>TURN <span class="sym small">↰</span></h3><span class="chip checked">fit-checked</span></div>
+<p>W in, N out: turns the main line into the second channel.</p><p class="readout">1 cell · cost 3</p></div></a><a class="card" href="tap.html"><img src="boxes/tap/img/tap_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>TAP <span class="sym small">⤷</span></h3><span class="chip checked">fit-checked</span></div>
+<p>S in, E out: restarts a row from the N/S power line, at ×1.</p><p class="readout">1 cell · cost 3</p></div></a><a class="card" href="tee.html"><img src="boxes/tee/img/tee_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>TEE <span class="sym small">⊤</span></h3><span class="chip checked">fit-checked</span></div>
+<p>W in, E and N out: the simplest fan-out.</p><p class="readout">1 cell · cost 3</p></div></a><a class="card" href="bus.html"><img src="boxes/bus/img/bus_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>BUS <span class="sym small">≡</span></h3><span class="chip checked">fit-checked</span></div>
+<p>Two cells tall: the power line in on S, copied out east on both rows and passed on north.</p><p class="readout">1×2 cells · cost 3 (5 to E2 and N)</p></div></a><a class="card" href="riser.html"><img src="boxes/riser/img/riser_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>RISER <span class="sym small">⇡</span></h3><span class="chip checked">fit-checked</span></div>
+<p>Two cells tall: in on W of the lower cell, out on E of the upper one.</p><p class="readout">1×2 cells · cost 4</p></div></a><a class="card" href="longwire.html"><img src="boxes/wire3/img/wire3_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>WIRE 2 · WIRE 3 · POLE 2 · POLE 3 <span class="sym small">═</span></h3><span class="chip checked">fit-checked</span></div>
+<p>WIRE, two or three cells long. WIRE 2 and 3 carry the main line east, POLE 2 and 3 carry the power line north (and let rows cross anywhere), so a long run is one box, not a row of single WIREs.</p><p class="readout">2×1, 3×1, 1×2, 1×3 cells · cost 2 a cell</p></div></a><a class="card" href="branch.html"><img src="boxes/branch/img/branch_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>BRANCH <span class="sym small">⊢</span></h3><span class="chip checked">fit-checked</span></div>
+<p>TAP with a north port: the power line comes up from the south, leaves east into the row, and goes on north, so one drive can start a row in every cell of a column.</p><p class="readout">1 cell · cost 3 (E), 3 (on north)</p></div></a></div></section><section><div class="ghead"><h2><span class="fchip" style="background:#042F56" title="lid color #042F56"></span>Switches and clocks</h2><p>Choose which way the line goes, and make the timing signals that choose it.</p></div><div class="cards"><a class="card" href="switches.html"><img src="boxes/route/img/route_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>ROUTE <span class="sym small">⇄</span></h3><span class="chip checked">fit-checked</span></div>
+<p>A switch on the lid: turn the knob and the line leaves on E or on N. A swinging tumbler gear, break before make.</p><p class="readout">1 cell · cost 3</p></div></a><a class="card" href="switches.html"><img src="boxes/pick/img/pick_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>PICK <span class="sym small">⇉</span></h3><span class="chip checked">fit-checked</span></div>
+<p>ROUTE turned round: the knob chooses whether W or S drives E.</p><p class="readout">1 cell · cost 3</p></div></a><a class="card" href="switches.html"><img src="boxes/steer/img/steer_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>STEER <span class="sym small">⑂</span></h3><span class="chip checked">fit-checked</span></div>
+<p>A second line on S chooses where the line goes: high to E, low to N. Drive it from a SQUARE clock. Replaces the planned selector and stick shift.</p><p class="readout">1 cell · cost 3 (+2 select)</p></div></a><a class="card" href="swap.html"><img src="boxes/swap/img/swap_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>SWAP <span class="sym small">↯</span></h3><span class="chip checked">fit-checked</span></div>
+<p>A different output every turn: E, N, E, N. A T flip-flop in one box: a Geneva step and a cam throw STEER's tumbler.</p><p class="readout">1×2 cells · cost 3 + 5</p></div></a><a class="card" href="clocks.html"><img src="boxes/square/img/square_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>SQUARE <span class="sym small">⊓</span></h3><span class="chip checked">fit-checked</span></div>
+<p>A gear clock: N steps between low and high once a cycle. Turn one cam plate a click to set the duty, 33 to 92 %.</p><p class="readout">1 cell · cost about 4</p></div></a><a class="card" href="clocks.html"><img src="boxes/ramp/img/ramp_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>RAMP <span class="sym small">⋀</span></h3><span class="chip checked">fit-checked</span></div>
+<p>SQUARE's frame with heart cams: a triangle wave, or slow up and quick down, to a sawtooth.</p><p class="readout">1 cell · cost about 4</p></div></a></div></section><section><div class="ghead"><h2><span class="fchip" style="background:#AE96D4" title="lid color #AE96D4"></span>Ratios</h2><p>Change the line's speed or direction: the arithmetic of gears.</p></div><div class="cards"><a class="card" href="reverse.html"><img src="boxes/reverse/img/reverse_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>REVERSE <span class="sym small">↺</span></h3><span class="chip checked">fit-checked</span></div>
+<p>W→E turned backwards.</p><p class="readout">1 cell · cost 3</p></div></a><a class="card" href="double.html"><img src="boxes/double/img/double_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>×2 <span class="sym small">×2</span></h3><span class="chip checked">fit-checked</span></div>
+<p>W→E at twice the speed.</p><p class="readout">1 cell · cost 3</p></div></a><a class="card" href="half.html"><img src="boxes/half/img/half_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>÷2 <span class="sym small">÷2</span></h3><span class="chip checked">fit-checked</span></div>
+<p>W→E at half the speed.</p><p class="readout">1 cell · cost 3</p></div></a><a class="card" href="quarter.html"><img src="boxes/quarter/img/quarter_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>÷4 <span class="sym small">÷4</span></h3><span class="chip checked">fit-checked</span></div>
+<p>W→E at a quarter speed.</p><p class="readout">1 cell · cost 3</p></div></a><a class="card" href="adder.html"><img src="boxes/adder/img/adder_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>ADDER <span class="sym small">+</span></h3><span class="chip checked">fit-checked</span></div>
+<p>Two motions in, their average out: E = (W + S) / 2, through a planetary gear set. A ×2 box after it gives the sum.</p><p class="readout">1×2 cells · cost 5</p></div></a><a class="card" href="shift.html"><img src="boxes/shift/img/shift_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>SHIFT <span class="sym small">⇅</span></h3><span class="chip checked">fit-checked</span></div>
+<p>A two-speed gearbox with a stick: 1st at half speed and twice the torque, N, 2nd straight through. Shift with a CLUTCH in front.</p><p class="readout">1 cell · cost 5</p></div></a></div></section><section><div class="ghead"><h2><span class="fchip" style="background:#4D3324" title="lid color #4D3324"></span>Motion shapers</h2><p>Turn steady rotation into steps, one-way motion, lifts and slides.</p></div><div class="cards"><a class="card" href="geneva.html"><img src="boxes/geneva/img/geneva_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>GENEVA <span class="sym small">⊞</span></h3><span class="chip checked">fit-checked</span></div>
+<p>One turn in, a quarter turn out, then held still: a Geneva step.</p><p class="readout">1 cell · cost 3</p></div></a><a class="card" href="ratchet.html"><img src="boxes/ratchet/img/ratchet_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>RATCHET <span class="sym small">⇥</span></h3><span class="chip checked">fit-checked</span></div>
+<p>W→E forward only: a pawl stops the line running back. Push its tab to release.</p><p class="readout">1 cell · cost 3</p></div></a><a class="card" href="cam.html"><img src="boxes/cam/img/cam_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>CAM <span class="sym small">⌒</span></h3><span class="chip checked">fit-checked</span></div>
+<p>W turns a face cam; a follower rod rises and falls 0 to 8 mm through the lid.</p><p class="readout">1 cell · cost 2</p></div></a><a class="card" href="yoke.html"><img src="boxes/yoke/img/yoke_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>YOKE <span class="sym small">∿</span></h3><span class="chip checked">fit-checked</span></div>
+<p>A Scotch yoke: W's turning becomes a slider moving 20 mm side to side.</p><p class="readout">1 cell · cost 2</p></div></a><a class="card" href="flywheel.html"><img src="boxes/flywheel/img/flywheel_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>FLYWHEEL <span class="sym small">◉</span></h3><span class="chip checked">fit-checked</span></div>
+<p>W→E at x1 through a 48 mm disc that keeps the line turning after you let go.</p><p class="readout">1 cell · cost 3</p></div></a><a class="card" href="clutch.html"><img src="boxes/clutch/img/clutch_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>CLUTCH <span class="sym small">⊜</span></h3><span class="chip checked">fit-checked</span></div>
+<p>W→E at x1 through a slip clutch: a red knob sets how hard it grips, and past that the line stops while the input runs on.</p><p class="readout">1 cell · cost 3</p></div></a><a class="card" href="trip.html"><img src="boxes/trip/img/trip_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>TRIP <span class="sym small">⚑</span></h3><span class="chip checked">fit-checked</span></div>
+<p>A one-shot flag: a cam bump lifts it, a sprung fork on the lid holds it up until you push the reset tab.</p><p class="readout">1 cell · cost 2</p></div></a><a class="card" href="escape.html"><img src="boxes/escape/img/escape_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>TICK <span class="sym small">⏱</span></h3><span class="chip checked">fit-checked</span></div>
+<p>An escapement: a foliot on the lid lets the line through one tooth per swing, tick, tock.</p><p class="readout">1 cell · cost 2</p></div></a><a class="card" href="governor.html"><img src="boxes/governor/img/governor_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>GOVERNOR <span class="sym small">⊛</span></h3><span class="chip checked">fit-checked</span></div>
+<p>A speed limit: a rotor on the lid, geared up 6.25 times, whose shoes fly out and rub a drum when the line runs fast.</p><p class="readout">1 cell · cost 3</p></div></a><a class="card" href="hoist.html"><img src="boxes/hoist/img/hoist_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>HOIST <span class="sym small">⇑</span></h3><span class="chip checked">fit-checked</span></div>
+<p>A worm lifts a bucket up a mast on the lid, 2 mm a port turn, and holds it there with nothing to release. Teaches self-locking, a 20:1 ratio in one mesh, and the efficiency a worm costs.</p><p class="readout">1 cell · cost 9</p></div></a></div></section><section><div class="ghead"><h2><span class="fchip" style="background:#1E1E1E" title="lid color #1E1E1E"></span>Readouts</h2><p>Show the line: dials, counters, sliders, plots.</p></div><div class="cards"><a class="card" href="meter.html"><img src="boxes/meter/img/meter_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>METER <span class="sym small">◔</span></h3><span class="chip checked">fit-checked</span></div>
+<p>Two cells tall: a dial for the row arriving on W in each cell, and the power line passed from S to N with its own dial.</p><p class="readout">1×2 cells · cost 2 (5 on the line)</p></div></a><a class="card" href="counter.html"><img src="boxes/counter/img/counter_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>TURNS <span class="sym small">#</span></h3><span class="chip checked">fit-checked</span></div>
+<p>Counts turns of the line to a tenth, 0.0 to 9.9, on two digit wheels under windows.</p><p class="readout">1 cell · cost 4</p></div></a><a class="card" href="trig.html"><img src="boxes/trig/img/trig_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>TRIG · WAVE <span class="sym small">sin</span></h3><span class="chip checked">fit-checked</span></div>
+<p>TRIG reads sin, cos and tan of one angle; WAVE draws the sine wave on a card, one wave per crank turn.</p><p class="readout">2×1 cells · cost 6 (TRIG), 4 (WAVE)</p></div></a><a class="card" href="orrery.html"><img src="boxes/orrery/img/orrery_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>ORRERY <span class="sym small">☉</span></h3><span class="chip checked">fit-checked</span></div>
+<p>Eight planets round the sun on nested tubes, one crank turn per Earth year. Speeds are compressed, not to scale.</p><p class="readout">3×3 cells · cost 4</p></div></a><a class="card" href="tally.html"><img src="boxes/tally/img/tally_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>TALLY <span class="sym small">#</span></h3><span class="chip checked">fit-checked</span></div>
+<p>Counts turns of the line to a tenth, 00.0 to 99.9, on three digit wheels under windows.</p><p class="readout">2×1 cells · cost 8</p></div></a><a class="card" href="toll.html"><img src="boxes/toll/img/toll_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>TOLL <span class="sym small">#</span></h3><span class="chip checked">fit-checked</span></div>
+<p>A counter that passes the line on: counts turns to a tenth, 0.0 to 9.9, and E turns with W, x1 forward.</p><p class="readout">1 cell · cost 4</p></div></a><a class="card" href="plot.html"><img src="boxes/plot/img/plot_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>PLOT <span class="sym small">∿</span></h3><span class="chip checked">fit-checked</span></div>
+<p>A continuous plotter. A looping tread sweeps a green spot across the lid for time (W), and a crank pin carries the whole tread up and down for the signal (S), like an oscilloscope.</p><p class="readout">2×1 cells · cost 7 (W), 3 (S)</p></div></a><a class="card" href="face.html"><img src="boxes/face/img/face_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>FACE <span class="sym small">◷</span></h3><span class="chip checked">fit-checked</span></div>
+<p>A clock face with hour, minute and seconds hands that counts TICK's beats, one beat a second. Divides by 60, 60 and 12 like a real clock; push the minute hand to set it.</p><p class="readout">2×2 cells · cost 8</p></div></a><a class="card" href="sketch.html"><img src="boxes/sketch/img/sketch_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>SKETCH <span class="sym small">✎</span></h3><span class="chip checked">fit-checked</span></div>
+<p>An etch-a-sketch and pen plotter: two red knobs, or SX (south, west cell: x/time ÷4) and SY (south, east cell: y/signal ×2).</p><p class="readout">2×2 cells · cost 5 on each input</p></div></a></div></section><section><div class="ghead"><h2><span class="fchip" style="background:#E8AFCF" title="lid color #E8AFCF"></span>Chance: the boxes that roll dice</h2><p>Spin, branch and deal at random, so no two runs are the same.</p></div><div class="cards"><a class="card" href="spin.html"><img src="boxes/spin/img/spin_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>SPIN <span class="sym small">?</span></h3><span class="chip checked">fit-checked</span></div>
+<p>A wheel of fortune: crank it up, let go, and it parks on 1 to 6.</p><p class="readout">1 cell · cost 4 (5 to E)</p></div></a><a class="card" href="fork.html"><img src="boxes/fork/img/fork_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>FORK <span class="sym small">?</span></h3><span class="chip checked">fit-checked</span></div>
+<p>A random junction: flick the wheel, lock it, and the line leaves on E or on N. The gear system's first "if".</p><p class="readout">1 cell · cost 5</p></div></a><a class="card" href="shuffle.html"><img src="boxes/shuffle/img/shuffle_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>SHUFFLE <span class="sym small">Σ</span></h3><span class="chip checked">fit-checked</span></div>
+<p>One crank turn, a number from 1 to 6 that looks random but isn't: rand() made of gears and string. Repeats after 30,381.</p><p class="readout">2×1 cells · cost 4</p></div></a></div></section><section><div class="ghead"><h2><span class="fchip" style="background:#EC008C" title="lid color #EC008C"></span>Sound and rhythm</h2><p>Turn the line into beats: taps, booms and programmed drums.</p></div><div class="cards"><a class="card" href="percussion.html"><img src="boxes/beat/img/beat_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>BEAT <span class="sym small">♩</span></h3><span class="chip checked">fit-checked</span></div>
+<p>A drummer on a wire: a rhythm wheel lifts a hammer and drops it on a tok block, and the line goes on to E. Teaches frequency and rhythm.</p><p class="readout">1 cell · cost 3</p></div></a><a class="card" href="percussion.html"><img src="boxes/boom/img/boom_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>BOOM <span class="sym small">✹</span></h3><span class="chip checked">fit-checked</span></div>
+<p>Click, click, click… BOOM. A snail cam winds a band for one crank turn, then lets go into a drum. Teaches energy storage.</p><p class="readout">2×1 cells · cost 2 + wind-up</p></div></a><a class="card" href="percussion.html"><img src="boxes/roll/img/roll_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>ROLL <span class="sym small">♫</span></h3><span class="chip checked">fit-checked</span></div>
+<p>A programmable drum machine: a swappable peg disc plays a drum, a tok block and a tine, eight steps a bar. Teaches programs as data.</p><p class="readout">2×1 cells · cost 2 + keys</p></div></a></div></section><section><div class="ghead"><h2><span class="fchip" style="background:#545454" title="lid color #545454"></span>Side exploration</h2><p>Electronics beside the gears. Not the center of the system.</p></div><div class="cards"><a class="card" href="brain.html"><img src="boxes/brain/img/brain_iso.png" alt="" loading="lazy">
+<div class="cbody"><div class="ctop"><h3>BRAIN <span class="sym small">μ</span></h3><span class="chip checked">fit-checked</span></div>
+<p>Side exploration: an ESP32 (XIAO) box that reads and drives the line, and a CyberBrick DRIVE + SENSE pair.</p><p class="readout">1 cell</p></div></a></div></section>
+</div>
+<script src="makerworld.js"></script>
+<script src="mw.js"></script>
+</body>
+</html>

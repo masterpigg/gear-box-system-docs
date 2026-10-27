@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gear Box Sandbox</title>
+<style>
+:root {
+  --bg: #f6f2ea; --panel: #fffdf8; --ink: #1b1b1b; --muted: #6b6558; --line: #e2dccf;
+  --accent: #1f6fd6; --err: #c8372c; --warn: #b7700f; --ok: #2b8a46; --chip: #efe9dc;
+  --canvas: #ece6da;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17171a; --panel: #212125; --ink: #ecebe6; --muted: #a29d92; --line: #34343a;
+    --accent: #5c9cf0; --err: #ef6a5f; --warn: #e4a443; --ok: #57c27a; --chip: #2c2c31;
+    --canvas: #1d1d21;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #17171a; --panel: #212125; --ink: #ecebe6; --muted: #a29d92; --line: #34343a;
+  --accent: #5c9cf0; --err: #ef6a5f; --warn: #e4a443; --ok: #57c27a; --chip: #2c2c31;
+  --canvas: #1d1d21;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--ink); font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+button { font: inherit; color: inherit; background: var(--chip); border: 1px solid var(--line); border-radius: 8px; padding: 5px 10px; cursor: pointer; }
+button:hover { border-color: var(--muted); }
+button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+select, input { font: inherit; color: inherit; }
+#example { max-width: 230px; }
+#app { display: grid; grid-template-columns: 210px 1fr 330px; grid-template-rows: auto 1fr; height: 100vh; }
+header { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--line); background: var(--panel); }
+header h1 { font-size: 15px; margin: 0 6px 0 0; white-space: nowrap; }
+header .sep { width: 1px; height: 22px; background: var(--line); margin: 0 4px; }
+header label { display: flex; align-items: center; gap: 6px; color: var(--muted); }
+#angle { font-variant-numeric: tabular-nums; color: var(--muted); min-width: 110px; }
+aside, #side { overflow: auto; background: var(--panel); }
+aside { border-right: 1px solid var(--line); padding: 8px 10px 20px; }
+#side { border-left: 1px solid var(--line); padding: 10px 12px 24px; }
+aside h3, #side h3 { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 14px 0 6px; }
+.pal { display: flex; flex-direction: column; gap: 4px; }
+.pal button { display: flex; justify-content: space-between; align-items: center; text-align: left; padding: 5px 8px; }
+.pal button small { color: var(--muted); font-size: 11px; }
+.pal button.draft { opacity: .75; border-style: dashed; }
+.pal button.placing { outline: 2px solid var(--accent); }
+#view { position: relative; min-height: 0; background: var(--canvas); }
+#view canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+#hint { position: absolute; left: 10px; bottom: 8px; right: 10px; color: var(--muted); font-size: 12px; pointer-events: none; }
+#toast { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 6px 12px; border-radius: 8px; opacity: 0; transition: opacity .3s; pointer-events: none; max-width: 90%; }
+#jam { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); background: var(--err); color: #fff; padding: 6px 14px; border-radius: 8px; font-weight: 600; display: none; }
+.issue { padding: 6px 8px; border-radius: 6px; margin-bottom: 4px; border-left: 3px solid var(--muted); background: var(--chip); cursor: pointer; font-size: 13px; }
+.issue.error { border-left-color: var(--err); }
+.issue.warn { border-left-color: var(--warn); }
+.issue.ok { border-left-color: var(--ok); cursor: default; }
+.issue b { font-weight: 600; }
+#summary { font-size: 13px; color: var(--muted); }
+table { border-collapse: collapse; width: 100%; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 3px 4px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 500; font-size: 11.5px; }
+.chip { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 99px; background: var(--chip); border: 1px solid var(--line); margin-left: 6px; vertical-align: 2px; }
+.chip.draft { border-style: dashed; }
+.fwd { color: var(--ok); } .rev { color: var(--err); } .idle { color: var(--muted); }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; font-size: 13px; }
+.kv span:nth-child(odd) { color: var(--muted); }
+.big { font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+a { color: var(--accent); }
+@media (max-width: 900px) {
+  #app { grid-template-columns: 1fr; grid-template-rows: auto 55vh auto auto; height: auto; }
+  aside { border-right: 0; border-top: 1px solid var(--line); order: 3; }
+  #view { order: 2; height: 55vh; }
+  #side { border-left: 0; border-top: 1px solid var(--line); order: 4; }
+  header { order: 1; }
+  .pal { flex-direction: row; flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>Gear Box Sandbox</h1>
+    <button id="play" title="Space">▶ Run</button>
+    <button id="dir" title="Turn the drives the other way">Forward</button>
+    <button id="stepB" title="Back a quarter turn">−¼</button>
+    <button id="stepF" title="On a quarter turn">+¼</button>
+    <button id="zero" title="All drives back to zero">Reset</button>
+    <label>Crank <input id="rpm" type="range" min="2" max="60" value="15" style="width:90px"> <span id="rpmv">15</span> rpm</label>
+    <span id="angle"></span>
+    <span class="sep"></span>
+    <button id="lids">Lids off</button>
+    <button id="walls" title="See through the walls">Glass</button>
+    <button id="names" class="on">Names</button>
+    <select id="example" title="Load a layout">
+      <option value="">Layouts…</option>
+      <option value="demo1">Demo 1: six boxes</option>
+      <option value="demo2">Demo 2: three dials off one crank</option>
+      <option value="demo3">Demo 3: the motor</option>
+      <option value="mistakes">Mistakes to catch</option>
+      <option value="swap">SWAP: a clock steers the line</option>
+      <option value="adder">Adder: W + S</option>
+      <option value="spring">SPRING: wind, let go</option>
+      <option value="clock">Clock: SPRING + TOLL + TICK</option>
+      <option value="face">FACE: SPRING + TEE + TICK, hands</option>
+      <option value="chance">Chance: SPIN, then FORK</option>
+      <option value="keys">Keys: PUSH, FLIP, CLICK</option>
+      <option value="shift">SHIFT: CLUTCH + stick</option>
+      <option value="swapbox">SWAP box: E, N, E, N</option>
+      <option value="tally">TALLY: 00.0 to 99.9</option>
+      <option value="plot">PLOT: one crank, a steady trace</option>
+      <option value="sketch">SKETCH: a clock on paper</option>
+      <option value="sketch3">SKETCH ×3: one MOTOR, square, triangle, sine</option>
+      <option value="threeplots">Three plots: one MOTOR, square, triangle, sine</option>
+      <optgroup label="Kits">
+        <option value="kit_s1">First Turns 1: Count your turns</option>
+        <option value="kit_s2">First Turns 2: Faster and slower</option>
+        <option value="kit_s3">First Turns 3: Backwards</option>
+        <option value="kit_s4">First Turns 4: Up a row</option>
+        <option value="kit_s5">First Turns 5: The whole kit</option>
+        <option value="kit_c1">Tick Tock 1: One way only</option>
+        <option value="kit_c2">Tick Tock 2: Keep it spinning</option>
+        <option value="kit_c3">Tick Tock 3: Wind it up</option>
+        <option value="kit_c4">Tick Tock 4: A clock</option>
+        <option value="kit_c5">Tick Tock 5: A clock with a face</option>
+        <option value="kit_l1">Gear Logic 1: Choose a way</option>
+        <option value="kit_l2">Gear Logic 2: Choose a source</option>
+        <option value="kit_l3">Gear Logic 3: A clock decides</option>
+        <option value="kit_l4">Gear Logic 4: Every other turn</option>
+        <option value="kit_l5">Gear Logic 5: Remember it happened</option>
+        <option value="kit_m1">Gear Calculator 1: Add two motions</option>
+        <option value="kit_m2">Gear Calculator 2: Subtract</option>
+        <option value="kit_m3">Gear Calculator 3: Undo a ratio</option>
+        <option value="kit_m4">Gear Calculator 4: Count big</option>
+        <option value="kit_x1">Motion and Power 1: Change gear</option>
+        <option value="kit_x2">Motion and Power 2: Steps and lifts</option>
+        <option value="kit_x3">Motion and Power 3: Round to straight</option>
+        <option value="kit_x4">Motion and Power 4: Draw with your hand</option>
+        <option value="kit_x5">Motion and Power 5: Lift and hold</option>
+        <option value="kit_p1">Party 1: Spin the wheel</option>
+        <option value="kit_p2">Party 2: Let the line decide</option>
+        <option value="kit_p3">Party 3: Deal a number</option>
+        <option value="kit_p4">Party 4: A drummer</option>
+        <option value="kit_p5">Party 5: The band</option>
+      </optgroup>
+      <option value="clear">Clear the grid</option>
+    </select>
+    <button id="share" title="Copy a link to this layout">Link</button>
+    <button id="fit" title="Frame the layout">Fit</button>
+  </header>
+  <aside id="palette"></aside>
+  <div id="view"><div id="jam"></div><div id="toast"></div>
+    <div id="hint">Pick a box on the left, then click the grid to place it. Drag boxes to move them, Delete removes, arrows nudge. Drag empty space to orbit, scroll to zoom.</div>
+  </div>
+  <div id="side">
+    <h3>Checks</h3>
+    <div id="summary"></div>
+    <div id="issues"></div>
+    <h3>Box</h3>
+    <div id="inspect" class="muted">Click a box to see its ports, speeds and path cost.</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="data/boxes.js"></script>
+<script src="data/meshes.js"></script>
+<script src="kin.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

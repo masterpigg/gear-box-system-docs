@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HOIST Worm Box</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column with wide figure bands; the six role colors carry the meaning, as on the boxes (the SPIN page's system, with the Motion shapers brown) */
+:root {
+  --bg: #F6F1E6; --panel: #EDE3D0; --fg: #23211D; --muted: #6B655A; --line: #CFC3AC;
+  --red: #D63A2F; --blue: #1F6FD6; --orange: #E07A16; --green: #2A9A48; --white: #FFFDF8;
+  --ink: #1B1B1B; --fam: #4D3324; --famfg: #FFFDF8; --gear: #FFFDF8; --steel: #9AA0A6;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #2C3035; --ink: #ECE6DA;
+  --fam: #B08A6E; --famfg: #1A1C1F; --gear: #D9D3C6; --steel: #7D848B; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #2C3035; --ink: #ECE6DA;
+  --fam: #B08A6E; --famfg: #1A1C1F; --gear: #D9D3C6; --steel: #7D848B; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 17px/1.6 var(--f-body); }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 64px; display: grid; gap: 48px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.7rem; font-weight: 700; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; max-width: 66ch; }
+a { color: var(--blue); }
+section { display: grid; gap: 16px; min-width: 0; }
+.eyebrow { font: 600 0.75rem/1 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 1.2rem; max-width: 60ch; }
+.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+.hero > div { display: grid; gap: 16px; min-width: 0; }
+.hero img { border-radius: 10px; background: #FFFDE7; width: 100%; min-width: 0; }
+.shot { width: 100%; max-width: 640px; justify-self: center; }
+.shot img { width: 100%; border-radius: 10px; background: #FFFDE7; }
+@media (max-width: 760px) { .hero { grid-template-columns: 1fr; } }
+.sym { display: inline-grid; place-items: center; padding: 0 0.35em; height: 1.3em; border-radius: 0.65em; background: var(--fam); color: var(--famfg); font-family: var(--f-display); font-size: 0.6em; vertical-align: 0.25em; }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+figure { margin: 0; display: grid; gap: 8px; min-width: 0; align-content: start; }
+figcaption { font-size: 0.9rem; color: var(--muted); }
+figure img { width: 100%; border-radius: 8px; background: #FFFDE7; }
+.panel { background: var(--panel); border-radius: 10px; padding: 16px; }
+svg { display: block; width: 100%; height: auto; }
+svg text { font-family: var(--f-mono); fill: var(--fg); }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.scroll { overflow-x: auto; }
+code, .mono { font-family: var(--f-mono); font-size: 0.88em; }
+.kinds td:first-child { font-weight: 700; white-space: nowrap; }
+.kinds tr.us td { background: color-mix(in srgb, var(--fam) 16%, transparent); }
+.sim { display: grid; grid-template-columns: 300px 1fr; gap: 24px; align-items: start; }
+@media (max-width: 760px) { .sim { grid-template-columns: 1fr; } }
+.controls { display: grid; gap: 14px; min-width: 0; }
+label { font-weight: 700; display: flex; justify-content: space-between; gap: 8px; }
+input[type=range] { width: 100%; accent-color: var(--red); }
+fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 6px; }
+legend { font-weight: 700; padding: 0; margin-bottom: 6px; }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg label { font-weight: 400; display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border: 2px solid var(--line); border-radius: 999px; cursor: pointer; }
+.seg input { accent-color: var(--red); margin: 0; }
+.seg label:has(input:checked) { border-color: var(--red); }
+button { font: 700 1rem var(--f-display); padding: 10px 18px; border-radius: 999px; border: 2px solid var(--red); background: var(--red); color: #fff; cursor: pointer; }
+button.ghost { background: transparent; color: var(--red); }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; }
+.readout { font: 600 0.95rem var(--f-mono); color: var(--muted); }
+.result { font: 700 2.4rem/1 var(--f-display); }
+.result.holds { color: var(--green); }
+.result.slips { color: var(--red); }
+.stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 16px; font-variant-numeric: tabular-nums; }
+.stats div { display: grid; gap: 0; min-width: 0; }
+.stats b { font: 700 1.15rem var(--f-display); }
+.stats span { font-size: 0.8rem; color: var(--muted); }
+ul.plain { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 66ch; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+.cols > div { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.pick { border-left: 4px solid var(--fam); padding-left: 12px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-weight:700"><a href="index.html" style="color:inherit">← All boxes</a><span style="opacity:.6;font-weight:400">Gear Box System</span></nav>
+
+<header class="hero">
+  <div>
+    <span class="eyebrow">Gear Box System · motion shaper · fit-checked</span>
+    <h1>HOIST <span class="sym">÷20</span></h1><div class="mw-slot" data-makerworld="box:hoist"></div>
+    <p class="lede">Crank the line and a bucket climbs a mast on the lid. Let go and it stays up, with nothing to release. A worm can turn its wheel, but the wheel can't turn the worm. That one fact is the whole lesson, and it comes with a price.</p>
+    <p class="readout">1 cell · W in (16 teeth) · end box · ÷20 in one mesh · 2.0 mm of lift a port turn · cost 9</p>
+  </div>
+  <img src="boxes/hoist/img/hoist_iso.png" alt="The HOIST box: a brown lid with a window showing the worm wheel, a mast with a pulley, and a bucket on a string">
+</header>
+
+<section>
+  <span class="eyebrow">The idea</span>
+  <h2>A worm is a ramp wrapped round a shaft</h2>
+  <p>We tried a worm in the MOTOR box and traded it for a bevel pair, because a worm wastes most of the torque it passes. That was the right call for a drive. HOIST is the box where a worm is the right part, because here we want what that friction buys. A worm gives three things no other gear in the system gives in one mesh:</p>
+  <div class="cols">
+    <div><h3>A big ratio</h3><p>One turn of a single-start worm moves the wheel one tooth. With 20 teeth that is 20:1 in one mesh. Spur gears need three meshes to get there.</p></div>
+    <div><h3>It holds</h3><p>When the thread is shallower than the friction can slide on, nothing on the wheel's side can turn the worm. The load stays where you left it.</p></div>
+    <div><h3>A right angle</h3><p>The two shafts cross at 90° without meeting. Here the worm stands up on a normal stack, and the wheel and drum turn on a level axle.</p></div>
+  </div>
+  <p>The price is efficiency. The thread slides across the teeth instead of rolling, so the same friction that makes it hold makes it waste work when it drives:</p>
+  <div class="scroll"><table class="kinds">
+    <thead><tr><th>Mesh</th><th>Lead angle λ</th><th>Friction angle φ′</th><th>Keeps of its torque</th><th>Can the load turn it back?</th></tr></thead>
+    <tbody>
+      <tr><td>This worm, dry PLA</td><td>4.8°</td><td>17.7°</td><td>0.20</td><td>No, it locks</td></tr>
+      <tr class="us"><td>This worm, PTFE film</td><td>4.8°</td><td>9.1°</td><td>0.34</td><td>No, it locks (as built)</td></tr>
+      <tr><td>Two-start worm, PTFE film</td><td>9.6°</td><td>9.1°</td><td>0.50</td><td>Yes, it creeps back</td></tr>
+      <tr><td>One spur stage</td><td>–</td><td>–</td><td>0.86</td><td>Yes, freely</td></tr>
+    </tbody>
+  </table></div>
+  <p>The rule: <b>a worm holds when its lead angle is smaller than its friction angle</b>. Efficiency driving is tan λ / tan(λ + φ′), with φ′ = atan(μ / cos 20°). So holding and losing torque are the same thing seen from two ends. You can't have a worm that holds and also passes most of its torque.</p>
+</section>
+
+<section>
+  <span class="eyebrow">Try it</span>
+  <h2>Crank it up, then let go</h2>
+  <p>This runs the model's numbers. Crank the bucket up, add a load, and press <b>Let go</b>. With the box as drawn it stays. Switch to a two-start worm with the lube on and it runs back down. That's the line between a worm that holds and one that doesn't. The ramp on the right is the same mesh unrolled.</p>
+  <div class="sim panel">
+    <div class="controls">
+      <label for="turns"><span>Port turns</span><span class="mono" id="turnsv">10</span></label>
+      <input id="turns" type="range" min="0" max="20" step="0.5" value="10">
+      <label for="load"><span>Load in the bucket</span><span class="mono" id="loadv">50 g</span></label>
+      <input id="load" type="range" min="0" max="200" step="10" value="50">
+      <fieldset><legend>Friction</legend>
+        <div class="seg"><label><input type="radio" name="mu" id="mu-dry" value="0.30">Dry PLA</label><label><input type="radio" name="mu" id="mu-ptfe" value="0.15" checked>PTFE film</label></div>
+      </fieldset>
+      <fieldset><legend>Worm</legend>
+        <div class="seg"><label><input type="radio" name="st" id="st-1" value="1" checked>One start (as built)</label><label><input type="radio" name="st" id="st-2" value="2">Two starts</label></div>
+      </fieldset>
+      <div class="row">
+        <button id="letgo" type="button">Let go</button>
+        <button id="reset" class="ghost" type="button">Crank back up</button>
+      </div>
+      <div><div class="result holds" id="verdict">Holds</div><div class="readout" id="why">λ 4.8° is under φ′ 9.1°</div></div>
+      <div class="stats">
+        <div><b id="o-lift">19.9 mm</b><span>bucket above the lid</span></div>
+        <div><b id="o-eta">34 %</b><span>worm efficiency</span></div>
+        <div><b id="o-tq">0.6 mNm</b><span>torque at the W port</span></div>
+        <div><b id="o-st">8.2</b><span>stages of the budget</span></div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;min-width:0">
+      <svg id="side" viewBox="0 0 270 340" role="img" aria-label="The mast, the bucket and the worm and wheel, seen from the west"></svg>
+      <svg id="ramp" viewBox="0 0 260 340" role="img" aria-label="The worm's thread as a ramp, with the friction cone"></svg>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">How it's built</span>
+  <h2>Worm on a stack, wheel on a steel axle</h2>
+  <div class="figs">
+    <figure class="panel"><svg id="plan" viewBox="0 0 400 400" role="img" aria-label="Top view of the box, to scale"></svg>
+      <figcaption>Top view, to scale. W (blue) drives A's 12-tooth gear; A's worm (brown) stands on it. The wheel D and its drum (white) turn on a 4 mm steel rod held in two bearing blocks. Dashed: the lid window, the mast and the bucket.</figcaption></figure>
+    <figure class="panel"><img src="boxes/hoist/img/hoist_inside.png" alt="The box with its lid off: the blue port gear, the brown worm, the white wheel and drum on the axle, a bearing block">
+      <figcaption>Lid off. The worm is 14 mm across and four turns long, from layer 2 to the lid. The wheel is 22.8 mm across, too tall for the box, so its top comes up through a window in the lid: you can watch the worm turn twenty times while the wheel turns once.</figcaption></figure>
+  </div>
+  <ul class="plain">
+    <li><b>A</b> is a standard stack: a 12-tooth gear on layer 1 meshing the W port, a single-start module 1 worm (12 mm pitch diameter) on layers 2 to 4, a pin into the lid. Its 12-tooth gear is too small to label, so the stack prints in the family brown.</li>
+    <li><b>D</b>, the winch: a 20-tooth worm wheel throated to wrap the worm, a flange, a 9 mm drum with a tie hole, a second flange. It turns on a 4 mm steel rod 16.31 mm north of A, at the worm's middle height.</li>
+    <li>Two <b>bearing blocks</b> with blind slots hold the rod. A small cap drops into each slot over the rod, and the lid holds the caps. Nothing hangs from the lid.</li>
+    <li>The <b>mast</b> plugs into the lid. Its pulley, 64 mm up, turns on a 3 mm pin; a turning pulley loses a few percent where a fixed peg would lose about half.</li>
+    <li>The string pulls the drum up and the pulley down twice as hard, so the lid is always pressed down.</li>
+  </ul>
+</section>
+
+<section>
+  <span class="eyebrow">Choosing a part</span>
+  <h2>Worm, ratchet or clutch</h2>
+  <p>Three boxes in the catalog hold or protect a line, each in its own way.</p>
+  <div class="scroll"><table>
+    <thead><tr><th>Box</th><th>Holds the load</th><th>To let it down</th><th>Ratio</th><th>Cost</th></tr></thead>
+    <tbody>
+      <tr><td><b>HOIST</b> (worm)</td><td>Both ways, always, silently</td><td>Crank backwards, under control</td><td>÷20 in one mesh</td><td>9</td></tr>
+      <tr><td><b>RATCHET</b> (pawl)</td><td>One way, with a click per tooth</td><td>Push the tab, and it drops</td><td>×1</td><td>3</td></tr>
+      <tr><td><b>CLUTCH</b> (friction pad)</td><td>Doesn't: it slips above the torque you set</td><td></td><td>×1</td><td>3</td></tr>
+      <tr><td>QUARTER (spur gears)</td><td>No: a load runs it backwards</td><td></td><td>÷4 in two meshes</td><td>3</td></tr>
+    </tbody>
+  </table></div>
+  <p class="pick">Put a CLUTCH in front of HOIST and crank the bucket into the pulley. The worm can't back off, so without the clutch something has to give: the string, a knot or a tooth. With it, the clutch slips. Protecting a machine that can't back off is its own lesson.</p>
+</section>
+
+<section>
+  <span class="eyebrow">When to use a worm</span>
+  <h2>Hold, slow down, turn a corner</h2>
+  <div class="cols">
+    <div><h3>Use one</h3><ul class="plain"><li>The load must stay where you leave it, with no brake.</li><li>You want a big reduction in a small space.</li><li>The drive has to turn 90°.</li><li>A small motor or a hand should feel almost no load.</li></ul></div>
+    <div><h3>Don't</h3><ul class="plain"><li>In the middle of a power line: it spends about half the crank's budget.</li><li>Before anything that runs backwards by itself: a FLYWHEEL coasting, a STORE spring letting go, an ESCAPE driven by a weight. The worm blocks it.</li><li>Where you need both shafts to drive each other.</li></ul></div>
+    <div><h3>Where you've seen one</h3><ul class="plain"><li>Guitar tuning pegs: the string can't unwind them.</li><li>Gates, winches, car seat adjusters, old window cranks.</li><li>Telescope mounts and dividing heads, for slow, fine moves.</li></ul></div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Numbers</span>
+  <h2>Why the crank barely notices</h2>
+  <div class="cols">
+    <div><svg id="chain" viewBox="0 0 420 250" role="img" aria-label="Torque from the bucket back to the W port"></svg></div>
+    <div>
+      <p>The budget counts losses, and by that count the worm is expensive: cost 9, the same loss as seven or eight spur stages with the lube (11 dry). But the 20:1 means the load arrives at the port tiny. Lifting 50 g:</p>
+      <ul class="plain">
+        <li>at the drum: 0.49 N on a 4.75 mm radius, 2.7 mNm with the pulley and axle drag</li>
+        <li>at A: 2.7 ÷ (20 × 0.34) = 0.40 mNm</li>
+        <li>at the W port: 0.40 × 16/12 ÷ 0.86 = <b>0.6 mNm</b></li>
+        <li>the crank gives 40 to 60 mNm at its own port</li>
+        <li>20 port turns (10 crank turns) lift the bucket the whole 39 mm</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Status</span>
+  <h2>Fit-checked, not yet printed</h2>
+  <p>On main and fit-checked. The worm against the wheel is clear over 1.8° of wheel phase and drawn in the middle; nothing that turns touches anything at twelve input angles; the bucket at the top clears the pulley; the fixed parts only rest on each other; every print part lies flat. Four colors per plate: bone, brown, white, blue.</p>
+  <p>Still to prove: the Manifold checks and the export on the nightly; the worm printed standing (its thread flank is a 70° overhang, so try 0.12 mm layers); the throated wheel printed flat; holding with real friction and a swinging bucket at 100 g; the pulley pin and its cap.</p>
+</section>
+
+<footer style="border-top:1px solid currentColor;opacity:.85;padding-top:16px;margin-top:24px;font-weight:700"><a href="index.html" style="color:inherit">← Back to all boxes</a> </footer>
+</div>
+
+<script>
+(function () {
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (tag, at, parent) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); if (parent) parent.appendChild(e); return e; };
+  const D = Math.PI / 180;
+  // ---- the model's numbers ----
+  const R_STR = 4.75, WHEEL = 20, PORT = 16, A_T = 12, SPUR = 0.86, PULLEY = 0.9, LIFT_MAX = 38.9, BUCKET_G = 3;
+  const $ = (id) => document.getElementById(id);
+  const turnsI = $("turns"), loadI = $("load");
+  const mu = () => +document.querySelector('input[name="mu"]:checked').value;
+  const starts = () => +document.querySelector('input[name="st"]:checked').value;
+  const calc = () => {
+    const s = starts(), lam = Math.asin(s / 12), phi = Math.atan(mu() / Math.cos(20 * D));
+    const eta = Math.tan(lam) / Math.tan(lam + phi);
+    const m = (+loadI.value + BUCKET_G) / 1000;
+    const tDrum = m * 9.81 * R_STR / PULLEY;                 // mNm (N x mm)
+    const tA = tDrum / (WHEEL / s * eta);
+    const tW = tA * PORT / A_T / SPUR;
+    return { s, lam, phi, eta, tW, locks: lam < phi, stages: 1 + Math.log(eta) / Math.log(SPUR), perTurn: PORT / A_T * s / WHEEL * 2 * Math.PI * R_STR };
+  };
+  let lift = 0, anim = null, slipping = false;
+  const targetLift = () => Math.min(LIFT_MAX, +turnsI.value * calc().perTurn);
+  // ---- side view from the west, to scale (3.4 px per mm): south is to the right ----
+  const S = $("side"), M = 3.4, LID = 250;
+  const sx = (y) => 160 - y * M, sz = (z) => LID - (z - 26) * M;
+  el("rect", { x: sx(28.7), y: sz(26), width: 57.4 * M, height: 2.4 * M, fill: "var(--fam)" }, S);
+  el("rect", { x: sx(28.7), y: sz(23.6), width: 57.4 * M, height: 21.6 * M, fill: "var(--panel)", stroke: "var(--line)" }, S);
+  el("rect", { x: sx(8.56), y: sz(95), width: 8 * M, height: 69 * M, fill: "var(--line)", opacity: 0.7 }, S);   // the mast, behind the string
+  const SX = sx(4.56), SY = sz(90), SR = 7 * M;
+  const sheave = el("g", {}, S);
+  el("circle", { cx: SX, cy: SY, r: 8.5 * M, fill: "var(--gear)", stroke: "var(--muted)", "stroke-width": 1.5 }, sheave);
+  el("circle", { cx: SX, cy: SY, r: SR, fill: "none", stroke: "var(--muted)", "stroke-width": 0.8 }, sheave);
+  el("line", { x1: SX, y1: SY - SR, x2: SX, y2: SY + SR, stroke: "var(--muted)", "stroke-width": 1 }, sheave);
+  el("circle", { cx: SX, cy: SY, r: 1.5 * M, fill: "var(--steel)" }, S);
+  // the wheel D, face on, through the lid window; the drum on its axle; the worm to its south
+  const WX = sx(16.31), WY = sz(16.8), WR = 10.04 * M;
+  const wheel = el("g", {}, S);
+  for (let k = 0; k < WHEEL; k++) el("rect", { x: -0.8 * M, y: -WR - 1.0 * M, width: 1.6 * M, height: 2.2 * M, fill: "var(--gear)", stroke: "var(--muted)", "stroke-width": 0.8, transform: `rotate(${k * 18})` }, wheel);
+  el("circle", { r: WR - 1, fill: "var(--gear)", stroke: "var(--muted)", "stroke-width": 1 }, wheel);
+  el("line", { x1: 0, y1: 0, x2: 0, y2: -WR + 6, stroke: "var(--fam)", "stroke-width": 3 }, wheel);
+  el("circle", { cx: WX, cy: WY, r: 4.5 * M, fill: "none", stroke: "var(--fg)", "stroke-width": 1, "stroke-dasharray": "3 3" }, S);
+  el("circle", { cx: WX, cy: WY, r: 2 * M, fill: "var(--steel)" }, S);
+  const WMX = sx(0);
+  el("rect", { x: WMX - 7 * M, y: sz(23.2), width: 14 * M, height: 12.8 * M, rx: 3, fill: "var(--fam)" }, S);
+  const clip = el("clipPath", { id: "wc" }, S); el("rect", { x: WMX - 7 * M, y: sz(23.2), width: 14 * M, height: 12.8 * M, rx: 3 }, clip);
+  const wormG = el("g", { "clip-path": "url(#wc)" }, S);
+  const LEAD = Math.PI * M, threads = [];
+  for (let k = -2; k < 8; k++) threads.push(el("line", { x1: WMX - 7 * M, x2: WMX + 7 * M, y1: 0, y2: 0, stroke: "var(--famfg)", "stroke-width": 1.6, opacity: 0.75 }, wormG));
+  el("rect", { x: WMX - 7 * M, y: sz(10), width: 14 * M, height: 4 * M, fill: "var(--fam)", opacity: 0.6 }, S);
+  const tx = (s, x, y, at) => { const t = el("text", Object.assign({ x, y, "font-size": 10, "text-anchor": "middle" }, at || {}), S); t.textContent = s; };
+  tx("wheel D", WX, sz(2) - 4); tx("worm", WMX, sz(2) - 4); tx("lid", sx(28.7) + 4, sz(26) - 5, { "text-anchor": "start" });
+  tx("pulley", SX, SY - 8.5 * M - 6);
+  // the string: drum's south side up to the pulley, over, down to the bucket
+  const up = el("line", { x1: sx(11.56), y1: WY, x2: sx(11.56), y2: SY, stroke: "var(--fg)", "stroke-width": 1.2 }, S);
+  const down = el("line", { x1: sx(-2.44), y1: SY, x2: sx(-2.44), y2: LID, stroke: "var(--fg)", "stroke-width": 1.2 }, S);
+  const bucket = el("g", {}, S), BW = 12 * M, BH = 14 * M;
+  el("path", { d: `M${-BW / 2} 0 h${BW} v${-BH} h-4 v${BH - 4} h${-(BW - 8)} v${-(BH - 4)} h-4 z`, fill: "var(--panel)", stroke: "var(--fg)", "stroke-width": 1.5 }, bucket);
+  el("rect", { x: -BW / 2 + 1, y: -BH - 1.6 * M, width: BW - 2, height: 1.6 * M, fill: "var(--panel)", stroke: "var(--fg)", "stroke-width": 1.2 }, bucket);
+  const cargo = el("rect", { x: -BW / 2 + 5, y: -4, width: BW - 10, height: 0, fill: "var(--steel)" }, bucket);
+  const hTxt = el("text", { x: 8, y: 12, "font-size": 11 }, S);
+  const draw = () => {
+    const c = calc();
+    const y = LID - lift * M;
+    bucket.setAttribute("transform", `translate(${sx(-2.44)} ${y})`);
+    down.setAttribute("y2", y - BH - 1.6 * M);
+    const ch = Math.min(BH - 8, +loadI.value / 200 * (BH - 8)); cargo.setAttribute("height", ch); cargo.setAttribute("y", -4 - ch);
+    const aTurns = lift / c.perTurn * PORT / A_T;
+    wheel.setAttribute("transform", `translate(${WX} ${WY}) rotate(${aTurns * 360 * c.s / WHEEL})`);
+    sheave.setAttribute("transform", `rotate(${-lift / 7 / D} ${SX} ${SY})`);
+    // the thread seen from the west: it slopes by the lead over the worm's width, and moves down as A turns forward
+    const lead = LEAD * c.s, off = ((aTurns % 1) + 1) % 1 * lead;
+    threads.forEach((t, k) => { const yy = sz(23.2) + k * LEAD + off; t.setAttribute("y1", yy - lead / 2); t.setAttribute("y2", yy + lead / 2); });
+    hTxt.textContent = `bucket ${lift.toFixed(1)} mm up`;
+    $("o-lift").textContent = `${lift.toFixed(1)} mm`;
+  };
+  // ---- the ramp: the thread unrolled, with the friction cone (angles drawn 3x) ----
+  const Rm = $("ramp"), K = 3;
+  const rampG = el("g", {}, Rm);
+  const drawRamp = () => {
+    const c = calc(); rampG.replaceChildren();
+    const ox = 20, oy = 290, L = 220, a = c.lam * K;
+    el("path", { d: `M${ox} ${oy} L${ox + L * Math.cos(a)} ${oy - L * Math.sin(a)} L${ox + L * Math.cos(a)} ${oy} Z`, fill: "var(--fam)", opacity: 0.85 }, rampG);
+    const bx = ox + 0.55 * L * Math.cos(a), by = oy - 0.55 * L * Math.sin(a);
+    el("rect", { x: -16, y: -24, width: 32, height: 24, fill: "var(--gear)", stroke: "var(--muted)", transform: `translate(${bx} ${by}) rotate(${-a / D})` }, rampG);
+    // the normal, and the friction cone round it
+    const cx = bx - 12 * Math.sin(a), cy = by - 12 * Math.cos(a), nl = 150;
+    for (const sgn of [-1, 1]) { const t = a + sgn * c.phi * K; el("line", { x1: cx, y1: cy, x2: cx - nl * Math.sin(t), y2: cy - nl * Math.cos(t), stroke: "var(--green)", "stroke-width": 1.5, "stroke-dasharray": "5 4" }, rampG); }
+    el("path", { d: `M${cx} ${cy} L${cx - nl * Math.sin(a - c.phi * K)} ${cy - nl * Math.cos(a - c.phi * K)} A${nl} ${nl} 0 0 0 ${cx - nl * Math.sin(a + c.phi * K)} ${cy - nl * Math.cos(a + c.phi * K)} Z`, fill: "var(--green)", opacity: 0.12 }, rampG);
+    // the load's push, straight down the axis (up the page: the tooth pushes the thread)
+    el("line", { x1: cx, y1: cy, x2: cx, y2: cy - 120, stroke: c.locks ? "var(--green)" : "var(--red)", "stroke-width": 3 }, rampG);
+    el("path", { d: `M${cx} ${cy - 126} l-6 10 h12 z`, fill: c.locks ? "var(--green)" : "var(--red)" }, rampG);
+    const t1 = el("text", { x: 14, y: 22, "font-size": 12 }, rampG); t1.textContent = `ramp λ ${(c.lam / D).toFixed(1)}°, cone φ′ ${(c.phi / D).toFixed(1)}°`;
+    const t2 = el("text", { x: 14, y: 40, "font-size": 12, style: `fill:${c.locks ? "var(--green)" : "var(--red)"}` }, rampG);
+    t2.textContent = c.locks ? "push inside the cone: holds" : "push outside the cone: slides";
+    const t3 = el("text", { x: 14, y: 330, "font-size": 10, style: "fill:var(--muted)" }, rampG); t3.textContent = "angles drawn 3 times steeper";
+  };
+  const update = () => {
+    const c = calc();
+    $("turnsv").textContent = (+turnsI.value).toString();
+    $("loadv").textContent = `${loadI.value} g`;
+    $("o-eta").textContent = `${Math.round(c.eta * 100)} %`;
+    $("o-tq").textContent = `${c.tW < 1 ? c.tW.toFixed(2) : c.tW.toFixed(1)} mNm`;
+    $("o-st").textContent = c.stages.toFixed(1);
+    const v = $("verdict");
+    if (slipping) { v.textContent = "Runs back"; v.className = "result slips"; }
+    else { v.textContent = c.locks ? "Holds" : "Would run back"; v.className = c.locks ? "result holds" : "result slips"; }
+    $("why").textContent = `λ ${(c.lam / D).toFixed(1)}° is ${c.locks ? "under" : "over"} φ′ ${(c.phi / D).toFixed(1)}°`;
+    drawRamp(); draw();
+  };
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  turnsI.addEventListener("input", () => { if (anim) { cancelAnimationFrame(anim); anim = null; } slipping = false; lift = targetLift(); update(); });
+  loadI.addEventListener("input", update);
+  document.querySelectorAll('input[name="mu"], input[name="st"]').forEach((r) => r.addEventListener("change", () => { slipping = false; lift = Math.min(lift, LIFT_MAX); update(); }));
+  $("letgo").addEventListener("click", () => {
+    const c = calc();
+    if (c.locks || lift <= 0) { slipping = false; update(); $("why").textContent += ": the bucket stays"; return; }
+    slipping = true; update();
+    const start = lift, t0 = performance.now(), T = reduce ? 1 : 900 + start * 25;
+    const step = (t) => { const u = Math.min(1, (t - t0) / T); lift = start * (1 - u * u); draw(); if (u < 1) anim = requestAnimationFrame(step); else { anim = null; lift = 0; draw(); } };
+    anim = requestAnimationFrame(step);
+  });
+  $("reset").addEventListener("click", () => { if (anim) { cancelAnimationFrame(anim); anim = null; } slipping = false; lift = targetLift(); update(); });
+  lift = targetLift(); update();
+  // ---- plan view, to scale (5 px per mm), numbers from lib/hoist.scad ----
+  const P = $("plan"), k = 5, ox = 200, oy = 200;
+  const X = (x) => ox + k * x, Y = (y) => oy - k * y;
+  el("rect", { x: X(-32), y: Y(32), width: 64 * k, height: 64 * k, fill: "none", stroke: "var(--muted)", "stroke-width": 1.5, "stroke-dasharray": "4 4" }, P);
+  el("rect", { x: X(-28.7), y: Y(28.7), width: 57.4 * k, height: 57.4 * k, rx: 4, fill: "var(--bg)", stroke: "var(--line)", "stroke-width": 10 }, P);
+  const rect = (x0, x1, y0, y1, at) => el("rect", Object.assign({ x: X(x0), y: Y(y1), width: (x1 - x0) * k, height: (y1 - y0) * k }, at), P);
+  const txt = (s, x, y, at) => { const t = el("text", Object.assign({ x: X(x), y: Y(y), "font-size": 12, "text-anchor": "middle" }, at || {}), P); t.textContent = s; };
+  const cy = 16.31;
+  rect(-13.75, -6.25, 4, 25.91, { fill: "none", stroke: "var(--muted)", "stroke-width": 1.5, "stroke-dasharray": "6 4" });
+  rect(-17.05, -13.05, cy - 4, cy + 4, { fill: "var(--panel)", stroke: "var(--muted)" });
+  rect(3.65, 7.65, cy - 4, cy + 4, { fill: "var(--panel)", stroke: "var(--muted)" });
+  rect(-15.7, 6.2, cy - 2, cy + 2, { fill: "var(--steel)" });
+  rect(-12.85, -7.15, cy - 11.4, cy + 11.4, { fill: "var(--gear)", stroke: "var(--muted)", "stroke-width": 1.5 });
+  rect(-7.15, 3.45, cy - 6.3, cy + 6.3, { fill: "var(--gear)", stroke: "var(--muted)", "stroke-width": 1.5 });
+  el("circle", { cx: X(-24), cy: Y(0), r: 8 * k, fill: "var(--blue)", "fill-opacity": 0.3, stroke: "var(--blue)", "stroke-width": 2.5 }, P);
+  el("circle", { cx: X(-10), cy: Y(0), r: 7 * k, fill: "var(--fam)", "fill-opacity": 0.55, stroke: "var(--fam)", "stroke-width": 2.5 }, P);
+  el("circle", { cx: X(-10), cy: Y(0), r: 2, fill: "var(--fg)" }, P);
+  rect(3.75, 9.75, 0.56, 8.56, { fill: "none", stroke: "var(--muted)", "stroke-width": 1.5, "stroke-dasharray": "6 4" });
+  el("circle", { cx: X(-2.65), cy: Y(-2.44), r: 6 * k, fill: "none", stroke: "var(--muted)", "stroke-width": 1.5, "stroke-dasharray": "6 4" }, P);
+  el("circle", { cx: X(-2.65), cy: Y(11.56), r: 3, fill: "var(--fg)" }, P);
+  txt("W 16", -24, -1.2); txt("A + worm", -10, -10.4);
+  txt("wheel D", -14.5, cy + 8, { "text-anchor": "end" }); txt("drum", -1.85, cy - 8.6); txt("rod", 12.5, cy - 0.8, { "font-size": 11 });
+  txt("mast", 13.5, 4.0, { "font-size": 11, "text-anchor": "start" }); txt("bucket", -2.65, -10.2, { "font-size": 11 });
+  txt("window", -10, 27.2, { "font-size": 11 }); txt("string", -1.6, 7.0, { "font-size": 10, "text-anchor": "start" });
+  const n = el("text", { x: X(-32) + 4, y: Y(-32) + 14, "font-size": 11 }, P); n.textContent = "64 mm cell";
+  // ---- torque chain: the bucket back to the port, 50 g, lubed ----
+  const C = $("chain");
+  const steps = [["drum", 2.7], ["A (after the worm)", 0.40], ["W port", 0.62]];
+  const lx = 150, maxv = 3.0, bw = 250;
+  steps.forEach((s, i) => {
+    const y = 30 + i * 62;
+    el("text", { x: lx - 10, y: y + 22, "font-size": 13, "text-anchor": "end" }, C).textContent = s[0];
+    el("rect", { x: lx, y, width: bw, height: 34, rx: 4, fill: "var(--line)", opacity: 0.45 }, C);
+    el("rect", { x: lx, y, width: Math.max(3, bw * s[1] / maxv), height: 34, rx: 4, fill: i === 0 ? "var(--fam)" : i === 1 ? "var(--fam)" : "var(--blue)", opacity: i === 1 ? 0.6 : 1 }, C);
+    el("text", { x: lx + Math.max(3, bw * s[1] / maxv) + 8, y: y + 22, "font-size": 13 }, C).textContent = `${s[1]} mNm`;
+  });
+  el("text", { x: lx, y: 232, "font-size": 11, style: "fill:var(--muted)" }, C).textContent = "50 g lifted, PTFE film · the crank gives 40 to 60";
+})();
+</script>
+<script src="makerworld.js"></script>
+<script src="mw.js"></script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deck Base</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>/* Layout: one reading column with wide figure bands, as on the SPIN page; the six role colors carry the meaning, as on the boxes */
+:root {
+  --bg: #F6F1E6; --panel: #EDE3D0; --fg: #23211D; --muted: #6B655A; --line: #CFC3AC;
+  --red: #D63A2F; --blue: #1F6FD6; --orange: #E07A16; --green: #2A9A48; --white: #FFFDF8; --bone: #E4D8BF;
+  --card: #FBF8F1; --shot: #F8F8F6;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #DCD6C8; --bone: #8E846F;
+  --card: #212428; --shot: #E9E9E6; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #DCD6C8; --bone: #8E846F;
+  --card: #212428; --shot: #E9E9E6; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 17px/1.6 var(--f-body); }
+a { color: var(--blue); }
+a:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; border-radius: 4px; }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 64px; display: grid; gap: 44px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.6rem; font-weight: 700; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; max-width: 66ch; }
+section { display: grid; gap: 14px; min-width: 0; }
+.eyebrow { font: 600 0.75rem/1.4 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.lede { font-size: 1.15rem; max-width: 60ch; }
+.readout { font: 600 0.85rem/1.5 var(--f-mono); color: var(--muted); }
+nav.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+nav.top a, .foot a { font: 700 1rem var(--f-display); text-decoration: none; }
+.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+.hero > div { display: grid; gap: 14px; min-width: 0; }
+.hero img, figure img { border-radius: 10px; background: var(--shot); width: 100%; min-width: 0; display: block; }
+@media (max-width: 760px) { .hero { grid-template-columns: 1fr; } }
+.sym { display: inline-grid; place-items: center; min-width: 1.3em; height: 1.3em; padding: 0 0.25em; border-radius: 999px; background: var(--fg); color: var(--bg); font-family: var(--f-display); font-size: 0.6em; vertical-align: 0.25em; }
+.sym.small { font-size: 0.75em; vertical-align: 0.1em; }
+.chip { font: 600 0.7rem/1 var(--f-mono); letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 8px; border-radius: 999px; white-space: nowrap; }
+.chip.checked { background: color-mix(in srgb, var(--green) 20%, transparent); color: var(--fg); border: 1px solid var(--green); }
+.chip.draft { background: transparent; color: var(--fg); border: 1px dashed var(--orange); }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+figure { margin: 0; display: grid; gap: 8px; min-width: 0; align-content: start; }
+figcaption { font-size: 0.9rem; color: var(--muted); }
+.panel { background: var(--panel); border-radius: 10px; padding: 16px; }
+.diagram { display: grid; gap: 10px; justify-items: center; }
+.diagram svg { max-width: 340px; }
+svg { display: block; width: 100%; height: auto; }
+svg text { font-family: var(--f-mono); fill: var(--fg); }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+td.num { font-variant-numeric: tabular-nums; font-family: var(--f-mono); }
+.scroll { overflow-x: auto; min-width: 0; }
+code, .mono { font-family: var(--f-mono); font-size: 0.86em; }
+.train { line-height: 1.7; color: var(--fg); padding-top: 12px; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; align-items: start; }
+.cols > div { min-width: 0; }
+ul.plain, ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 66ch; }
+ol.steps li::marker { font-family: var(--f-mono); font-weight: 600; color: var(--muted); }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 0; }
+.dot.in { background: var(--blue); } .dot.out { background: var(--orange); }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 8px; border: 1px solid var(--line); vertical-align: -1px; }
+.fn { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font: 600 1rem var(--f-mono); }
+.fn .fin { color: var(--blue); } .fn .fout { color: var(--orange); }
+.fn .fbox { padding: 8px 14px; border: 2px solid var(--fg); border-radius: 8px; font-family: var(--f-display); font-size: 1.1rem; }
+.fn .arrow { color: var(--muted); }
+.meter { display: flex; gap: 4px; flex-wrap: wrap; max-width: 520px; }
+.meter i { flex: 1 0 14px; max-width: 22px; height: 18px; border-radius: 3px; background: var(--panel); border: 1px solid var(--line); }
+.meter i.on { background: var(--fg); border-color: var(--fg); }
+.meter i.b { background: var(--red); border-color: var(--red); }
+.foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-top: 1px solid var(--line); padding-top: 18px; }
+/* master page */
+.mhero { display: grid; gap: 16px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font: 600 0.85rem var(--f-mono); color: var(--muted); }
+.links { color: var(--muted); }
+.ghead { display: grid; gap: 4px; }
+.ghead p { color: var(--muted); }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+.card { display: grid; grid-template-rows: auto 1fr; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; color: var(--fg); text-decoration: none; transition: transform 0.15s, border-color 0.15s; min-width: 0; }
+a.card:hover { transform: translateY(-2px); border-color: var(--fg); }
+a.card:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: var(--shot); display: block; }
+.card .noimg { aspect-ratio: 4 / 3; display: grid; place-items: center; font-size: 3rem; color: var(--muted); background: var(--panel); }
+.card.soon { opacity: 0.75; }
+.cbody { padding: 14px 16px 16px; display: grid; gap: 8px; align-content: start; }
+.ctop { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.cbody p { font-size: 0.95rem; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.figs figure.wide { grid-column: 1 / -1; max-width: 760px; justify-self: center; width: 100%; }
+.fchip { display: inline-block; width: 0.8em; height: 0.8em; border-radius: 3px; margin-right: 0.4em; vertical-align: 0.02em; box-shadow: 0 0 0 1px var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="top"><a href="index.html">← All boxes</a><span class="readout">Gear Box System</span></nav>
+<header class="hero">
+  <div>
+    <span class="eyebrow">Base · <span class="chip checked">in the standard</span></span>
+    <h1>DECK <span class="sym">#</span></h1><div class="mw-slot" data-makerworld="box:deck"></div>
+    <p class="lede">The dovetail keys stop a box sliding sideways, but any box lifts straight out. The deck is a printed base the boxes snap down onto, so a whole layout picks up and travels as one piece.</p>
+    <p class="readout">a base, not a box · no gears, no lid, no cells, no cost · bone · tiles 1×1, 2×2 and 3×3 exported</p>
+  </div>
+  <figure><img src="boxes/deck/img/deck_iso.png" alt="A 3×3 deck tile: a rib on every grid line and a split peg at every node."><figcaption>A 3×3 deck tile: a rib on every grid line and a split peg at every node.</figcaption></figure>
+</header>
+
+<section>
+  <h2>In the standard</h2>
+  <p>DECK is part of <a href="standard.html">the box standard</a> ("The deck"): every shell now has a socket under each grid node, cut by <code>gbs_shell_geom()</code>, so every box gets it with no change to its own description. Paul chose the deck over the other two locks (loose clips from below, twist keys on top), and it went into the standard without a test print first. The fit check has a new test (13 in <code>tools/check_fit.sh</code>): every box sits on a deck of its own size and touches no peg. Deck tiles are exported at 1×1, 2×2 and 3×3. Nothing is printed yet. Old shells still sit beside new ones; they just don't snap to a deck until they are reprinted.</p>
+</section>
+
+<section>
+  <h2>Boxes on a deck</h2>
+  <div class="figs">
+    <figure><img src="boxes/deck/img/deck_exploded.png" alt="WIRE, TURN and RISER lifted off a 3×3 deck."><figcaption>WIRE, TURN and RISER lifted off a 3×3 deck.</figcaption></figure>
+    <figure><img src="boxes/deck/img/deck_assembly.png" alt="The same boxes pressed down: the layout now lifts as one piece."><figcaption>The same boxes pressed down: the layout now lifts as one piece.</figcaption></figure>
+  </div>
+</section>
+
+<section>
+  <h2>Why the lock sits at the grid nodes</h2>
+  <p>Every box, whatever its size, has its corners on the 64 mm grid. A grid node, the corner of a cell, is where up to four boxes meet. A 1×2 box has two more nodes along its long sides, a 2×2 has one in the middle, and the 3×3 ORRERY has four inside. So the lock lives at the nodes, and one rule covers every box:</p>
+  <ul class="plain"><li><strong>Every node under a box gets a socket</strong> in the bottom of the plinth: a quarter at the box's corners, a half along its sides, a whole one inside a big box. The box's own footprint trims one round socket to the right piece, so nothing in the box description changes.</li><li><strong>The deck has a split peg at every node.</strong> Its cross slot runs along the grid lines, so its four fingers sit in the four quadrants. Each finger is under one box and hooks that box alone. A 1×1 box gets one finger at each corner; a 1×2 gets six.</li></ul>
+</section>
+
+<section>
+  <h2>How it works</h2>
+  <div class="cols">
+    <div>
+      <p>You press a box down onto the deck the same way you lower it beside its neighbors today. The fingers spring in through the socket's bore, and the barbs spring out above a ledge 2.7 mm up.</p>
+      <p>Pull firmly and the 45 degree backs of the barbs push the fingers in again, so boxes come off for a new layout. Nothing changes on the sides: a box with sockets still stands flat on a table.</p>
+    </div>
+    <div class="figs"><figure><img src="boxes/deck/img/lock_cut.png" alt="A cut through one node: the deck&#x27;s peg below, two boxes&#x27; corners above, 0.1 mm clear."><figcaption>A cut through one node: the deck&#x27;s peg below, two boxes&#x27; corners above, 0.1 mm clear.</figcaption></figure><figure><img src="boxes/deck/img/deck_peg.png" alt="A corner peg up close: only the finger over the tile is kept, so two tiles side by side make a whole peg."><figcaption>A corner peg up close: only the finger over the tile is kept, so two tiles side by side make a whole peg.</figcaption></figure></div>
+  </div>
+  <div class="scroll"><table><tbody><tr><th>Peg</th><td>6.0 mm across, four fingers 1.2 mm thick (three 0.4 mm perimeters), 1.0 mm slots on the grid lines, 3.8 mm tall above the deck</td></tr><tr><th>Barb</th><td>0.45 mm proud, its top at 3.3 mm, 45 degrees under and over</td></tr><tr><th>Socket</th><td>bore 6.2 mm (0.1 clear), ledge at 2.7 mm, seat 7.6 mm to 4.0 mm, 0.4 mm chamfer at the mouth; 1.0 mm of plinth over it</td></tr><tr><th>Spring</th><td>the fingers stand in a pit 3.2 mm into the deck, so each is about 7 mm long; strain on the way in is about 1.5 %, inside PLA's limit for a snap used again and again</td></tr><tr><th>Deck</th><td>a rib 10 mm wide and 4 mm tall on every grid line (5 mm under each plinth), a 13 mm pad at each node, open windows in the cells</td></tr></tbody></table></div>
+</section>
+
+<section>
+  <h2>Tiles</h2>
+  <p>A tile is any size up to 3×3 (192 mm, which fits the P1S plate with room). Its edge ribs are half width and its edge pegs keep only the fingers over the tile, so two tiles side by side make whole ribs and whole pegs. Tiles have no joint of their own: boxes dovetailed across a seam tie the two tiles together. A 3×3 tile is about 45 cm³ solid, much less at 15 % infill.</p>
+</section>
+
+<section>
+  <h2>Big boxes</h2>
+  <p>A node inside a box (2×2 and up) needs a boss on the floor to hold its socket: 10 mm across, from the floor to the plinth top (z 2 to 5), under the first gear layer. <code>tools/lock_nodes.scad</code> lists what stands near each inner node:</p>
+  <ul class="plain"><li><strong>ORRERY:</strong> nothing within 25 mm of its four inner nodes. Clear.</li><li><strong>BRAIN:</strong> the motor driver's tray ends 4.9 mm from the node; the boss merges with its solid rim and misses the pocket. Clear.</li><li><strong>DRIVE:</strong> the battery pack's east edge was 4.5 mm from the node, inside the boss. The pack moved 1 mm west, to <code>[-32, 3]</code>, which clears it.</li><li><strong>SENSE:</strong> the pack's southwest corner was 3.5 mm from the node. The pack moved 2 mm east, to <code>[32, 14]</code>.</li></ul>
+</section>
+
+<section>
+  <h2>To test first</h2>
+  <ol class="steps">
+    <li>Print a 1×1 deck (<code>cells = [1, 1]</code>) and one WIRE shell with sockets.</li>
+    <li>Check that the box clicks down, that it lifts the deck with it, and that a firm pull takes it off.</li>
+    <li>If the snap is too stiff, drop <code>lk_barb</code> to 0.35; too weak, raise it to 0.55. PETG flexes better than PLA if the fingers crack.</li>
+  </ol>
+</section>
+
+<section>
+  <h2>What it teaches</h2>
+  <ul class="plain"><li><strong>Snap fits:</strong> a flexing finger and a barb hold by shape, not glue, and the angle on the barb's back decides how hard it is to pull off.</li><li><strong>Strain limits:</strong> a long finger bends further for the same strain, which is why the pegs stand in a pit in the deck.</li><li><strong>One rule for every size:</strong> putting the lock on the grid nodes, which every box shares, means no box needs its own design.</li><li><strong>Tiling:</strong> half features at the edges add up to whole ones when two tiles meet.</li></ul>
+</section>
+
+<footer class="foot"><a href="index.html">← Back to all boxes</a></footer>
+</div>
+<script src="makerworld.js"></script>
+<script src="mw.js"></script>
+</body>
+</html>

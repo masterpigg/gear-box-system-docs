@@ -1,0 +1,363 @@
+<!doctype html><html><head>
+<meta name="viewport" content="width=device-width, initial-scale=1"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+
+<title>SPIN Randomizer Box</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column with wide figure bands; the six role colors carry the meaning, as on the boxes */
+:root {
+  --bg: #F6F1E6; --panel: #EDE3D0; --fg: #23211D; --muted: #6B655A; --line: #CFC3AC;
+  --red: #D63A2F; --blue: #1F6FD6; --orange: #E07A16; --green: #2A9A48; --white: #FFFDF8;
+  --ink: #1B1B1B;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #2C3035; --ink: #ECE6DA; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #2C3035; --ink: #ECE6DA; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 17px/1.6 var(--f-body); }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 64px; display: grid; gap: 48px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.7rem; font-weight: 700; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; max-width: 66ch; }
+section { display: grid; gap: 16px; min-width: 0; }
+.eyebrow { font: 600 0.75rem/1 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 1.2rem; max-width: 60ch; }
+.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+.hero > div { display: grid; gap: 16px; min-width: 0; }
+.hero img { border-radius: 10px; background: #FFFDE7; width: 100%; min-width: 0; }
+.shot { width: 100%; max-width: 640px; justify-self: center; }
+.shot img { width: 100%; border-radius: 10px; background: #FFFDE7; }
+@media (max-width: 760px) { .hero { grid-template-columns: 1fr; } }
+.sym { display: inline-grid; place-items: center; width: 1.3em; height: 1.3em; border-radius: 50%; background: var(--green); color: var(--white); font-family: var(--f-display); font-size: 0.8em; vertical-align: 0.1em; }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+figure { margin: 0; display: grid; gap: 8px; min-width: 0; }
+figcaption { font-size: 0.9rem; color: var(--muted); }
+.panel { background: var(--panel); border-radius: 10px; padding: 16px; }
+svg { display: block; width: 100%; height: auto; }
+svg text { font-family: var(--f-mono); fill: var(--fg); }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.scroll { overflow-x: auto; }
+code, .mono { font-family: var(--f-mono); font-size: 0.88em; }
+.kinds td:first-child { font-weight: 700; white-space: nowrap; }
+.kinds tr.us td { background: color-mix(in srgb, var(--green) 14%, transparent); }
+.sim { display: grid; grid-template-columns: 300px 1fr; gap: 24px; align-items: start; }
+@media (max-width: 760px) { .sim { grid-template-columns: 1fr; } }
+.controls { display: grid; gap: 14px; min-width: 0; }
+label { font-weight: 700; display: flex; justify-content: space-between; gap: 8px; }
+input[type=range] { width: 100%; accent-color: var(--red); }
+button { font: 700 1rem var(--f-display); padding: 10px 18px; border-radius: 999px; border: 2px solid var(--red); background: var(--red); color: #fff; cursor: pointer; }
+button.ghost { background: transparent; color: var(--red); }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; }
+.readout { font: 600 0.95rem var(--f-mono); color: var(--muted); }
+.result { font: 700 3rem/1 var(--f-display); color: var(--green); }
+ul.plain { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 66ch; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+.cols > div { display: grid; gap: 10px; align-content: start; min-width: 0; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+<nav style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-weight:700"><a href="index.html" style="color:inherit">← All boxes</a><span style="opacity:.6;font-weight:400">Gear Box System</span></nav>
+
+<header class="hero">
+  <div>
+    <span class="eyebrow">Gear Box System · input box · fit-checked</span>
+    <h1>SPIN <span class="sym">?</span></h1><div class="mw-slot" data-makerworld="box:spin"></div>
+    <p class="lede">A wheel of fortune on a gear box lid. You crank it up, let go, and it runs on by itself until a click parks it on one of six numbers. Gears can't be truly random, but this box makes your hand's tiny wobble big enough that nobody can aim it.</p>
+    <p class="readout">1 cell · W in (16 teeth) · optional E out (24) · cost 4 to the wheel, 5 to E</p>
+  </div>
+  <img src="boxes/spin/img/spin_iso.png" alt="Render of the SPIN box: a green numbered disc on a box in the pink Chance color, a small detent spring at the north edge.">
+</header>
+
+<section>
+  <span class="eyebrow">The idea</span>
+  <h2>The box doesn't make randomness. It amplifies it.</h2>
+  <p>There are four kinds of "unpredictable". Gears can do three of them. SPIN is the third row: a deterministic machine whose answer is such a steep function of something you can't control (how fast your hand turned) that a few percent of difference is a whole number on the dial. Wrapping that round a circle, mod 6, spreads it evenly over the six results. A hardware random number generator is the same recipe: a noise source, an amplifier, and a step that keeps only the low digits.</p>
+  <div class="scroll"><table class="kinds">
+    <thead><tr><th>Kind</th><th>What it is</th><th>In software</th><th>In gears</th></tr></thead>
+    <tbody>
+      <tr><td>True random</td><td>No measurable cause: radioactive decay, thermal noise</td><td><code>/dev/random</code> with a hardware source</td><td>Not possible</td></tr>
+      <tr><td>Pseudo-random</td><td>A fixed rule with a long period. Same seed, same sequence</td><td><code>rand()</code>, LCG, Mersenne Twister</td><td>SHUFFLE: co-prime gears added together (later)</td></tr>
+      <tr class="us"><td>Sensitive dependence</td><td>Smooth but very steep: coin toss, dice, roulette</td><td>A hash: tiny change in, big change out</td><td><b>SPIN</b>, with your hand as the noise</td></tr>
+      <tr><td>Chaos</td><td>Small differences grow exponentially with time</td><td>The logistic map</td><td>Double pendulum, ball among pins: awkward in a flat box</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <span class="eyebrow">Try it</span>
+  <h2>Crank speed in, number out</h2>
+  <p>This simulates SPIN with the model's numbers. Each roll uses your chosen hand speed plus a realistic wobble. At a slow crank the wheel barely coasts and you can steer the result; crank fast and the tally flattens out. The strip under the wheel shows which number each exact crank speed would give: watch the bands get thinner as speed rises.</p>
+  <div class="sim panel">
+    <div class="controls">
+      <label for="spd"><span>Hand speed</span><span class="mono" id="spdv">2.0 turns/s</span></label>
+      <input id="spd" type="range" min="0.3" max="3" step="0.1" value="2">
+      <label for="wob"><span>Hand wobble</span><span class="mono" id="wobv">±6 %</span></label>
+      <input id="wob" type="range" min="0" max="15" step="1" value="6">
+      <div class="row">
+        <button id="roll" type="button">Roll</button>
+        <button id="roll60" class="ghost" type="button">Roll 60</button>
+        <button id="reset" class="ghost" type="button">Clear</button>
+      </div>
+      <div><div class="result" id="res">–</div><div class="readout" id="info">Coast: –</div></div>
+    </div>
+    <div style="display:grid;gap:12px;min-width:0">
+      <svg id="wheel" viewBox="0 0 520 300" role="img" aria-label="Spinner and tally"></svg>
+      <svg id="strip" viewBox="0 0 520 64" role="img" aria-label="Result for each crank speed"></svg>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">How it's built</span>
+  <h2>Gear train, freewheel, detent</h2>
+  <div class="figs">
+    <figure class="panel"><svg id="train" viewBox="0 0 400 400" role="img" aria-label="Top view of the gear train"></svg>
+      <figcaption>Top view, to scale. Inside: W → A → B → S, three meshes, so S turns forward at 8/3 of the port speed (about 5.3 wheel turns per crank turn). Dashed: the spinner's 36-tooth rim and disc above the lid, and the optional pinion O that sends the result out on E.</figcaption></figure>
+    <figure class="panel"><svg id="ratchet" viewBox="0 0 400 400" role="img" aria-label="The freewheel: two flexure pawls in a 24-tooth ratchet"></svg>
+      <figcaption>The freewheel, above the lid. The driver (white) sits on S's shaft. Its two spiral flexure pawls push the ratchet walls forward (counter-clockwise). When you slow down, the wheel overruns, the ramps push the pawls in, and it coasts on.</figcaption></figure>
+  </div>
+  <figure class="shot"><img src="boxes/spin/img/spin_exploded.png" alt="Exploded render: shell with blue input and orange output gears, inner white gears, lid with output pinion and detent post, green numbered spinner, detent spring and cap."><figcaption>Exploded render. The detent spring sits on the post on the lid and clicks into six notches on the disc's edge, so a number always lands exactly under the arrow.</figcaption></figure>
+</section>
+
+<section>
+  <span class="eyebrow">Assembly</span>
+  <h2>Look-alike parts</h2>
+  <p>B, S and O have 12-tooth bottom gears, too small for a label, so they print pink (the Chance color). S and O are near twins: one 12-tooth gear and a D-key shaft each. <strong>S is the short one, 14.6 mm</strong>: its gear rides on layer 3, under the spinner's driver. <strong>O is 23.4 mm</strong>: layer 1, the optional output pinion's shaft. Check the length before you fit either one.</p>
+  <figure class="shot"><img src="docs/boxes/labels/img/lookalike_chance.png" alt="SPIN's S (left) and O (right): the same 12-tooth gear, S on a short shaft, O on a long one."><figcaption>SPIN's S (left) and O (right).</figcaption></figure>
+</section>
+
+<section>
+  <span class="eyebrow">Numbers to check on the first print</span>
+  <h2>Why a few percent is a whole sector</h2>
+  <div class="cols">
+    <div><svg id="coast" viewBox="0 0 420 260" role="img" aria-label="Coast in sectors against crank speed"></svg></div>
+    <div>
+      <p>Stored energy goes as speed squared, and drag is roughly constant, so the coast distance goes as speed squared too. Twice the speed, four times the coast. A relative wobble of δ in hand speed becomes 2δ in coast.</p>
+      <ul class="plain">
+        <li>Spinner inertia about 6 × 10⁻⁶ kg m² with six 6 mm steel balls (3.5 without)</li>
+        <li>At 2 crank turns a second: 10.7 wheel turns a second, about 13 mJ stored</li>
+        <li>Drag 0.5 to 1.5 mNm: a coast of 1.5 to 4 turns, 9 to 24 sectors</li>
+        <li>At 18 sectors of coast, 3 % of hand speed moves the answer one number</li>
+        <li>Detent about 0.2 N, roughly 6 mNm felt at the input port</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Using the result</span>
+  <h2>Three ways the randomness goes downstream</h2>
+  <div class="cols">
+    <div><h3>1. Read it</h3><p>The number under the arrow is the roll, like a die. This is the main use. Roll 60 times and tally it to find out whether the box is fair; move a steel ball to fix a bias.</p></div>
+    <div><h3>2. E output</h3><p>Press the pinion on O and E turns by what you cranked plus the unpredictable coast. It runs at x6 while you crank, so only a meter or counter after it, or a ÷2 box first. Without the pinion the wheel coasts further.</p></div>
+    <div><h3>3. FORK</h3><p>The same wheel and detent turning a planet turret instead of showing a number: the line leaves on E or on N, whichever came up. The Blue Ball Machine's random junction, and the system's first "if". <a href="fork.html" style="color:var(--blue)">See the FORK page</a>.</p></div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Considered</span>
+  <h2>What else could be random, and why not first</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Idea</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td>Double pendulum</td><td>Truly chaotic, but needs a vertical plane and 100 mm of height, and its answer is hard to turn back into a shaft angle.</td></tr>
+      <tr><td>Galton board</td><td>Teaches the bell curve beautifully. A future standing display box, since it shows a distribution, not one choice.</td></tr>
+      <tr><td>Ball tumbling in a pinned dish</td><td>Chaotic and fun, but the result is a ball in a pocket that drives nothing, and loose balls go missing.</td></tr>
+      <tr><td>Slip clutch with uneven friction</td><td>Drifts with wear and humidity instead of spreading evenly, and wastes torque.</td></tr>
+      <tr><td>Wound spring released by a trip</td><td>The same energy every time gives the same answer every time. A random box needs a noisy source, and a perfect launcher removes it.</td></tr>
+      <tr><td>SHUFFLE: three cams added with a string</td><td>A gear pseudo-random generator that repeats after 30,381 numbers and can be cranked back to replay them. Now its own box: <a href="shuffle.html" style="color:var(--blue)">see the SHUFFLE page</a>.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <span class="eyebrow">Status</span>
+  <h2>Fit-checked, not yet printed</h2>
+  <p>On main and fit-checked. The model renders and the spot fit checks are clean (moving parts at three input angles, the detent nub 0.08 mm short of its notch, the pawls clear when seated). Still to prove on a print: the 0.9 mm flexure pawls (PETG may be better), the 12-tooth pinion on its 6 mm key, the detent force, coast length with and without the balls, and a 60-roll tally for bias.</p>
+</section>
+<footer style="border-top:1px solid currentColor;opacity:.85;padding-top:16px;margin-top:24px;font-weight:700"><a href="index.html" style="color:inherit">← Back to all boxes</a> </footer>
+</div>
+
+<script>
+(function () {
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (tag, at, parent) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); if (parent) parent.appendChild(e); return e; };
+  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const P = (r, a) => [r * Math.cos(a * Math.PI / 180), r * Math.sin(a * Math.PI / 180)];
+
+  // ---- physics (the model's estimates) ----
+  const I = 6e-6, tau = 1.0e-3;                 // kg m2, N m
+  const coastDeg = (crank) => { const w = 2 * Math.PI * crank * 2 * 8 / 3; return 0.5 * I * w * w / tau * 180 / Math.PI; };
+  const resultOf = (angle) => ((Math.round(-angle / 60) % 6) + 6) % 6 + 1;   // number k+1 sits at 90 + 60k on the disc
+
+  // ---- wheel + tally ----
+  const W = document.getElementById("wheel");
+  const disc = el("g", {}, W);
+  const C = [130, 150], R = 110;
+  el("circle", { cx: C[0], cy: C[1], r: R, fill: "var(--green)" }, disc);
+  for (let k = 0; k < 6; k++) {
+    const a = 90 + 60 * k, b = 60 + 60 * k;
+    const [x1, y1] = P(22, b), [x2, y2] = P(R - 22, b);
+    el("line", { x1: C[0] + x1, y1: C[1] - y1, x2: C[0] + x2, y2: C[1] - y2, stroke: "var(--bg)", "stroke-width": 3 }, disc);
+    const [bx, by] = P(R - 14, b); el("circle", { cx: C[0] + bx, cy: C[1] - by, r: 8, fill: "#9AA0A6", stroke: "var(--bg)", "stroke-width": 2 }, disc);
+    const [tx, ty] = P(68, a);
+    const t = el("text", { x: C[0] + tx, y: C[1] - ty, "text-anchor": "middle", "dominant-baseline": "central", "font-size": 30, "font-weight": 700, transform: `rotate(${90 - a} ${C[0] + tx} ${C[1] - ty})`, style: "fill:#fff;font-family:var(--f-display)" }, disc);
+    t.textContent = k === 5 ? "6." : String(k + 1);
+  }
+  el("circle", { cx: C[0], cy: C[1], r: 16, fill: "var(--panel)", stroke: "var(--bg)", "stroke-width": 2 }, W);
+  el("path", { d: `M${C[0]} ${C[1] - R - 4} l-11 -20 h22 z`, fill: "var(--fg)" }, W);
+  // tally
+  const TX = 280, TW = 230, bars = [], nums = [];
+  el("text", { x: TX, y: 26, "font-size": 13 }, W).textContent = "Tally";
+  const totalT = el("text", { x: TX + TW, y: 26, "font-size": 13, "text-anchor": "end" }, W);
+  for (let k = 0; k < 6; k++) {
+    const y = 44 + k * 40;
+    el("text", { x: TX, y: y + 16, "font-size": 16, "font-weight": 700 }, W).textContent = k === 5 ? "6." : String(k + 1);
+    el("rect", { x: TX + 28, y, width: TW - 28, height: 24, rx: 4, fill: "var(--line)", opacity: 0.45 }, W);
+    bars.push(el("rect", { x: TX + 28, y, width: 0, height: 24, rx: 4, fill: "var(--green)" }, W));
+    nums.push(el("text", { x: TX + 34, y: y + 17, "font-size": 13 }, W));
+  }
+  let angle = 0, tally = [0, 0, 0, 0, 0, 0], anim = null;
+  const draw = () => disc.setAttribute("transform", `rotate(${-angle} ${C[0]} ${C[1]})`);
+  const drawTally = () => {
+    const n = tally.reduce((a, b) => a + b, 0), m = Math.max(10, ...tally);
+    tally.forEach((v, k) => { bars[k].setAttribute("width", (TW - 28) * v / m); nums[k].textContent = v ? String(v) : ""; });
+    totalT.textContent = n ? `${n} rolls` : "";
+  };
+  const gauss = () => { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+  const spd = document.getElementById("spd"), wob = document.getElementById("wob");
+  const oneRoll = () => {
+    const target = +spd.value, actual = Math.max(0.05, target * (1 + gauss() * wob.value / 100));
+    const c = coastDeg(actual), end = 60 * Math.round((angle + c) / 60);
+    return { actual, c, start: angle, end };
+  };
+  const report = (r) => {
+    const n = resultOf(r.end);
+    document.getElementById("res").textContent = n === 6 ? "6" : String(n);
+    document.getElementById("info").textContent = `Hand ${r.actual.toFixed(2)} turns/s · coast ${(r.c / 360).toFixed(1)} turns`;
+    tally[n - 1]++; drawTally();
+  };
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.getElementById("roll").addEventListener("click", () => {
+    if (anim) cancelAnimationFrame(anim);
+    const r = oneRoll(), T = reduce ? 1 : Math.min(3200, 900 + r.c * 0.9), t0 = performance.now();
+    const step = (t) => {
+      const u = Math.min(1, (t - t0) / T);
+      angle = r.start + (r.end - r.start) * (1 - (1 - u) * (1 - u));   // constant deceleration
+      draw();
+      if (u < 1) anim = requestAnimationFrame(step); else { anim = null; report(r); }
+    };
+    anim = requestAnimationFrame(step);
+  });
+  document.getElementById("roll60").addEventListener("click", () => {
+    if (anim) { cancelAnimationFrame(anim); anim = null; }
+    let r; for (let i = 0; i < 60; i++) { r = oneRoll(); angle = r.end; if (i < 59) tally[resultOf(r.end) - 1]++; }
+    draw(); report(r);
+  });
+  document.getElementById("reset").addEventListener("click", () => { tally = [0, 0, 0, 0, 0, 0]; drawTally(); document.getElementById("res").textContent = "–"; document.getElementById("info").textContent = "Coast: –"; });
+
+  // strip: result for each crank speed from the current wheel position
+  const S = document.getElementById("strip");
+  const shades = ["#2A9A48", "#1F6FD6", "#E07A16", "#D63A2F", "#7A5BC2", "#8C7B5E"];
+  const drawStrip = () => {
+    S.replaceChildren();
+    const x0 = 10, x1 = 510, lo = 0.3, hi = 3;
+    for (let i = 0; i < 500; i++) {
+      const v = lo + (hi - lo) * (i + 0.5) / 500, n = resultOf(60 * Math.round((angle + coastDeg(v)) / 60));
+      el("rect", { x: x0 + i, y: 6, width: 1.2, height: 26, fill: shades[n - 1] }, S);
+    }
+    const sx = x0 + (x1 - x0) * (+spd.value - lo) / (hi - lo);
+    el("path", { d: `M${sx} 34 l-6 10 h12 z`, fill: "var(--fg)" }, S);
+    [0.5, 1, 1.5, 2, 2.5, 3].forEach((v) => { const t = el("text", { x: x0 + (x1 - x0) * (v - lo) / (hi - lo), y: 60, "font-size": 11, "text-anchor": "middle" }, S); t.textContent = v + " t/s"; });
+  };
+  const upd = () => { document.getElementById("spdv").textContent = (+spd.value).toFixed(1) + " turns/s"; document.getElementById("wobv").textContent = "±" + wob.value + " %"; drawStrip(); };
+  spd.addEventListener("input", upd); wob.addEventListener("input", upd);
+  // keep the strip in step with the wheel
+  const obs = new MutationObserver(() => drawStrip()); obs.observe(document.getElementById("res"), { childList: true });
+  draw(); drawTally(); upd();
+
+  // ---- gear train, to scale (5 px per mm) ----
+  const T = document.getElementById("train"), k = 5, ox = 200, oy = 200;
+  const X = (x) => ox + k * x, Y = (y) => oy - k * y;
+  el("rect", { x: X(-32), y: Y(32), width: 64 * k, height: 64 * k, fill: "none", stroke: "var(--muted)", "stroke-width": 1.5, "stroke-dasharray": "4 4" }, T);
+  el("rect", { x: X(-28.7), y: Y(28.7), width: 57.4 * k, height: 57.4 * k, rx: 4, fill: "var(--bg)", stroke: "var(--line)", "stroke-width": 10 }, T);
+  const gear = (c, r, col, dash, label, lx, ly) => {
+    el("circle", { cx: X(c[0]), cy: Y(c[1]), r: r * k, fill: dash ? "none" : col, "fill-opacity": dash ? 0 : 0.3, stroke: col, "stroke-width": dash ? 2 : 2.5, "stroke-dasharray": dash ? "6 5" : "none" }, T);
+    if (label) { const t = el("text", { x: X(c[0]) + lx, y: Y(c[1]) + ly, "font-size": 12, "text-anchor": "middle" }, T); t.textContent = label; }
+  };
+  gear([0, 0], 25, "var(--green)", true, "", 0, 0);
+  gear([0, 0], 18, "var(--green)", true, "", 0, 0);
+  gear([-24, 0], 8, "var(--blue)", false, "W 16", 0, 4);
+  gear([-15, -10.72], 12, "var(--muted)", true, "", 0, 0);
+  gear([-15, -10.72], 6, "var(--muted)", false, "A 12/24", 0, 78);
+  gear([-10.04, 6.58], 6, "var(--muted)", false, "B 12", 0, -36);
+  gear([0, 0], 6, "var(--muted)", false, "S 12", 0, 4);
+  gear([20, 0], 12, "var(--orange)", false, "E 24", 0, 4);
+  gear([16.3, 17.62], 6, "var(--muted)", false, "O 12", 0, 4);
+  el("text", { x: X(0), y: Y(-25) + 18, "font-size": 12, "text-anchor": "middle", style: "fill:var(--green)" }, T).textContent = "spinner disc (above lid)";
+  el("text", { x: X(-30), y: Y(-30) + 14, "font-size": 11 }, T).textContent = "64 mm cell";
+
+  // ---- ratchet and pawls ----
+  const Rt = document.getElementById("ratchet"), q = 10.5, cx = 200, cy = 200;
+  const rr = (a) => { const st = 15, f = a / st - Math.floor(a / st); return 9.4 + 1.2 * f; };
+  let d = "";
+  for (let i = 0; i <= 720; i++) { const a = i / 2, [x, y] = P(rr(a + 0.001), a); d += (i ? "L" : "M") + (cx + q * x).toFixed(1) + " " + (cy - q * y).toFixed(1); }
+  el("circle", { cx, cy, r: 18 * q, fill: "var(--green)", opacity: 0.9 }, Rt);
+  el("path", { d: d + "Z", fill: "var(--panel)" }, Rt);
+  for (const rot of [0, 180]) {
+    let p = "";
+    const arm = []; for (let i = 0; i <= 24; i++) arm.push([-112 + 105 * i / 24 + rot, 5.4 + 3.5 * i / 24]);
+    const pts = [...arm.map(([a, r]) => P(r + 0.45, a)), ...Array.from({ length: 9 }, (_, i) => { const a = -7 + 6.2 * i / 8; return P(rr(a) - 0.2, a + rot); }), ...Array.from({ length: 9 }, (_, i) => P(8.6, -0.8 - 6.2 * i / 8 + rot)), ...arm.reverse().map(([a, r]) => P(r - 0.45, a))];
+    pts.forEach(([x, y], i) => { p += (i ? "L" : "M") + (cx + q * x).toFixed(1) + " " + (cy - q * y).toFixed(1); });
+    el("path", { d: p + "Z", fill: "var(--white)", stroke: "var(--fg)", "stroke-width": 1.2 }, Rt);
+  }
+  el("circle", { cx, cy, r: 5 * q, fill: "var(--white)", stroke: "var(--fg)", "stroke-width": 1.2 }, Rt);
+  el("text", { x: cx, y: cy + 5, "font-size": 13, "text-anchor": "middle" }, Rt).textContent = "driver";
+  el("path", { d: `M${cx + 190 * Math.cos(0.35)} ${cy - 190 * Math.sin(0.35)} A 190 190 0 0 0 ${cx + 190 * Math.cos(1.0)} ${cy - 190 * Math.sin(1.0)}`, fill: "none", stroke: "var(--red)", "stroke-width": 3, "marker-end": "url(#ah)" }, Rt);
+  const defs = el("defs", {}, Rt), mk = el("marker", { id: "ah", markerWidth: 8, markerHeight: 8, refX: 4, refY: 4, orient: "auto" }, defs);
+  el("path", { d: "M0 0 L8 4 L0 8 z", fill: "var(--red)" }, mk);
+  el("text", { x: 396, y: 120, "font-size": 12, "text-anchor": "end", style: "fill:var(--red)" }, Rt).textContent = "forward (CCW)";
+  el("text", { x: 200, y: 392, "font-size": 12, "text-anchor": "middle" }, Rt).textContent = "24-tooth ratchet inside the 36-tooth rim";
+
+  // ---- coast curve ----
+  const Cv = document.getElementById("coast"), gx0 = 48, gx1 = 400, gy0 = 220, gy1 = 16, vmax = 3, smax = 36;
+  const GX = (v) => gx0 + (gx1 - gx0) * v / vmax, GY = (s) => gy0 - (gy0 - gy1) * s / smax;
+  for (let s = 0; s <= smax; s += 6) { el("line", { x1: gx0, x2: gx1, y1: GY(s), y2: GY(s), stroke: "var(--line)", "stroke-width": 1 }, Cv); el("text", { x: gx0 - 8, y: GY(s) + 4, "font-size": 11, "text-anchor": "end" }, Cv).textContent = s; }
+  for (let v = 0; v <= 3; v += 0.5) el("text", { x: GX(v), y: gy0 + 18, "font-size": 11, "text-anchor": "middle" }, Cv).textContent = v;
+  el("text", { x: (gx0 + gx1) / 2, y: 256, "font-size": 12, "text-anchor": "middle" }, Cv).textContent = "crank speed, turns a second";
+  el("text", { x: 14, y: GY(smax / 2), "font-size": 12, "text-anchor": "middle", transform: `rotate(-90 14 ${GY(smax / 2)})` }, Cv).textContent = "coast, sectors";
+  let cp = "", lo = "", hi = "";
+  for (let i = 0; i <= 60; i++) {
+    const v = vmax * i / 60, w = 2 * Math.PI * v * 2 * 8 / 3, e = 0.5 * I * w * w;
+    const s = (t) => Math.min(smax, e / t * 180 / Math.PI / 60);
+    cp += (i ? "L" : "M") + GX(v).toFixed(1) + " " + GY(s(1e-3)).toFixed(1);
+    lo += (i ? "L" : "M") + GX(v).toFixed(1) + " " + GY(s(1.5e-3)).toFixed(1);
+    hi += (i ? "L" : "M") + GX(v).toFixed(1) + " " + GY(s(0.5e-3)).toFixed(1);
+  }
+  el("path", { d: hi, fill: "none", stroke: "var(--green)", "stroke-width": 1.2, "stroke-dasharray": "4 4" }, Cv);
+  el("path", { d: lo, fill: "none", stroke: "var(--green)", "stroke-width": 1.2, "stroke-dasharray": "4 4" }, Cv);
+  el("path", { d: cp, fill: "none", stroke: "var(--green)", "stroke-width": 3 }, Cv);
+  const v2 = 2, s2 = coastDeg(2) / 60;
+  el("circle", { cx: GX(v2), cy: GY(s2), r: 5, fill: "var(--green)" }, Cv);
+  el("text", { x: GX(v2) - 10, y: GY(s2) - 10, "font-size": 11, "text-anchor": "end" }, Cv).textContent = `2 t/s → ${s2.toFixed(0)} sectors`;
+  el("text", { x: GX(3) - 4, y: GY(4), "font-size": 11, "text-anchor": "end", style: "fill:var(--muted)" }, Cv).textContent = "dashed: drag 0.5 and 1.5 mNm";
+
+})();
+</script>
+
+
+<script src="makerworld.js"></script>
+<script src="mw.js"></script>
+</body></html>

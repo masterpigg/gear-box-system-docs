@@ -1,0 +1,398 @@
+<!doctype html><html><head>
+<meta name="viewport" content="width=device-width, initial-scale=1"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>SHIFT Gearbox</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column with wide figure bands, as the SPIN page; the six role colors carry the meaning, as on the boxes, and lilac is the Ratios family */
+:root {
+  --bg: #F6F1E6; --panel: #EDE3D0; --fg: #23211D; --muted: #6B655A; --line: #CFC3AC;
+  --red: #D63A2F; --blue: #1F6FD6; --orange: #E07A16; --green: #2A9A48; --white: #FFFDF8;
+  --lilac: #AE96D4; --gear: #FFFDF8; --gearline: #8C8270; --box: #E4D8C0; --warn: #B3261E;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #2C3035;
+  --lilac: #C3B0E3; --gear: #D9D3C6; --gearline: #6E675B; --box: #2C3035; --warn: #FF8A80; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #2C3035;
+  --lilac: #C3B0E3; --gear: #D9D3C6; --gearline: #6E675B; --box: #2C3035; --warn: #FF8A80; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 17px/1.6 var(--f-body); }
+a { color: inherit; }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 64px; display: grid; gap: 48px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.7rem; font-weight: 700; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; max-width: 66ch; }
+section { display: grid; gap: 16px; min-width: 0; }
+.eyebrow { font: 600 0.75rem/1 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 1.2rem; max-width: 60ch; }
+.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+.hero > div { display: grid; gap: 16px; min-width: 0; }
+.hero img { border-radius: 10px; background: #FFFDE7; width: 100%; min-width: 0; }
+@media (max-width: 760px) { .hero { grid-template-columns: 1fr; } }
+.sym { display: inline-grid; place-items: center; min-width: 1.3em; height: 1.3em; padding: 0 0.25em; border-radius: 999px; background: var(--lilac); color: #1B1B1B; font-family: var(--f-display); font-size: 0.6em; vertical-align: 0.25em; }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+figure { margin: 0; display: grid; gap: 8px; min-width: 0; }
+figure img { width: 100%; border-radius: 10px; background: #FFFDE7; }
+figcaption { font-size: 0.9rem; color: var(--muted); }
+.panel { background: var(--panel); border-radius: 10px; padding: 16px; }
+svg { display: block; width: 100%; height: auto; }
+svg text { font-family: var(--f-mono); fill: var(--fg); }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+td.num { font-variant-numeric: tabular-nums; }
+.scroll { overflow-x: auto; }
+code, .mono { font-family: var(--f-mono); font-size: 0.88em; }
+.sim { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 760px) { .sim { grid-template-columns: 1fr; } }
+.controls { display: grid; gap: 16px; min-width: 0; }
+.ctl { display: grid; gap: 8px; }
+.ctl > span { font-weight: 700; }
+label { font-weight: 700; display: flex; justify-content: space-between; gap: 8px; }
+input[type=range] { width: 100%; accent-color: var(--red); }
+button { font: 700 1rem var(--f-display); padding: 10px 18px; border-radius: 999px; border: 2px solid var(--red); background: var(--red); color: #fff; cursor: pointer; }
+button.ghost { background: transparent; color: var(--red); }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.gate { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: var(--lilac); padding: 6px; border-radius: 12px; }
+.gate button { border-color: transparent; background: rgba(255,255,255,0.55); color: #1B1B1B; border-radius: 8px; font-size: 1.3rem; padding: 8px 0; }
+.gate button[aria-pressed="true"] { background: var(--blue); color: #fff; }
+.toggle[aria-pressed="true"] { background: var(--red); color: #fff; }
+.toggle[aria-pressed="false"] { background: transparent; color: var(--red); }
+.row { display: flex; flex-wrap: wrap; gap: 10px; }
+.readout { font: 600 0.95rem var(--f-mono); color: var(--muted); }
+.stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 16px; font-variant-numeric: tabular-nums; }
+.stats div { display: grid; gap: 0; }
+.stats b { font: 700 1.4rem/1.1 var(--f-display); }
+.stats span { font: 600 0.7rem var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.msg { min-height: 3.2em; font-weight: 700; }
+.msg.bad { color: var(--warn); }
+.msg.ok { color: var(--green); }
+ul.plain, ol.plain { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 66ch; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+.cols > div { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.chip { display: inline-block; width: 0.8em; height: 0.8em; border-radius: 3px; vertical-align: -0.05em; margin-right: 4px; }
+@keyframes shake { 0%,100% { transform: translateX(0) } 25% { transform: translateX(-3px) } 75% { transform: translateX(3px) } }
+.shake { animation: shake 0.12s 3; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="wrap">
+<nav style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-weight:700"><a href="index.html">← All boxes</a><span style="opacity:.6;font-weight:400">Gear Box System</span></nav>
+
+<header class="hero">
+  <div>
+    <span class="eyebrow">Gear Box System · Ratios · fit-checked</span>
+    <h1>SHIFT <span class="sym">1·N·2</span></h1><div class="mw-slot" data-makerworld="box:shift"></div>
+    <p class="lede">A two-speed gearbox with a stick on the lid. Lift the stick, swing it, let it drop. First gear runs the line at half speed with twice the push, second runs it straight through, and neutral disconnects it. Put a CLUTCH in front and you shift the way a car does.</p>
+    <p class="readout">1 cell · W in (16 teeth) · E out (14) · 1st ×½ · 2nd ×1 · cost 5</p>
+  </div>
+  <img src="boxes/shift/img/shift_iso.png" alt="The SHIFT box: a bone shell with a blue stick on the lid, parked in the notch marked 1 of a gate marked 1, N, 2.">
+</header>
+
+<section aria-labelledby="try">
+  <span class="eyebrow">Try it</span>
+  <h2 id="try">Crank, clutch, shift</h2>
+  <p>This is the inside of the box seen from above, drawn from the model's own coordinates. Turn the crank, then try to change gear with the clutch engaged. Then do it the right way: press the clutch first.</p>
+  <div class="sim">
+    <div class="controls">
+      <div class="ctl">
+        <span>Stick</span>
+        <div class="gate" role="group" aria-label="Gear">
+          <button id="g1" type="button" aria-pressed="true">1</button>
+          <button id="g0" type="button" aria-pressed="false">N</button>
+          <button id="g2" type="button" aria-pressed="false">2</button>
+        </div>
+      </div>
+      <div class="ctl">
+        <span>CLUTCH in front</span>
+        <button id="clutch" class="toggle" type="button" aria-pressed="true">Engaged: press to release</button>
+      </div>
+      <div class="ctl">
+        <label for="rpm"><span>Crank speed</span><span id="rpmv" class="mono">30 rpm</span></label>
+        <input id="rpm" type="range" min="0" max="60" step="1" value="30">
+      </div>
+      <label for="fly" style="justify-content:flex-start;align-items:center;gap:10px;font-weight:400"><input id="fly" type="checkbox"> A FLYWHEEL after SHIFT (the output coasts)</label>
+      <div class="stats">
+        <div><b id="sRatio">×½</b><span>ratio</span></div>
+        <div><b id="sTorque">×2</b><span>torque at E</span></div>
+        <div><b id="sIn">30</b><span>W rpm</span></div>
+        <div><b id="sOut">17</b><span>E rpm</span></div>
+      </div>
+      <p id="msg" class="msg ok" aria-live="polite">In first. Crank speed sets W; E turns at half its pitch-line speed.</p>
+    </div>
+    <div class="panel">
+      <svg id="box" viewBox="-34 -34 68 68" role="img" aria-label="The gears inside SHIFT from above: W on the west, P1 north-west, P2 south-west, the idler on its arm round O, then F and E on the east."></svg>
+      <p class="readout" style="margin-top:8px"><span class="chip" style="background:var(--blue)"></span>W in · <span class="chip" style="background:var(--orange)"></span>E out · <span class="chip" style="background:var(--lilac)"></span>arm and idler (layer 2) · faded: layer 1 under it</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="inside">
+  <span class="eyebrow">Inside</span>
+  <h2 id="inside">Constant mesh, one swinging gear</h2>
+  <p>W drives two stacks at once, all the time. P1 has 24 teeth below and 12 above, so its top gear runs at half W's speed. P2 has 16 and 16, so its top gear runs at W's speed. A 12-tooth idler on an arm rolls round the output stack O. In first it meshes P1's top gear, in second P2's, and in neutral it is 2.4 mm clear of both. O drives E through F.</p>
+  <div class="figs">
+    <figure><img src="boxes/shift/img/shift_inside_1.png" alt="Inside, first gear: the arm points north-west to P1."><figcaption>1st: the arm swung to P1 (137°).</figcaption></figure>
+    <figure><img src="boxes/shift/img/shift_inside_n.png" alt="Inside, neutral: the arm points west, between P1 and P2."><figcaption>Neutral: between them (166°), clear of both.</figcaption></figure>
+    <figure><img src="boxes/shift/img/shift_inside_2.png" alt="Inside, second gear: the arm points south-west to P2."><figcaption>2nd: the arm swung to P2 (199.7°).</figcaption></figure>
+  </div>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Gear</th><th>Path</th><th>Meshes</th><th>Ratio</th><th>Torque at E</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>W (16) → P1 (24 · 12) → idler (12) → O (16) → F (14) → E (14)</td><td class="num">5</td><td class="num">×½</td><td class="num">about ×2</td></tr>
+        <tr><td>N</td><td>W → P1 and P2, turning free; the idler touches neither</td><td class="num">–</td><td class="num">0</td><td class="num">0</td></tr>
+        <tr><td>2</td><td>W (16) → P2 (16 · 16) → idler (12) → O (16) → F (14) → E (14)</td><td class="num">5</td><td class="num">×1</td><td class="num">×1</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="cols">
+    <div>
+      <h3>The idler runs on layer 2 only</h3>
+      <p>Its pin hangs from the arm and ends in a head sunk in a counterbore under the idler. Nothing reaches down to layer 1, so the idler swings over W, P1's big gear and P2's lower gear without touching them.</p>
+    </div>
+    <div>
+      <h3>The arm pivots off center</h3>
+      <p>O sits at (7, −5). That puts both rests on the west side of O, 62.7° apart, with a clear neutral between. Five meshes on either path, an odd count, so E turns forward in both gears.</p>
+    </div>
+    <div>
+      <h3>The gate holds it in gear</h3>
+      <p>Tooth forces drag the arm, into mesh at one rest and out at the other. The stick's peg sits in a notch with straight walls, so either pull meets a wall. The posts at the ends of the gate are the hard stops for 1st and 2nd.</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="clutch-h">
+  <span class="eyebrow">With CLUTCH</span>
+  <h2 id="clutch-h">Shift the way a car does</h2>
+  <p>The row is CRANK → CLUTCH → SHIFT → the load. CLUTCH 3 plus SHIFT 5 is 8 of the crank's budget of 20.</p>
+  <ol class="plain">
+    <li><b>Clutch in.</b> Back CLUTCH's red knob off about one turn. The spring lets go and SHIFT's input stops, even while you keep cranking.</li>
+    <li><b>Shift.</b> Lift the stick, swing it, drop it into the next notch. P1 and P2 aren't being driven, so the idler can nudge them round until the teeth line up.</li>
+    <li><b>Clutch out.</b> Screw the knob back down to where it was, and crank on.</li>
+  </ol>
+  <div class="cols">
+    <div>
+      <h3>Grinding</h3>
+      <p>Skip step 1 and the idler swings into a gear that is already turning. It lands tooth on tooth or skips. That is the noise a driver hears, and the reason the clutch exists.</p>
+    </div>
+    <div>
+      <h3>Feel the torque</h3>
+      <p>Put something hard to turn after SHIFT, and set CLUTCH light enough that it slips in 2nd. Shift to 1st and the same setting holds: the load needs half the torque at the input.</p>
+    </div>
+    <div>
+      <h3>Double-clutching</h3>
+      <p>With a FLYWHEEL after SHIFT, the output keeps spinning in neutral, and so does the idler. To go into gear smoothly, P1 or P2 must match it. Clutch out in neutral, crank up to speed, clutch in, shift. Synchronizers in a modern car do this for you.</p>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="rev">
+  <span class="eyebrow">Limits</span>
+  <h2 id="rev">Why there is no reverse</h2>
+  <p>A swinging idler can only reach two gears, one at each end of its swing. Any gear it meshed between the ends would have to stand straight out from O, 26 mm or more away, which is outside the wall of a 64 mm cell. For reverse today, put a REVERSE box behind SHIFT.</p>
+  <p>A full R · N · 1 · 2 gearbox needs two cells: two swinging idlers, one per shift rail, feeding E, and an H-shaped gate on a 2x1 lid. Across picks the rail, forward and back swings that rail's arm. The H is also the interlock: two gears can never go in at once. That is the next step if this one works.</p>
+</section>
+
+<section aria-labelledby="parts">
+  <span class="eyebrow">Build</span>
+  <h2 id="parts">Parts, colors, assembly</h2>
+  <div class="cols">
+    <div>
+      <div class="scroll"><table>
+        <thead><tr><th>Part</th><th>Color</th></tr></thead>
+        <tbody>
+          <tr><td>shell, keepers, idler pin</td><td>bone</td></tr>
+          <tr><td>lid with the gate</td><td>lilac, black lettering</td></tr>
+          <tr><td>port gear W, the stick</td><td>blue (input)</td></tr>
+          <tr><td>port gear E</td><td>orange (output)</td></tr>
+          <tr><td>P1, P2, O, F, arm, idler</td><td>white</td></tr>
+        </tbody>
+      </table></div>
+      <p>The stick prints on its side so the flexure's lines run along the beam. Lifting the grip 1.5 mm bends it about 1 % at the root; if PLA takes a set, print it in PETG.</p>
+    </div>
+    <div>
+      <ol class="plain">
+        <li>Wipe a PTFE dry film on every pin.</li>
+        <li>Fit the port gears W and E.</li>
+        <li>Fit P1, P2, F and O on their pins.</li>
+        <li>Push the idler pin up through the idler, head into the counterbore, and press it into the arm's plate. Lower the arm onto O's long pin.</li>
+        <li>Fit the keepers, then the lid. The arm's shaft comes up beside the gate.</li>
+        <li>Press the stick onto the shaft's D-key with its peg in the 1 notch.</li>
+      </ol>
+    </div>
+  </div>
+  <figure style="max-width:640px;justify-self:center"><img src="boxes/shift/img/shift_exploded.png" alt="SHIFT exploded: shell, gears, arm, lid with the gate and the blue stick above it."><figcaption>Exploded. The lid shows bone here because the family color is applied once SHIFT joins the Ratios list in the library.</figcaption></figure>
+</section>
+
+<section aria-labelledby="teach">
+  <span class="eyebrow">What it teaches</span>
+  <h2 id="teach">Five ideas in one box</h2>
+  <ul class="plain">
+    <li>A gearbox trades speed for torque: half the speed, twice the push.</li>
+    <li>Constant mesh: the gears always turn; shifting only chooses which pair carries the drive.</li>
+    <li>Why a clutch: you can't swing a gear into one turning at a different speed.</li>
+    <li>Count the meshes: five, an odd number, so the output turns forward.</li>
+    <li>Why a gate: something has to hold the gear in against the forces that push it out.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="status">
+  <span class="eyebrow">Status</span>
+  <h2 id="status">Fit-checked, not printed</h2>
+  <p>Checked in OpenSCAD 2021: nothing that turns touches anything in 1st and 2nd at input angles 0, 4.5, 9, 45 and 90°, or in neutral; the fixed parts only rest on each other; the model's ratios come out at exactly ½ and 1. Fit-checked on main and in the sandbox; still to do: a print.</p>
+  <ul class="plain">
+    <li>On the first print: mesh and backlash at both rests, the idler riding level on its pin head, which rest the tooth drag pulls out of mesh, and how the flexure feels after a few hundred shifts.</li>
+  </ul>
+</section>
+</div>
+
+<script>
+(() => {
+  // the model's layout (lib/shift.scad), mm, y up
+  const W = [-24, 0], P1 = [-10.1068, 14.3868], P2 = [-19.0557, -15.2169], O = [7, -5],
+        F = [19.7119, -12.9629], E = [25, 0], RI = 14;
+  const REST = { 1: 137.024, 0: 166, 2: 199.682 };
+  const RATIO = { 1: 0.5, 0: 0, 2: 1 };
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.getElementById("box");
+  const deg = Math.PI / 180;
+  const ang = (a, b) => Math.atan2(b[1] - a[1], b[0] - a[0]) / deg;
+  // the library's mesh rule: gear 2 at angle th from gear 1 (spun phi1) meshes it when spun so
+  const mesh = (t1, phi1, th, t2) => th + 180 - (t1 / t2) * (phi1 + 90 - th) - 90 - 180 / t2;
+
+  function gearPath(t) {
+    const rp = t / 2, rt = rp + 1, rr = rp - 1.25, step = 360 / t, pts = [];
+    for (let k = 0; k < t; k++) {
+      const c = 90 + k * step;
+      for (const [a, r] of [[c - step * 0.5, rr], [c - step * 0.31, rr], [c - step * 0.16, rt], [c + step * 0.16, rt], [c + step * 0.31, rr]])
+        pts.push([r * Math.cos(a * deg), r * Math.sin(a * deg)]);
+    }
+    return "M" + pts.map(p => p[0].toFixed(3) + "," + p[1].toFixed(3)).join("L") + "Z";
+  }
+  function el(tag, attrs, parent) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    (parent || svg).appendChild(e); return e;
+  }
+  const root = el("g", { transform: "scale(1,-1)" });
+  el("rect", { x: -30.7, y: -30.7, width: 61.4, height: 61.4, rx: 1, fill: "var(--box)", stroke: "var(--gearline)", "stroke-width": 0.4 }, root);
+  function gear(c, t, fill, layer) {
+    const g = el("g", { transform: `translate(${c[0]},${c[1]})` }, root);
+    const r = el("g", {}, g);
+    el("path", { d: gearPath(t), fill, stroke: "var(--gearline)", "stroke-width": 0.25, opacity: layer === 1 ? 0.55 : 1 }, r);
+    el("circle", { r: 2.2, fill: "var(--bg)", stroke: "var(--gearline)", "stroke-width": 0.25 }, r);
+    el("line", { x1: 0, y1: 2.2, x2: 0, y2: t / 2 - 1.6, stroke: "var(--gearline)", "stroke-width": 0.5 }, r);
+    return r;
+  }
+  const gW = gear(W, 16, "var(--blue)", 1);
+  const gP1a = gear(P1, 24, "var(--gear)", 1);
+  const gP2 = gear(P2, 16, "var(--gear)", 2);
+  const gF = gear(F, 14, "var(--gear)", 1);
+  const gE = gear(E, 14, "var(--orange)", 1);
+  const gO = gear(O, 16, "var(--gear)", 2);
+  const gP1b = gear(P1, 12, "var(--gear)", 2);
+  const arm = el("path", { fill: "var(--lilac)", opacity: 0.55 }, root);
+  const idlerG = el("g", {}, root);
+  const gI = gear([0, 0], 12, "var(--lilac)", 2);
+  idlerG.appendChild(gI.parentNode);
+  const lab = (txt, c, dx, dy) => { const t = el("text", { x: c[0] + dx, y: -(c[1] + dy), "font-size": 3, "text-anchor": "middle", transform: "scale(1,-1)" }); t.textContent = txt; root.appendChild(t); };
+  lab("W", W, -2, 11); lab("P1", P1, 0, 15); lab("P2", P2, 11, -9); lab("O", O, 0, 11); lab("F", F, 9.5, -6); lab("E", E, 0, 10);
+
+  const s = { gear: 1, clutch: true, rpm: 30, fly: false, xW: 0, xO: 0, vW: 0, vO: 0, shownArm: REST[1] };
+  const $ = id => document.getElementById(id);
+  const msg = $("msg");
+  function say(text, kind) { msg.textContent = text; msg.className = "msg " + kind; }
+  const vCrank = () => s.rpm / 60 * 2 * Math.PI * 8;   // the crank's pitch-line speed at W, mm/s
+
+  function shift(g) {
+    if (g === s.gear) return;
+    if (g !== 0) {
+      const vP = s.vW * RATIO[g], vo = s.vO;
+      if (Math.abs(vP - vo) > 0.15 * Math.max(Math.abs(vP), Math.abs(vo)) + 2) {
+        svg.classList.remove("shake"); void svg.getBoundingClientRect(); svg.classList.add("shake");
+        const why = s.clutch && vCrank() > 0 ? `Grinding. P${g} is being driven and the idler is turning at another speed. Release the clutch first.`
+          : vP > vo ? `Grinding. P${g} is still spinning down. Give it a moment.`
+          : `Grinding. The output is still spinning and P${g} is slower. Double-clutch: engage the clutch in N, crank to match, release, shift.`;
+        say(why, "bad"); return;
+      }
+    }
+    s.gear = g;
+    for (const k of [1, 0, 2]) $("g" + k).setAttribute("aria-pressed", String(k === g));
+    if (g === 0) say("Neutral. The idler is clear of both P1 and P2: E stops unless something downstream keeps it turning.", "ok");
+    else say(`In ${g === 1 ? "first" : "second"}. ${s.clutch ? "Crank on." : "Now engage the clutch to drive."}`, "ok");
+    stats();
+  }
+  for (const k of [1, 0, 2]) $("g" + k).addEventListener("click", () => shift(k));
+  $("clutch").addEventListener("click", () => {
+    s.clutch = !s.clutch;
+    $("clutch").setAttribute("aria-pressed", String(s.clutch));
+    $("clutch").textContent = s.clutch ? "Engaged: press to release" : "Released: press to engage";
+    say(s.clutch ? "Clutch engaged: the crank drives W." : "Clutch released: W spins down and stops, even while the crank turns. Shift now.", "ok");
+    stats();
+  });
+  $("rpm").addEventListener("input", e => { s.rpm = +e.target.value; $("rpmv").textContent = s.rpm + " rpm"; stats(); });
+  $("fly").addEventListener("change", e => { s.fly = e.target.checked; });
+
+  function stats() {
+    $("sRatio").textContent = s.gear === 1 ? "×½" : s.gear === 2 ? "×1" : "0";
+    $("sTorque").textContent = s.gear === 1 ? "×2" : s.gear === 2 ? "×1" : "0";
+    const win = Math.abs(s.vW) / (2 * Math.PI * 8) * 60;
+    $("sIn").textContent = Math.round(win);
+    $("sOut").textContent = Math.round(Math.abs(s.vO) / (2 * Math.PI * 7) * 60);
+  }
+
+  let last = performance.now();
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    // the output: driven in gear, else it coasts (long with a flywheel, briefly without)
+    const coast = s.fly ? 6 : 0.4;
+    if (s.gear !== 0 && s.clutch) s.vO = vCrank() * RATIO[s.gear];
+    else s.vO *= Math.exp(-dt / coast);
+    if (Math.abs(s.vO) < 0.05) s.vO = 0;
+    // W: driven by the crank through the clutch, else turned by the output through the gears, else spinning down
+    if (s.clutch) s.vW = vCrank();
+    else if (s.gear !== 0) s.vW = s.vO / RATIO[s.gear];
+    else { s.vW *= Math.exp(-dt / 1.5); if (s.vW < 0.05) s.vW = 0; }
+    s.xW += s.vW * dt; s.xO += s.vO * dt;
+    const xW = s.xW;
+    const target = REST[s.gear];
+    s.shownArm += (target - s.shownArm) * (reduce ? 1 : Math.min(1, dt * 10));
+    draw(xW, s.xO, s.shownArm);
+    stats();
+    requestAnimationFrame(frame);
+  }
+  function rot(g, a) { g.setAttribute("transform", `rotate(${a.toFixed(3)})`); }
+  function draw(xW, xO, a) {
+    const ip = [O[0] + RI * Math.cos(a * deg), O[1] + RI * Math.sin(a * deg)];
+    const sW = -xW / 8 / deg;
+    const sP1 = mesh(16, sW, ang(W, P1), 24), sP2 = mesh(16, sW, ang(W, P2), 16);
+    let sO = xO / 8 / deg, sI;
+    const at = Math.abs(a - REST[s.gear]) < 0.5;
+    if (at && s.gear === 1) { sI = mesh(12, sP1, ang(P1, ip), 12); sO = mesh(12, sI, ang(ip, O), 16); }
+    else if (at && s.gear === 2) { sI = mesh(16, sP2, ang(P2, ip), 12); sO = mesh(12, sI, ang(ip, O), 16); }
+    else sI = mesh(16, sO, ang(O, ip), 12);
+    const sF = mesh(16, sO, ang(O, F), 14), sE = mesh(14, sF, ang(F, E), 14);
+    rot(gW, sW); rot(gP1a, sP1); rot(gP1b, sP1); rot(gP2, sP2); rot(gO, sO); rot(gF, sF); rot(gE, sE); rot(gI, sI);
+    idlerG.setAttribute("transform", `translate(${ip[0].toFixed(3)},${ip[1].toFixed(3)})`);
+    const n = [-(ip[1] - O[1]) / RI, (ip[0] - O[0]) / RI];
+    const p = (c, r, sgn) => [c[0] + sgn * r * n[0], c[1] + sgn * r * n[1]];
+    const q = [p(O, 4.5, 1), p(ip, 4.2, 1), p(ip, 4.2, -1), p(O, 4.5, -1)];
+    arm.setAttribute("d", "M" + q.map(z => z[0].toFixed(2) + "," + z[1].toFixed(2)).join("L") + "Z");
+  }
+  stats(); draw(0, 0, REST[1]);
+  requestAnimationFrame(frame);
+})();
+</script>
+
+<script src="makerworld.js"></script>
+<script src="mw.js"></script>
+</body></html>

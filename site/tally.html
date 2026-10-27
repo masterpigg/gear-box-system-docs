@@ -1,0 +1,140 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TALLY three-digit counter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F6F1E6;--panel:#EDE3D0;--ink:#2A241C;--muted:#6B6152;--line:#D6C9B0;--fam:#1E1E1E;--famink:#FFFFFF;
+--red:#C8352B;--blue:#2F6FD0;--orange:#E07A1F;--green:#3E9A4A;--white:#FFFFFF;--bone:#E9DFC8;--plot1:#2F6FD0;--plot2:#C8352B}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1C1915;--panel:#28231C;--ink:#F1E9DA;--muted:#B5A88F;--line:#463D30;--fam:#5A5A5A;--plot1:#6FA2F0;--plot2:#F0776B}}
+:root[data-theme="dark"]{--bg:#1C1915;--panel:#28231C;--ink:#F1E9DA;--muted:#B5A88F;--line:#463D30;--fam:#5A5A5A;--plot1:#6FA2F0;--plot2:#F0776B}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Atkinson Hyperlegible",system-ui,sans-serif}
+main{max-width:960px;margin:0 auto;padding:24px max(16px,env(safe-area-inset-left)) 64px}
+nav a{color:var(--muted);text-decoration:none;font-size:15px}
+nav a:hover{color:var(--ink)}
+h1,h2,h3{font-family:"Bricolage Grotesque",sans-serif;line-height:1.15}
+h1{font-size:clamp(40px,8vw,68px);font-weight:800;margin:6px 0 8px;letter-spacing:-.02em}
+h2{font-size:28px;margin:44px 0 12px}
+h3{font-size:20px;margin:28px 0 8px}
+.eyebrow{display:inline-block;background:var(--fam);color:var(--famink);font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:999px;margin-top:20px}
+.lede{font-size:21px;max-width:44em}
+.readout{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 6px}
+.readout div{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 14px}
+.readout b{display:block;font-family:"JetBrains Mono",monospace;font-size:18px}
+.readout span{font-size:13px;color:var(--muted)}
+figure{margin:20px 0;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px;overflow:hidden}
+figure img{width:100%;height:auto;display:block;border-radius:8px;background:#fff}
+figcaption{font-size:14px;color:var(--muted);padding:8px 4px 2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.grid figure{margin:0}
+table{border-collapse:collapse;width:100%;font-size:15px}
+.tw{overflow-x:auto;margin:12px 0}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+code{font-family:"JetBrains Mono",monospace;font-size:.88em;background:var(--panel);padding:1px 5px;border-radius:4px}
+.chip{display:inline-block;width:12px;height:12px;border-radius:3px;border:1px solid var(--line);vertical-align:-1px;margin-right:6px}
+ol li,ul li{margin:6px 0}
+.note{border-left:4px solid var(--fam);background:var(--panel);padding:12px 16px;border-radius:0 10px 10px 0}
+svg text{font-family:"Atkinson Hyperlegible",sans-serif;fill:var(--ink)}
+.train{overflow-x:auto}.train svg{width:100%;min-width:620px;height:auto;display:block}
+footer{margin-top:48px;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<main>
+<nav><a href="index.html">← All boxes</a></nav>
+<span class="eyebrow">Readouts</span>
+<h1>TALLY</h1><div class="mw-slot" data-makerworld="box:tally"></div>
+<p class="lede">A three-digit odometer for the line. It counts turns to a tenth, <b>00.0 to 99.9</b>, on three digit wheels read through three windows in a row. It's <a href="counter.html">TURNS</a> with one more digit.</p>
+<div class="readout">
+<div><b>2 × 1</b><span>cells</span></div>
+<div><b>00.0 – 99.9</b><span>turns of the line</span></div>
+<div><b>8</b><span>torque cost, stages</span></div>
+<div><b>2</b><span>odometer carries</span></div>
+<div><b>fit-checked</b><span>on main, not printed</span></div>
+</div>
+<figure><img src="boxes/tally/img/tally_iso.png" alt="TALLY assembled, reading 12.3"><figcaption>Assembled, reading 12.3. Black Readouts lid, white lettering, green digit wheels.</figcaption></figure>
+<figure><img src="boxes/tally/img/tally_read.png" alt="The three windows at 00.0, 12.3 and 99.9"><figcaption>The windows from the model at turn 0, 4428 and 35964: 00.0, 12.3, 99.9.</figcaption></figure>
+
+<h2>What it does</h2>
+<p>One turn of the line adds 1.0, a tenth of a turn adds 0.1, and after 99.9 it rolls over to 00.0. Put it at the end of a line, or on its own tap.</p>
+<div class="tw"><table>
+<tr><th>Port</th><th>Side</th><th>Lane</th><th>Teeth</th><th>Layer</th><th>Role</th></tr>
+<tr><td><span class="chip" style="background:var(--blue)"></span>W</td><td>W</td><td>B</td><td>16</td><td>1</td><td>input</td></tr>
+</table></div>
+
+<h2>How it works</h2>
+<figure><img src="boxes/tally/img/tally_top.png" alt="Lid off, from above"><figcaption>Lid off, from above. The input train runs along the south wall to the tenths wheel U at the east end; T sits above the row, H and U below it.</figcaption></figure>
+<h3>Input</h3>
+<p>W (16) → J (24) → K (16) → L (28) → U (16). Four meshes, so the tenths wheel U turns clockwise with the line, one turn per turn. TURNS does this in two meshes, but here U sits 77 mm from the port.</p>
+<h3>Two carries</h3>
+<ol>
+<li>U carries a locking ring with one notch and one carry tooth. As U goes from 9 to 0, the tooth kicks pinion P1 round 72°, and P1's full teeth step the units wheel T one digit.</li>
+<li>T carries its own ring and tooth. As T goes from 9 to 0, it kicks P2 the same way, and P2 steps the tens wheel H.</li>
+</ol>
+<p class="note"><b>Locked between counts.</b> Between carries, each pinion's long teeth straddle the ring below it, so T and H can't move. Tapping the box won't knock the reading off.</p>
+<h3>The windows</h3>
+<p>Tens, units and tenths sit 15 mm apart in a row, with a raised decimal point. The wheels are 26 mm across, too big to stand side by side that close, so they stand in a V and each reads at its window from a different angle. The digits always come up upright.</p>
+
+<h2>The two-piece middle wheel</h2>
+<p>This was the open problem on the roadmap. T needs a lock on layer 1 and a 20-tooth gear on layer 3, with P2's teeth on layer 2 between them. In one piece, T can't go in after P2 and P2 can't go in after T.</p>
+<div class="tw"><table>
+<tr><th>Layer</th><th>U (tenths)</th><th>P1</th><th>T (units)</th><th>P2</th><th>H (tens)</th></tr>
+<tr><td>3</td><td></td><td>full 10</td><td><b>20 (T upper)</b></td><td></td><td></td></tr>
+<tr><td>2</td><td>lock</td><td>long 10</td><td>band</td><td>full 10</td><td>20</td></tr>
+<tr><td>1</td><td>16 (drive)</td><td><i>6 mm column</i></td><td><b>lock (T lower)</b></td><td>long 10</td><td></td></tr>
+</table></div>
+<ul>
+<li><b>T lower</b> holds the lock, a band, and a D-shaped column (10 mm) that runs up to the digit wheel's key. It goes in first.</li>
+<li><b>P1 and P2</b> go in next, at rest, with their long teeth either side of the rings.</li>
+<li><b>T upper</b> is the 20-tooth gear on a tube. It slides down the column, meshing P1 as it goes, and rests on the band. The digit wheel holds it down.</li>
+</ul>
+<p>P1 stands next to T's lock with nothing of its own on layer 1, so its column is 6 mm instead of the standard 8 mm, and the carry tooth sweeps past it with 1.4 mm to spare.</p>
+
+<h2>Inside</h2>
+<div class="grid">
+<figure><img src="boxes/tally/img/tally_inside.png" alt="Lid off"><figcaption>Lid off.</figcaption></figure>
+<figure><img src="boxes/tally/img/tally_exploded.png" alt="Exploded"><figcaption>Exploded: the lid, the three wheels, T upper lifted off its column.</figcaption></figure>
+</div>
+
+<h2>Torque cost</h2>
+<p><b>8 stages</b>: four meshes to U, then a carry and a mesh to T, then a carry and a mesh to H. Most of the time only the first four move. T gets a push once per turn and H once per ten turns. Give TALLY its own tap, or put it last on a line.</p>
+
+<h2>Parts</h2>
+<ul>
+<li><span class="chip" style="background:var(--bone)"></span>Shell (bone, Readouts band), keeper, caps on J, K, L, P1 and P2.</li>
+<li><span class="chip" style="background:#1E1E1E"></span>Lid in Readouts black, white raised lettering.</li>
+<li><span class="chip" style="background:var(--blue)"></span>Port W.</li>
+<li><span class="chip" style="background:var(--white)"></span>Stacks J, K, L, U, P1, P2, H, T lower and T upper.</li>
+<li><span class="chip" style="background:var(--green)"></span>Three digit wheels.</li>
+<li>Bought: nothing.</li>
+</ul>
+<p><b>Drop-in order:</b> W and its keeper; J, K, L; U; T lower; P1 and P2 at rest; the caps; T upper down the column; H; the three wheels at 0; the lid.</p>
+
+<h2>Checked</h2>
+<ul>
+<li>Every moving part against every other, exported and intersected: clean at line turn 0, 170, 324, 340, 350 and 360 (U carries into T), at 3564, 3580, 3590 and 3600 (U into T into H at once), and at 35990.</li>
+<li>Fixed parts against each other: clean.</li>
+<li>The reading matches the model at 00.0, 12.3 and 99.9.</li>
+</ul>
+
+<h2>Verify when printed</h2>
+<ul>
+<li>The double carry at 09.9 → 10.0, where U's tooth drives P1, T, P2 and H at once.</li>
+<li>T upper sliding on its column (0.15 mm a side), and whether it rocks.</li>
+<li>P1 on its 6 mm column.</li>
+<li>Whether a neighbor digit shows at the edge of the tilted windows.</li>
+</ul>
+
+</main>
+<script src="makerworld.js"></script>
+<script src="mw.js"></script>
+</body>
+</html>
+
+</body></html>

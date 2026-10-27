@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Long Wires</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>/* Layout: one reading column with wide figure bands, as on the SPIN page; the six role colors carry the meaning, as on the boxes */
+:root {
+  --bg: #F6F1E6; --panel: #EDE3D0; --fg: #23211D; --muted: #6B655A; --line: #CFC3AC;
+  --red: #D63A2F; --blue: #1F6FD6; --orange: #E07A16; --green: #2A9A48; --white: #FFFDF8; --bone: #E4D8BF;
+  --card: #FBF8F1; --shot: #F8F8F6;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #DCD6C8; --bone: #8E846F;
+  --card: #212428; --shot: #E9E9E6; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1A1C1F; --panel: #24272B; --fg: #ECE6DA; --muted: #A39C8E; --line: #3A3E44;
+  --red: #F06A5F; --blue: #5E9BF0; --orange: #F5A04A; --green: #4CC46B; --white: #DCD6C8; --bone: #8E846F;
+  --card: #212428; --shot: #E9E9E6; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 17px/1.6 var(--f-body); }
+a { color: var(--blue); }
+a:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; border-radius: 4px; }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 64px; display: grid; gap: 44px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.6rem; font-weight: 700; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; max-width: 66ch; }
+section { display: grid; gap: 14px; min-width: 0; }
+.eyebrow { font: 600 0.75rem/1.4 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.lede { font-size: 1.15rem; max-width: 60ch; }
+.readout { font: 600 0.85rem/1.5 var(--f-mono); color: var(--muted); }
+nav.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+nav.top a, .foot a { font: 700 1rem var(--f-display); text-decoration: none; }
+.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+.hero > div { display: grid; gap: 14px; min-width: 0; }
+.hero img, figure img { border-radius: 10px; background: var(--shot); width: 100%; min-width: 0; display: block; }
+@media (max-width: 760px) { .hero { grid-template-columns: 1fr; } }
+.sym { display: inline-grid; place-items: center; min-width: 1.3em; height: 1.3em; padding: 0 0.25em; border-radius: 999px; background: var(--fg); color: var(--bg); font-family: var(--f-display); font-size: 0.6em; vertical-align: 0.25em; }
+.sym.small { font-size: 0.75em; vertical-align: 0.1em; }
+.chip { font: 600 0.7rem/1 var(--f-mono); letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 8px; border-radius: 999px; white-space: nowrap; }
+.chip.checked { background: color-mix(in srgb, var(--green) 20%, transparent); color: var(--fg); border: 1px solid var(--green); }
+.chip.draft { background: transparent; color: var(--fg); border: 1px dashed var(--orange); }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+figure { margin: 0; display: grid; gap: 8px; min-width: 0; align-content: start; }
+figcaption { font-size: 0.9rem; color: var(--muted); }
+.panel { background: var(--panel); border-radius: 10px; padding: 16px; }
+.diagram { display: grid; gap: 10px; justify-items: center; }
+.diagram svg { max-width: 340px; }
+svg { display: block; width: 100%; height: auto; }
+svg text { font-family: var(--f-mono); fill: var(--fg); }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+td.num { font-variant-numeric: tabular-nums; font-family: var(--f-mono); }
+.scroll { overflow-x: auto; min-width: 0; }
+code, .mono { font-family: var(--f-mono); font-size: 0.86em; }
+.train { line-height: 1.7; color: var(--fg); padding-top: 12px; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; align-items: start; }
+.cols > div { min-width: 0; }
+ul.plain { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 66ch; }
+ol.steps { margin: 0; padding-left: 2em; display: grid; gap: 8px; max-width: 66ch; }
+ol.steps li::marker { font-family: var(--f-mono); font-weight: 600; color: var(--muted); }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 0; }
+.dot.in { background: var(--blue); } .dot.out { background: var(--orange); }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 8px; border: 1px solid var(--line); vertical-align: -1px; }
+.fn { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font: 600 1rem var(--f-mono); }
+.fn .fin { color: var(--blue); } .fn .fout { color: var(--orange); }
+.fn .fbox { padding: 8px 14px; border: 2px solid var(--fg); border-radius: 8px; font-family: var(--f-display); font-size: 1.1rem; }
+.fn .arrow { color: var(--muted); }
+.meter { display: flex; gap: 4px; flex-wrap: wrap; max-width: 520px; }
+.meter i { flex: 1 0 14px; max-width: 22px; height: 18px; border-radius: 3px; background: var(--panel); border: 1px solid var(--line); }
+.meter i.on { background: var(--fg); border-color: var(--fg); }
+.meter i.b { background: var(--red); border-color: var(--red); }
+.foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-top: 1px solid var(--line); padding-top: 18px; }
+/* master page */
+.mhero { display: grid; gap: 16px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font: 600 0.85rem var(--f-mono); color: var(--muted); }
+.links { color: var(--muted); }
+.ghead { display: grid; gap: 4px; }
+.ghead p { color: var(--muted); }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+.card { display: grid; grid-template-rows: auto 1fr; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; color: var(--fg); text-decoration: none; transition: transform 0.15s, border-color 0.15s; min-width: 0; }
+a.card:hover { transform: translateY(-2px); border-color: var(--fg); }
+a.card:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: var(--shot); display: block; }
+.card .noimg { aspect-ratio: 4 / 3; display: grid; place-items: center; font-size: 3rem; color: var(--muted); background: var(--panel); }
+.card.soon { opacity: 0.75; }
+.cbody { padding: 14px 16px 16px; display: grid; gap: 8px; align-content: start; }
+.ctop { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.cbody p { font-size: 0.95rem; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.figs figure.wide { grid-column: 1 / -1; max-width: 760px; justify-self: center; width: 100%; }
+.fchip { display: inline-block; width: 0.8em; height: 0.8em; border-radius: 3px; margin-right: 0.4em; vertical-align: 0.02em; box-shadow: 0 0 0 1px var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="top"><a href="index.html">← All boxes</a><span class="readout">Gear Box System</span></nav>
+<header class="mhero">
+  <span class="eyebrow">Routing · <span class="chip checked">fit-checked</span></span>
+  <h1>WIRE 2 · WIRE 3 · POLE 2 · POLE 3</h1><div class="mw-slot" data-makerworld="box:pole2,box:pole3,box:wire2,box:wire3"></div>
+  <p class="readout">Routing · fit-checked, not printed · 2x1, 3x1, 1x2, 1x3 cells · cost 2 a cell</p>
+  <p>The <a href="wire.html">WIRE</a> box, two or three cells long. WIRE 2 and WIRE 3 carry the main line east; POLE 2 and POLE 3 carry the power line north. Paul asked for them (2026-10-27): long runs between boxes took a row of single WIREs, each one a shell, a lid, four keepers and a joint.</p><div class="figs"><figure><img src="boxes/wire2/img/wire2_iso.png" alt=""><figcaption>WIRE 2</figcaption></figure><figure><img src="boxes/wire3/img/wire3_iso.png" alt=""><figcaption>WIRE 3</figcaption></figure><figure><img src="boxes/pole2/img/pole2_iso.png" alt=""><figcaption>POLE 2</figcaption></figure><figure><img src="boxes/pole3/img/pole3_iso.png" alt=""><figcaption>POLE 3</figcaption></figure></div>
+</header>
+
+<section>
+  <h2>What they do</h2>
+  <p>Straight through, x1, forward, like a row (or a column) of WIREs. A POLE also keeps, in every cell, the W → E channel a WIRE has, so rows can cross it anywhere along its length. A long WIRE carries the main line only (see "Why it is built this way").</p><div class="scroll"><table><thead><tr><th>Box</th><th>Cells</th><th>Main line</th><th>Meshes</th><th>Cross channels</th></tr></thead><tbody><tr><td>WIRE 2</td><td>2x1</td><td>W → E, layer 1</td><td>3</td><td>none</td></tr><tr><td>WIRE 3</td><td>3x1</td><td>W → E, layer 1</td><td>5</td><td>none</td></tr><tr><td>POLE 2</td><td>1x2</td><td>S → N, layer 2</td><td>3</td><td>W1 → E1, W2 → E2 (layer 1)</td></tr><tr><td>POLE 3</td><td>1x3</td><td>S → N, layer 2</td><td>5</td><td>W1 → E1 … W3 → E3</td></tr></tbody></table></div>
+</section>
+
+<section>
+  <h2>Ports and lanes</h2>
+  <p>Every port is 32 teeth on lane B, as on WIRE. Main line ports: W and E (WIRE n) or S and N (POLE n). A POLE's cross ports: W*k* and E*k*, one pair per cell, numbered from the south.</p><p>Train, WIRE 3: W (32) → I1 → I2 → I3 → I4 (32 each, layer 1) → E (32), all 32 mm apart on the center line, 16 + 32 · 4 + 16 = 160 mm between the ports. WIRE 2 has two idlers. POLE n is the same turned onto the other axis: the idlers run up the middle on layer 2, and in each cell W*k* (32) → E*k* (32) crosses on layer 1, one mesh.</p>
+</section>
+
+<section>
+  <h2>Torque cost</h2>
+  <p><strong>2 a cell</strong> (WIRE 2 and POLE 2: 4, WIRE 3 and POLE 3: 6, on the main line; 2 on each of a POLE's cross channels). That is what the same number of WIREs costs, because it is the same train: the idlers sit exactly where the WIREs' port gears would sit. A long wire saves parts, not stages.</p>
+</section>
+
+<section>
+  <h2>Why it is built this way</h2>
+  <ul class="plain"><li><strong>The same train as a row of WIREs.</strong> 32-tooth gears 32 mm apart reach from edge to edge with an odd number of meshes, so the line stays forward. Bigger idlers would cut the count but don't fit: a 3-mesh WIRE 3 needs two 64-tooth idlers, wider than a cell.</li><li><strong>What you gain:</strong> one shell and one lid instead of two or three, two keepers instead of four to six, and the joints between cells are inside one shell, so those meshes sit at an exact center distance instead of depending on two plinths and their keys.</li><li><strong>Cross channels on POLE only.</strong> On a POLE the cross gears sit on layer 1, under the idlers, and go in first, as every box's ports do. On a WIRE n they would sit on layer 2 over the idlers, so the idlers would have to go in before them: the fit check's drop-in test fails that way (the etch-a-sketch thread found the same). A column crosses a long WIRE's row with a WIRE between two lengths, or the design thread can add an assembly-order option to gbs.scad and give WIRE n its S → N channels back.</li><li><strong>Not a drive shaft.</strong> A horizontal shaft with a miter at each end would cost the same however long it is. It is a good later box (PLOT already has the parts on its lid); these are the simple ones Paul asked for.</li></ul>
+</section>
+
+<section>
+  <h2>Parts and colors</h2>
+  <div class="scroll"><table><thead><tr><th>Part</th><th>Role</th><th>Color</th></tr></thead><tbody><tr><td>shell (2 or 3 cells, band in the family color), keepers</td><td>structure</td><td>bone</td></tr><tr><td>lid</td><td>Routing</td><td>Sunflower Yellow, black lettering</td></tr><tr><td>W and S port gears (W*k* on a POLE)</td><td>input</td><td>blue</td></tr><tr><td>E and N port gears (E*k* on a POLE)</td><td>output</td><td>orange</td></tr><tr><td>idlers I1 … I4</td><td>transmission</td><td>white</td></tr></tbody></table></div><p>Every gear carries its box tag and gear id on its bed face (lib/labels.scad), as on every box.</p>
+</section>
+
+<section>
+  <h2>How to assemble it</h2>
+  <ol class="steps"><li>Wipe a PTFE dry film on every pin.</li><li>The port gears, then the idlers from the west (or south) end, then the keepers, then the lid.</li><li>Each idler holds itself with a hub up to the lid.</li></ol>
+</section>
+
+<section>
+  <h2>What it teaches</h2>
+  <ul class="plain"><li>An idler never changes the ratio, only the direction: count the meshes.</li><li>Why one long box beats several short ones: fewer joints, fewer places to misalign.</li></ul>
+</section>
+
+<footer class="foot"><a href="index.html">← Back to all boxes</a></footer>
+</div>
+<script src="makerworld.js"></script>
+<script src="mw.js"></script>
+</body>
+</html>
