@@ -219,7 +219,7 @@
     // B, the arbor and its knob with A
     if (part.startsWith("sto_spring_")) return { mat: "gear", turn: "B", stoSpring: +part.slice(11) };
     if (part.startsWith("sto_")) return { sto_barrel: { mat: "gear", turn: "B" }, sto_arbor: { mat: "gear", turn: "A" },
-      sto_knob: { mat: onLid("drive"), turn: "A" }, sto_plunger: { mat: onLid("drive"), sto: "plunger" }, sto_pawl: { mat: "shell", sto: "pawl" } }[part] || { mat: "gear" };
+      sto_knob: { mat: onLid("drive"), turn: "A" }, sto_plunger: { mat: onLid("drive"), sto: "plunger" }, sto_pawl: { mat: lidCol, sto: "pawl" } }[part] || { mat: "gear" };
     // the shift box's stick (lib/shift.scad) and the swap box's tumbler
     // (lib/swap.scad): turned round O, or A, by update()
     if (part.startsWith("sh_")) return { sh_arm: { mat: "gear", sh: "arm" }, sh_idler: { mat: "gear", sh: "idler" },
