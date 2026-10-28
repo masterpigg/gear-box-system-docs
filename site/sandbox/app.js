@@ -27,15 +27,16 @@
   const matFor = c => MAT[c] || (MAT[c] = new THREE.MeshStandardMaterial({ color: new THREE.Color(c), flatShading: true, roughness: 0.62, metalness: 0.0 }));
   MAT.draftShell = new THREE.MeshStandardMaterial({ color: 0xD9D3C4, flatShading: true, roughness: 0.7, transparent: true, opacity: 0.85 });
 
-  // ---- palette groups (docs/boxes/INDEX.md) ---------------------------------
+  // ---- palette groups: the families (lib/gbs.scad's gbs_families, docs/boxes/COLORS.md) ----
   const GROUPS = [
-    ["Drives", ["crank", "motor", "store", "push", "flip", "click", "spin"]],
-    ["Routing", ["wire", "wire2", "wire3", "pole2", "pole3", "turn", "tap", "branch", "tee", "bus", "riser", "fork"]],
+    ["Drives", ["crank", "motor", "store", "push", "flip", "click"]],
+    ["Routing", ["wire", "wire2", "wire3", "pole2", "pole3", "turn", "tap", "branch", "tee", "bus", "riser"]],
     ["Ratios", ["reverse", "double", "half", "quarter", "adder", "shift"]],
     ["Motion shapers", ["geneva", "ratchet", "clutch", "cam", "trip", "escape", "governor", "yoke", "flywheel", "hoist"]],
     ["Switches and clocks", ["route", "pick", "steer", "swap", "square", "ramp"]],
-    ["Readouts", ["meter", "counter", "toll", "tally", "face", "trig", "wave", "plot", "sketch", "orrery", "shuffle"]],
-    ["Sound", ["beat", "boom", "roll"]],
+    ["Readouts", ["meter", "counter", "toll", "tally", "face", "trig", "wave", "plot", "sketch", "orrery"]],
+    ["Chance", ["spin", "fork", "shuffle"]],
+    ["Sound and rhythm", ["beat", "boom", "roll"]],
     ["Side exploration", ["brain", "cbdrive", "cbsense"]],
   ];
 
@@ -1302,7 +1303,8 @@
   // ---- palette -------------------------------------------------------------------
   function renderPalette() {
     const el = $("palette"); el.innerHTML = "";
-    for (const [g, names] of GROUPS) {
+    const listed = new Set(GROUPS.flatMap(g => g[1])), other = Object.keys(BOXES).filter(n => !listed.has(n));
+    for (const [g, names] of other.length ? GROUPS.concat([["Other", other]]) : GROUPS) {
       const ns = names.filter(n => BOXES[n]);
       if (!ns.length) continue;
       const h = document.createElement("h3"); h.textContent = g; el.appendChild(h);
