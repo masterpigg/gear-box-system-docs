@@ -1489,7 +1489,15 @@
   function syncPlay() { $("play").textContent = playing ? "⏸ Pause" : "▶ Run"; $("play").classList.toggle("on", playing); }
   function togglePlay() {
     if (!items.some(i => BOXES[i.name].drive)) { toast("Place a CRANK, a MOTOR or a SPRING first: nothing turns without a drive."); return; }
-    playing = !playing; syncPlay();
+    playing = !playing;
+    // Run lets a wound SPRING go: its plunger comes up (Let go in its panel drops it)
+    if (playing) {
+      const held = items.filter(it => it.name === "store" && !it.set.up && stoTension(it, angle[it.uid] || 0) > 0);
+      if (held.length) { held.forEach(it => it.set.up = 1); dynamicChecks(); renderIssues(); renderInspector(); toast("SPRING's plunger lifted: the spring runs the line. Let go (in its panel) drops it into a notch."); }
+      else if (items.filter(it => BOXES[it.name].drive).every(it => it.name === "store" && !stoTension(it, angle[it.uid] || 0)))
+        toast("SPRING has run down: select it and wind its knob to run it again.");
+    }
+    syncPlay();
   }
   $("play").onclick = togglePlay;
   $("dir").onclick = () => { dir = -dir; $("dir").textContent = dir > 0 ? "Forward" : "Backward"; $("dir").classList.toggle("on", dir < 0); };
@@ -1519,28 +1527,35 @@
     save();
     let framed = true;
     try { framed = window.top !== window; } catch (e) { /* cross-origin frame */ }
-    if (framed) { toast("This layout is saved in this browser. Open sim/index.html locally for a link that holds it."); return; }
-    const url = location.href;
+    if (framed) { toast("This layout is saved in this browser (Resume brings it back). Open sim/index.html locally for a link that holds it."); return; }
+    const url = location.href.split("#")[0] + "#" + enc();
     (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(
       () => toast("Link copied: it opens this layout."), () => toast("Copy this page's address: it holds the layout."));
   };
   $("fit").onclick = () => fit();
+  $("new").onclick = () => { clearAll(); changed(); fit(); toast("A blank board. Resume brings back the last layout."); };
+  $("resume").onclick = () => { const s = lastSaved(); if (s) load(s); };
   const soundBtn = () => { $("sound").textContent = sound.on() ? "🔊 Sound" : "🔇 Muted"; $("sound").classList.toggle("on", sound.on()); };
   $("sound").onclick = () => { sound.set(!sound.on()); soundBtn(); };
   soundBtn();
   let toastT = 0;
   function toast(t) { const el = $("toast"); el.textContent = t; el.style.opacity = 1; clearTimeout(toastT); toastT = setTimeout(() => el.style.opacity = 0, 2600); }
 
-  // ---- saving: the address holds the layout ----------------------------------------
+  // ---- saving: a link holds a layout; the browser keeps the last one ---------------
+  // The page opens blank, or on the layout in its link (#...). The address is
+  // not rewritten as you work, so reloading or typing the bare address never
+  // brings an old layout back; Link makes a link, Resume brings back the last
+  // layout this browser saw.
   // name@x,y, and a switch's or a clock's setting after "~"
   const SETKEYS = { shift: ["gear"], square: ["pair", "phase"], ramp: ["f"], route: ["sel"], pick: ["sel"], steer: ["sel"] };
   const enc = () => items.map(i => i.name + "@" + i.x + "," + i.y +
     (SETKEYS[i.name] ? "~" + SETKEYS[i.name].map(k => i.set[k]).join(",") : "")).join(";");
   function save() {
-    const h = "#" + enc();
-    try { history.replaceState(null, "", h); } catch (e) { /* a sandboxed frame */ }
-    try { localStorage.setItem("gbs-sandbox", enc()); } catch (e) { /* no storage */ }
+    if (items.length) try { localStorage.setItem("gbs-sandbox", enc()); } catch (e) { /* no storage */ }
+    $("resume").disabled = !lastSaved() || lastRaw() === enc();
   }
+  function lastRaw() { try { return localStorage.getItem("gbs-sandbox") || ""; } catch (e) { return ""; } }
+  function lastSaved() { const s = lastRaw(), d = s ? dec(s) : []; return d.length ? d : null; }
   function dec(s) {
     return s.split(";").filter(Boolean).map(t => {
       const m = t.match(/^([a-z0-9]+)@(-?\d+),(-?\d+)(?:~([\w.,]+))?$/);
@@ -1572,10 +1587,11 @@
 
   // ---- go -----------------------------------------------------------------------------
   renderPalette();
-  let start = location.hash.length > 1 ? dec(decodeURIComponent(location.hash.slice(1))) : null;
-  if (!start) { try { const s = localStorage.getItem("gbs-sandbox"); if (s) start = dec(s); } catch (e) { /* none */ } }
+  const start = location.hash.length > 1 ? dec(decodeURIComponent(location.hash.slice(1))) : [];
+  // a link's layout is loaded once; the address goes back to bare
+  if (location.hash) try { history.replaceState(null, "", location.pathname + location.search); } catch (e) { /* a sandboxed frame */ }
   resize();
-  load(start && start.length ? start : EXAMPLES.demo1);
+  if (start.length) load(start); else { changed(); fit(); }
   let last = performance.now();
   function frame(t) {
     const dt = Math.min(0.1, (t - last) / 1000); last = t;

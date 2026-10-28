@@ -30,6 +30,7 @@ html, body { margin: 0; height: 100%; }
 body { background: var(--bg); color: var(--ink); font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
 button { font: inherit; color: inherit; background: var(--chip); border: 1px solid var(--line); border-radius: 8px; padding: 5px 10px; cursor: pointer; }
 button:hover { border-color: var(--muted); }
+button:disabled { opacity: .45; cursor: default; }
 button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
 select, input { font: inherit; color: inherit; }
 /* the menu's own colors: a native popup otherwise keeps the system's (white) background */
@@ -168,6 +169,8 @@ a { color: var(--accent); }
       </optgroup>
       <option value="clear">Clear the grid</option>
     </select>
+    <button id="new" title="Start on a blank board">New</button>
+    <button id="resume" title="Bring back the last layout this browser saw" disabled>Resume</button>
     <button id="share" title="Copy a link to this layout">Link</button>
     <button id="fit" title="Frame the layout">Fit</button>
   </header>
