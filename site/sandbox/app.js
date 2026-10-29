@@ -13,7 +13,7 @@
   const GX = 12, GY = 8;                 // the table, in cells
   const CELL = C.cell;
   const REPO = "../";
-  const DOC = {"adder": "adder", "beat": "percussion", "boom": "percussion", "brain": "brain", "branch": "branch", "bus": "bus", "cam": "cam", "cbdrive": "brain", "cbsense": "brain", "click": "push", "clutch": "clutch", "counter": "counter", "crank": "crank", "deck": "deck", "double": "double", "escape": "escape", "face": "face", "flip": "push", "flywheel": "flywheel", "fork": "fork", "geneva": "geneva", "governor": "governor", "half": "half", "hoist": "hoist", "meter": "meter", "motor": "motor", "orrery": "orrery", "pick": "switches", "plot": "plot", "pole2": "longwire", "pole3": "longwire", "push": "push", "quarter": "quarter", "ramp": "clocks", "ratchet": "ratchet", "reverse": "reverse", "riser": "riser", "roll": "percussion", "route": "switches", "shift": "shift", "shuffle": "shuffle", "sketch": "sketch", "spin": "spin", "square": "clocks", "steer": "switches", "store": "store", "swap": "swap", "tally": "tally", "tap": "tap", "tee": "tee", "toll": "toll", "trig": "trig", "trip": "trip", "turn": "turn", "wave": "trig", "wire": "wire", "wire2": "longwire", "wire3": "longwire", "yoke": "yoke"};
+  const DOC = {"adder": "adder", "beat": "percussion", "boom": "percussion", "brain": "brain", "branch": "branch", "bus": "bus", "cam": "cam", "cbdrive": "brain", "cbsense": "brain", "click": "push", "clutch": "clutch", "counter": "counter", "crank": "crank", "deck": "deck", "double": "double", "dynamo": "dynamo", "escape": "escape", "face": "face", "flip": "push", "flywheel": "flywheel", "fork": "fork", "geneva": "geneva", "governor": "governor", "half": "half", "hoist": "hoist", "meter": "meter", "motor": "motor", "orrery": "orrery", "pick": "switches", "plot": "plot", "pole2": "longwire", "pole3": "longwire", "push": "push", "quarter": "quarter", "ramp": "clocks", "ratchet": "ratchet", "reverse": "reverse", "riser": "riser", "roll": "percussion", "route": "switches", "shift": "shift", "shuffle": "shuffle", "sketch": "sketch", "spin": "spin", "square": "clocks", "steer": "switches", "store": "store", "swap": "swap", "tally": "tally", "tap": "tap", "tee": "tee", "toll": "toll", "trig": "trig", "trip": "trip", "turn": "turn", "wave": "trig", "wire": "wire", "wire2": "longwire", "wire3": "longwire", "yoke": "yoke"};
 
   // ---- colors by role (STANDARD.md, "Colors") ---------------------------
   const COL = { shell: 0xEDE3D0, ink: 0x1B1B1B, gear: 0xEDE8DA, drive: 0xD63A2F, in: 0x1F6FD6,
@@ -34,7 +34,7 @@
     ["Ratios", ["reverse", "double", "half", "quarter", "adder", "shift"]],
     ["Motion shapers", ["geneva", "ratchet", "clutch", "cam", "trip", "escape", "governor", "yoke", "flywheel", "hoist"]],
     ["Switches and clocks", ["route", "pick", "steer", "swap", "square", "ramp"]],
-    ["Readouts", ["meter", "counter", "toll", "tally", "face", "trig", "wave", "plot", "sketch", "orrery"]],
+    ["Readouts", ["meter", "counter", "toll", "tally", "face", "trig", "wave", "plot", "sketch", "orrery", "dynamo"]],
     ["Chance", ["spin", "fork", "shuffle"]],
     ["Sound and rhythm", ["beat", "boom", "roll"]],
     ["Side exploration", ["brain", "cbdrive", "cbsense"]],
@@ -288,6 +288,9 @@
   const MUS_WHEEL = { beat: "T", boom: "C", roll: "D" };
   function topInfo(bx, n) {
     const b = bx.name, mus = MUS_WHEEL[b];
+    // DYNAMO's two LEDs (docs/boxes/dynamo.md): lit by dynLight() in update()
+    if (b === "dynamo") return n === "led_G" ? { mat: "#2fbf4a", led: "G" } : n === "led_R" ? { mat: "#e0352b", led: "R" } :
+      n === "collars" ? { mat: "show", lid: true } : { mat: "shell" };
     if (b === "spin") return { driver: { mat: "gear", turn: "S" }, cap: { mat: "gear", turn: "S" }, pinion: { mat: "gear", turn: "O" },
       spinner: { mat: "show", turn: "spinner" }, spinner_ink: { mat: "ink", turn: "spinner" }, detent: { mat: "shell" } }[n] || { mat: "gear" };
     if (b === "fork") return { carrier: { mat: "gear", turn: "carrier" }, wheel: { mat: "show", turn: "carrier" },
@@ -505,6 +508,7 @@
         continue;
       }
       const m = mesh(g, info.mat, it.uid);
+      if (info.led) { m.material = m.material.clone(); (v.leds = v.leds || {})[info.led] = m; }
       if (info.pl || info.plRide) {
         // about a shaft's axis (along Y, at its x and height), and/or riding north and south
         const P = C.plot, pl = v.pl = v.pl || { links: [] }, k = (info.pl || "") + (info.plRide ? "+" : "");
@@ -537,6 +541,7 @@
       if (info.keySlide) (v.keySlide = v.keySlide || []).push(m);
       if (info.balls) (v.balls = v.balls || []).push({ m, r: info.balls });
     }
+    if (it.name === "dynamo") dynLeds(v);
     // the outline that marks a selected box (or one with a problem)
     const w = bx.cells[0] * CELL, h = bx.cells[1] * CELL;
     const eg = new THREE.EdgesGeometry(new THREE.BoxGeometry(w - 1, h - 1, 28));
@@ -744,6 +749,8 @@
         if (!t) dyn.issues.push({ level: "info", uids: [it.uid], text: "SPRING has run down: wind its knob (in its panel) to run it again." });
         else if (!it.set.up) dyn.issues.push({ level: "info", uids: [it.uid], text: "SPRING is wound but its plunger is down: lift it (in its panel) and the spring runs the line." });
       }
+      if (it.name === "dynamo" && A.inLinks.get(it.uid).length > 1)
+        dyn.issues.push({ level: "warn", uids: [it.uid], text: "DYNAMO is fed at both W and S: feed one, or the two lines fight through its idler." });
       if (it.name === "shift" && it.set.gear === 0)
         dyn.issues.push({ level: "info", uids: [it.uid], text: "SHIFT is in neutral: the idler meshes only O, so O, F and E stand still." });
       if ((it.name === "route" || it.name === "pick") && it.set.sel === 0.5)
@@ -912,6 +919,7 @@
         v.plates.forEach(p => { p.m.visible = p.set === want; p.hold.rotation.z = p.k ? -phase * D : 0; });
       }
       if (it.name === "store") stoPose(it, v);
+      if (it.name === "dynamo") dynPose(it, v, sp);
       if (v.pl) plotPose(v, sp);
       if (v.tp) topPose(it, bx, v, sp);
       if (v.keySlide) v.keySlide.forEach(m => m.position.x = -(sp.stroke || 0));
@@ -953,6 +961,39 @@
   }
   // the spring store: the spring drawn nearest its wind, the plunger up when
   // lifted or riding the rim between notches, the pawl's arm out on its tooth
+  // ---- DYNAMO: an N20 turned backward lights a green (forward) or red (back) LED
+  // (docs/boxes/dynamo.md, "Speed against light"): S x4 to the motor shaft,
+  // about 0.044 V per rpm of S, the LED's 1.9 V, 470 + 60 ohms. Dark under about
+  // 45 rpm, 17 mA at 250. Brightness looks even on a log scale of the current.
+  function dynLight(rpmS) {
+    const V = 0.044 * Math.abs(rpmS), mA = Math.max(0, (V - 1.9) / 530 * 1000);
+    return { mA, b: Math.min(1, Math.log1p(mA) / Math.log1p(17)), led: rpmS > 0 ? "G" : "R" };
+  }
+  // the LEDs, until the exported meshes carry them: two domes on the lid
+  // (C.tp_dynamo: [[green x, y], [red x, y], z], else a guess)
+  function dynLeds(v) {
+    if (v.leds && v.leds.G && v.leds.R) return;
+    const at = (BOXES.dynamo.bought || []).filter(q => q[0] === "led5").map(q => q[1]);
+    const [g, r, z] = [at[0] || [-20, 18], at[1] || [-8, 18], C.lid_top + 4];
+    v.leds = {};
+    for (const [k, p, col] of [["G", g, 0x2fbf4a], ["R", r, 0xe0352b]]) {
+      const m = new THREE.Mesh(new THREE.SphereGeometry(2.5, 20, 12, 0, 2 * Math.PI, 0, Math.PI / 2), new THREE.MeshStandardMaterial({ color: col, roughness: 0.35 }));
+      m.rotation.x = Math.PI / 2; m.position.set(p[0], p[1], z); v.group.add(m); v.leds[k] = m;
+    }
+  }
+  // the S gear's speed now (rpm, + forward: an input turning clockwise), from
+  // the last frame; fed from W, the idler J turns it the same way
+  function dynPose(it, v, sp) {
+    const s = sp.S || 0, d = v.dyn = v.dyn || { s, rpm: 0 };
+    const now = frameDt > 0 ? -(s - d.s) / frameDt * 60 / 360 : 0;
+    d.rpm = frameDt > 0 ? d.rpm + (now - d.rpm) * Math.min(1, frameDt / 0.15) : 0; d.s = s;
+    const L = dynLight(d.rpm);
+    for (const k of ["G", "R"]) {
+      const m = v.leds && v.leds[k]; if (!m) continue;
+      const on = k === L.led ? L.b : 0;
+      m.material.emissive.setHex(k === "G" ? 0x2fbf4a : 0xe0352b); m.material.emissiveIntensity = 2.2 * on;
+    }
+  }
   function stoPose(it, v) {
     const [, , lift, , pv, L, tab, step] = C.sto, run = angle[it.uid] || 0;
     const k = Math.max(0, Math.min(v.sto.springs.length - 1, Math.round(stoTension(it, run) / step)));
@@ -1241,6 +1282,11 @@
       show.push(["Key", `<b>${(sp.stroke || 0).toFixed(1)}</b> of ${full.toFixed(1)} mm in`]);
       if (it.name === "click") show.push(["Presses", `<span class="big">${sp.presses || 0}</span> <span class="muted">(each turns the ports once)</span>`]);
       if (it.name === "flip") show.push(["Bat", `${Math.round((sp.stroke || 0) / C.push[2] * 50)}° of 50°`]);
+    }
+    if (it.name === "dynamo") {
+      const r = (VIEWS.get(it.uid).dyn || { rpm: 0 }).rpm, L = dynLight(r);
+      show.push(["Light", !playing ? "dark: Run turns the line" : L.mA > 0 ? `<b>${L.led === "G" ? "green" : "red"}</b>, ${L.mA.toFixed(1)} mA (${Math.round(L.b * 100)} % of full)` : "dark: under about 45 rpm at S, the LED stays off"]);
+      show.push(["Train", `${Math.abs(r).toFixed(0)} rpm at the S gear ${r > 0.5 ? "forward" : r < -0.5 ? "backward" : ""} (lights at about 45, full at 250)`]);
     }
     if (it.name === "spin") show.push(["Shows", `<span class="big">${K.spinResult(sp.spinner || 0)}</span> <span class="muted">at the north arrow</span>`]);
     if (it.name === "fork") show.push(["Routes to", `<b>${sp.route}</b> (the wheel's lock holds it there)`]);

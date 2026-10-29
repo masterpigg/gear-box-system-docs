@@ -61,6 +61,8 @@
     return C.odo_rest + 72 * d + lookup(x, C.odo_trace);
   }
   const bevSpin = (pin, C) => -(pin - C.bev_p0) * C.bev_teeth[1] / C.bev_teeth[0];
+  // the other way (DYNAMO: the stack turns the motor's pinion), gbs_bev_pin
+  const bevPin = (st, C) => C.bev_p0 - st * C.bev_teeth[0] / C.bev_teeth[1];
   function genevaSpin(u, C) {
     const n = Math.floor((u + 180) / 360), r = u - 360 * n;
     const psi = Math.abs(r) <= 45 ? atan2d(C.gen_a * Math.sin(r * D), C.gen_c - C.gen_a * Math.cos(r * D)) : Math.sign(r) * 45;
@@ -77,7 +79,7 @@
       const th = atan2d(c.pos[1] - p.pos[1], c.pos[0] - p.pos[0]);
       let s;
       if (l === "carry") s = carryQ((e[3] - sp) / 36, C);
-      else if (l === "bevel") s = bevSpin(sp, C);
+      else if (l === "bevel") s = c.top === "motor" ? bevPin(sp, C) : bevSpin(sp, C);
       else if (l === "clutch") s = sp;     // the upper stack turns with the lower (it slips only under load)
       else if (l === "geneva") s = genevaSpin(sp - th, C);
       else if (l === "planetary") s = plCarrier(sp, acc[e[3]] || 0, e[4], e[5], C);
@@ -88,6 +90,13 @@
       acc[c.id] = s;
     }
     return acc;
+  }
+  // DYNAMO: fed at W, the train runs from W (J turns the S gear); fed at S
+  // only, W turns with it, backward through J (the train is linear in W)
+  function dynSpins(bx, roots, C) {
+    if (roots.W !== undefined || roots.S === undefined) return spins(bx, { W: roots.W || 0 }, C);
+    const s0 = spins(bx, { W: 0 }, C).S, s1 = spins(bx, { W: 1 }, C).S;
+    return spins(bx, { W: (roots.S - s0) / (s1 - s0) }, C);
   }
   // gbs_link_spin: the input port's spin, from the output port it meshes with
   function linkSpin(pout, oOut, sOut, pin, oIn) {
@@ -283,6 +292,7 @@
   function refRoots(bx, turn) {
     if (bx.name === "crank") return { K: -turn };
     if (bx.name === "motor") return { M: turn };
+    if (bx.name === "dynamo") return { W: -turn };   // S and the motor are driven
     const r = {};
     for (const p of bx.ports) if (p.input) r[p.id] = -turn;
     for (const s of Object.values(bx.st)) if (s.top === "motor") r[s.id] = turn;
@@ -341,6 +351,9 @@
     bus: { E1: 3, E2: 5, N: 5 },
     // HOIST: a spur stage and the worm (docs/boxes/hoist.md); a sensed input: its two stages (brain.md)
     hoist: 9, cbsense: 2,
+    // DYNAMO: the generator's drag, a first guess (docs/boxes/dynamo.md, "Torque");
+    // W reaches the S gear through an idler, two meshes more
+    dynamo: { W: 14, S: 12 },
     spin: 5, fork: 5, trig: 6, wave: 4, shuffle: 4, orrery: 4, beat: 3, boom: 2, roll: 2,
   };
   // is a box's cost given per input port (or per output)?
@@ -497,7 +510,7 @@
         issues.push({ level: "warn", uids: [u, back[0].uid], text: bx.label + ": path cost " + I.cost + " from " + boxes[back[0].name].label +
           ". The key presses up to " + BUDGET[back[0].name] + ", but its band only pulls " + KEY_RETURN + " back: past that, the key stays in when you let go. CLICK doesn't pull back at all, so it has the press budget only." });
       // (the sound boxes' "dials" carry their rhythm wheels: nothing to read)
-      const reads = ["beat", "boom", "roll"].includes(it.name) ? [] : Object.values(bx.st).filter(s => s.top === "dial" || s.top === "wheel");
+      const reads = ["beat", "boom", "roll", "dynamo"].includes(it.name) ? [] : Object.values(bx.st).filter(s => s.top === "dial" || s.top === "wheel");
       // dials: the farthest. Digit wheels: the lowest digit (the carry locks
       // the higher ones, so they don't add backlash of their own)
       const ds = reads.map(s => I.depth[s.id]).filter(d => d !== undefined);
@@ -616,6 +629,7 @@
       else if (it.name === "spin") sp = spinSpins(bx, roots, set.coast || 0, C);
       else if (KEY[it.name]) { const k = keyStroke(it.name, drives[u] || 0, C); sp = pushSpins(bx, k.s, k.n, C); }
       else if (it.name === "fork") sp = forkSpins(bx, roots, set.roll || 0, C);
+      else if (it.name === "dynamo") sp = dynSpins(bx, roots, C);
       else if (it.name === "swap") sp = swapSpins(bx, roots.W === undefined ? 0 : -roots.W * 24 / 16, C);
       else if (it.name === "escape") sp = roots.W === undefined ? escSpins(bx, 0, 0, C) : escFromW(bx, roots.W, C);
       else if (CLOCK[it.name]) sp = clkSpins(bx, roots, it.name === "ramp" ? set.f : set.pair, it.name === "ramp" ? 0 : set.phase, C);

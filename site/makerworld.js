@@ -78,6 +78,11 @@ window.MAKERWORLD = {
       "page": "double.html",
       "url": ""
     },
+    "dynamo": {
+      "name": "DYNAMO",
+      "page": "dynamo.html",
+      "url": ""
+    },
     "escape": {
       "name": "TICK",
       "page": "escape.html",

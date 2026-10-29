@@ -35,7 +35,7 @@ footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line);
 <body>
 <main>
 <nav><a href="index.html">← All boxes</a></nav>
-<p class="note">The rules every box follows, as of model version 52e8fc2. Names in <code>code</code> type are files in the OpenSCAD model.</p>
+<p class="note">The rules every box follows, as of model version dbf7747. Names in <code>code</code> type are files in the OpenSCAD model.</p>
 <h1 id="the-gear-box-standard">The Gear Box standard</h1>
 <p>Every box follows these rules, so any box sits beside any other and their
 gears mesh. The numbers live in <code>lib/gbs.scad</code>. A box made to these rules
@@ -120,6 +120,26 @@ boxes sit together, the ports meet and mesh.</p>
 <li>Use at least 12 teeth. Fewer teeth undercut without profile shift, and
   profile shift is not allowed because it would move the pitch circle off
   the edge.</li>
+</ul>
+<h2 id="where-ports-go">Where ports go</h2>
+<p>The rules above say how ports mesh. These say which side a box uses, so
+layouts stay small. Lay a build out west to east and south to north, the
+drive in the south-west corner, and put each input where its feeder already
+is.</p>
+<ul>
+<li><strong>Main signals ride lane B.</strong> Lanes A and C are for a second or third
+  signal on the same side.</li>
+<li><strong>An end box (a readout, a lamp, a plotter) takes W, and S too when both
+  fit.</strong> On W it ends a row; on S it tops a column straight off a drive's N
+  or the power line. Both inputs turn the same train: feed one, never both.</li>
+<li><strong>A box more than one cell long puts its inputs on its west or lowest
+  cell</strong>, where the row or column it sits on arrives. An S port under the
+  far end of a box forces a detour of boxes to reach it (PLOT's old layout:
+  26 boxes for three plots, about a dozen after the move).</li>
+<li><strong>A box that passes a signal on keeps it in line:</strong> W lane B in, E lane B
+  out, or S lane B in, N lane B out, so a row or column runs straight
+  through.</li>
+<li><strong>A drive feeds both E and N at x1</strong>, so either channel can carry it on.</li>
 </ul>
 <h2 id="what-a-port-carries">What a port carries</h2>
 <ul>
